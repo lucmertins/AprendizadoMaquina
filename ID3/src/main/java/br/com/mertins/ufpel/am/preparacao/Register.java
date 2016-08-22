@@ -1,6 +1,7 @@
 package br.com.mertins.ufpel.am.preparacao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,16 +11,21 @@ import java.util.Objects;
  */
 public class Register implements Serializable {
 
-    private Long line;
-    private List<Attribute> attributes;
+    private final Long line;
+    private final List<AttributeInstance> attributesInstance =new ArrayList();
 
-    public List<Attribute> getAttributes() {
-        return attributes;
+    public Register(Long line) {
+        this.line = line;
     }
 
-    public void setAttributes(List<Attribute> attributes) {
-        this.attributes = attributes;
+    public List<AttributeInstance> getAttributesInstance() {
+        return attributesInstance;
     }
+
+    public void addAttributesInstance(AttributeInstance attributesInstance) {
+        this.attributesInstance.add(attributesInstance);
+    }
+
 
     @Override
     public int hashCode() {

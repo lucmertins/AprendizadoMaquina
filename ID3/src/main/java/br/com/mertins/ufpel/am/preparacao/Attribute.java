@@ -12,7 +12,7 @@ public class Attribute implements Serializable {
 
     private int position;
     private String name;
-    private final Set<AttributeInstance> attributesInstance=new HashSet<>();
+    private final Set<AttributeInstance> attributesInstance = new HashSet<>();
 
     public Attribute() {
     }
@@ -33,9 +33,21 @@ public class Attribute implements Serializable {
     public Set<AttributeInstance> getAttributesInstance() {
         return attributesInstance;
     }
-    
-    public void addAttributeInstance(AttributeInstance attributeInstance){
+
+    public void addAttributeInstance(AttributeInstance attributeInstance) {
         this.attributesInstance.add(attributeInstance);
+    }
+
+    public AttributeInstance addAttributeInstance(String value) {
+        AttributeInstance temp = new AttributeInstance(this,value);
+        for (AttributeInstance instance : attributesInstance) {
+            if (temp.equals(instance)) {
+                return instance;
+            }
+
+        }
+        this.attributesInstance.add(temp);
+        return temp;
     }
 
     @Override

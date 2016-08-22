@@ -41,9 +41,13 @@ public class Sample implements Serializable {
 
     public void addLineAttributeInstance(long pos, String line) {
         String[] split = line.split(this.delimiter);
-        int posLine = 0;
+        int posCol = 0;
+        Register register=new Register(pos);
+        
         for (String valor : split) {
-//            attributes.add(new Attribute(posLine++, valor));
+            Attribute attribure = attributes.get(posCol++);
+            AttributeInstance addAttributeInstance = attribure.addAttributeInstance(valor);
+            register.addAttributesInstance(addAttributeInstance);
         }
     }
 

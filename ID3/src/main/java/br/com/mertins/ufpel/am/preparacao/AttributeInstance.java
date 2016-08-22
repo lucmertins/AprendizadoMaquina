@@ -9,11 +9,13 @@ import java.util.Objects;
 public class AttributeInstance {
 
     private String value;
+    private Attribute attribute;
 
     public AttributeInstance() {
     }
 
-    public AttributeInstance(String value) {
+    public AttributeInstance(Attribute attribute, String value) {
+        this.attribute = attribute;
         this.value = value;
     }
 
@@ -21,14 +23,15 @@ public class AttributeInstance {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public Attribute getAttribute() {
+        return attribute;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 31 * hash + Objects.hashCode(this.value);
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.value);
+        hash = 53 * hash + Objects.hashCode(this.attribute);
         return hash;
     }
 
@@ -47,11 +50,14 @@ public class AttributeInstance {
         if (!Objects.equals(this.value, other.value)) {
             return false;
         }
+        if (!Objects.equals(this.attribute, other.attribute)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return String.format("AttributeInstance {value= %s}", value);
+        return String.format("AttributeInstance {attribute = %s value= %s}", attribute.toString(), value);
     }
 }
