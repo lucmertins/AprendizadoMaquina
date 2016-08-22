@@ -18,7 +18,7 @@ public class Sample implements Serializable {
     private final List<Attribute> attributes = new ArrayList<>();
     private final List<Register> registers = new ArrayList<>();
     private final List<Integer> discardedColumns = new ArrayList<>();
-    private final Set<Rotulo> rotulos = new HashSet<>();
+    private final Set<Label> rotulos = new HashSet<>();
     private final int ColumnRotulo;
     private String rotuloName;
 
@@ -38,7 +38,7 @@ public class Sample implements Serializable {
         return delimiter;
     }
 
-    public Set<Rotulo> getRotulos() {
+    public Set<Label> getRotulos() {
         return rotulos;
     }
 
@@ -74,7 +74,7 @@ public class Sample implements Serializable {
         for (String valor : split) {
             if (!this.discardedColumns.contains(posColReal)) {
                 if (this.ColumnRotulo == posColReal) {
-                    Rotulo rotuloTemp = new Rotulo(valor);
+                    Label rotuloTemp = new Label(valor);
                     if (rotulos.contains(rotuloTemp)) {
                         rotulos.stream().filter((rotulo) -> (rotulo.equals(rotuloTemp))).forEach((rotulo) -> {
                             register.setRotulo(rotulo);

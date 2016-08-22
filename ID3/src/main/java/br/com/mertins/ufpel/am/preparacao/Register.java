@@ -13,7 +13,7 @@ public class Register implements Serializable {
 
     private final Long line;
     private final List<AttributeInstance> attributesInstance = new ArrayList();
-    private Rotulo rotulo;
+    private Label rotulo;
 
     public Register(Long line) {
         this.line = line;
@@ -31,11 +31,11 @@ public class Register implements Serializable {
         this.attributesInstance.add(attributesInstance);
     }
 
-    public Rotulo getRotulo() {
+    public Label getRotulo() {
         return rotulo;
     }
 
-    public void setRotulo(Rotulo rotulo) {
+    public void setRotulo(Label rotulo) {
         this.rotulo = rotulo;
     }
 

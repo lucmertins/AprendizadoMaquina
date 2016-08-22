@@ -7,11 +7,11 @@ import java.util.Objects;
  *
  * @author mertins
  */
-public class Rotulo implements Serializable {
+public class Label implements Serializable {
 
     private String value;
 
-    public Rotulo(String value) {
+    public Label(String value) {
         this.value = value;
     }
 
@@ -41,7 +41,7 @@ public class Rotulo implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Rotulo other = (Rotulo) obj;
+        final Label other = (Label) obj;
         if (!Objects.equals(this.value, other.value)) {
             return false;
         }
@@ -50,7 +50,7 @@ public class Rotulo implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Rotulo {value= %s}", value);
+        return String.format("Label {value= %s}", value);
     }
 
 }
