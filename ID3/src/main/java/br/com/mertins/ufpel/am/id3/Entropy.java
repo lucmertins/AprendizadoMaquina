@@ -24,7 +24,12 @@ public class Entropy {
     }
     
     public void process(){
-        
+        registers.forEach(register->{
+            System.out.printf("%d   %s  %s\n", register.getLine(), register.getAttributesInstance().get(0).toString(), register.getLabel().toString());
+        });
+        labels.forEach(label->{
+            System.out.printf("\t\t%s\n",label.getValue());
+        });
     }
 
 }

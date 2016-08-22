@@ -18,12 +18,12 @@ public class Sample implements Serializable {
     private final List<Attribute> attributes = new ArrayList<>();
     private final List<Register> registers = new ArrayList<>();
     private final List<Integer> discardedColumns = new ArrayList<>();
-    private final Set<Label> rotulos = new HashSet<>();
-    private final int ColumnRotulo;
-    private String rotuloName;
+    private final Set<Label> labels = new HashSet<>();
+    private final int ColumnLabel;
+    private String labelName;
 
-    public Sample(int ColumnRotulo) {
-        this.ColumnRotulo = ColumnRotulo;
+    public Sample(int ColumnLabel) {
+        this.ColumnLabel = ColumnLabel;
     }
 
     public List<Register> getRegisters() {
@@ -38,8 +38,8 @@ public class Sample implements Serializable {
         return delimiter;
     }
 
-    public Set<Label> getRotulos() {
-        return rotulos;
+    public Set<Label> getLabels() {
+        return labels;
     }
 
     public void setDelimiter(String delimiter) {
@@ -55,8 +55,8 @@ public class Sample implements Serializable {
         int pos = 0;
         for (String valor : split) {
             if (!this.discardedColumns.contains(pos)) {
-                if (this.ColumnRotulo == pos) {
-                    rotuloName = valor;
+                if (this.ColumnLabel == pos) {
+                    labelName = valor;
                 } else {
                     attributes.add(new Attribute(pos++, valor));
                 }
@@ -73,15 +73,15 @@ public class Sample implements Serializable {
         Register register = new Register(pos);
         for (String valor : split) {
             if (!this.discardedColumns.contains(posColReal)) {
-                if (this.ColumnRotulo == posColReal) {
-                    Label rotuloTemp = new Label(valor);
-                    if (rotulos.contains(rotuloTemp)) {
-                        rotulos.stream().filter((rotulo) -> (rotulo.equals(rotuloTemp))).forEach((rotulo) -> {
-                            register.setRotulo(rotulo);
+                if (this.ColumnLabel == posColReal) {
+                    Label labelTemp = new Label(valor);
+                    if (labels.contains(labelTemp)) {
+                        labels.stream().filter((label) -> (label.equals(labelTemp))).forEach((label) -> {
+                            register.setLabel(label);
                         });
                     } else {
-                        rotulos.add(rotuloTemp);
-                        register.setRotulo(rotuloTemp);
+                        labels.add(labelTemp);
+                        register.setLabel(labelTemp);
                     }
                 } else {
                     Attribute attribute = attributes.get(posCol++);
