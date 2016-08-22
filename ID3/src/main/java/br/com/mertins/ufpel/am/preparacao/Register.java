@@ -12,10 +12,15 @@ import java.util.Objects;
 public class Register implements Serializable {
 
     private final Long line;
-    private final List<AttributeInstance> attributesInstance =new ArrayList();
+    private final List<AttributeInstance> attributesInstance = new ArrayList();
+    private Rotulo rotulo;
 
     public Register(Long line) {
         this.line = line;
+    }
+
+    public Long getLine() {
+        return line;
     }
 
     public List<AttributeInstance> getAttributesInstance() {
@@ -26,6 +31,13 @@ public class Register implements Serializable {
         this.attributesInstance.add(attributesInstance);
     }
 
+    public Rotulo getRotulo() {
+        return rotulo;
+    }
+
+    public void setRotulo(Rotulo rotulo) {
+        this.rotulo = rotulo;
+    }
 
     @Override
     public int hashCode() {

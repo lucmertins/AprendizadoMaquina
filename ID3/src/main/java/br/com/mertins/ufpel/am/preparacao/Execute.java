@@ -16,20 +16,7 @@ public class Execute {
             sample.addDiscardedColumns(0);
             try (FileReader arq = new FileReader("beach.csv")) {
                 BufferedReader lerArq = new BufferedReader(arq);
-                String linha = lerArq.readLine();
-                boolean firstLine = true;
-                long pos = 0;
-                while (linha != null) {
-                    System.out.printf("%s\n", linha);
-                    if (firstLine) {
-                        sample.addLineAttribute(linha);
-                        firstLine = false;
-                    } else {
-                        sample.addLineAttributeInstance(pos, linha);
-                    }
-                    linha = lerArq.readLine();
-                    pos++;
-                }
+                sample.process(lerArq);
             }
 
             System.out.println("******");
@@ -43,6 +30,12 @@ public class Execute {
             System.out.println("******");
             sample.getRotulos().stream().forEach((rotulo) -> {
                 System.out.printf("%s\n", rotulo.toString());
+            });
+            System.out.println("******");
+
+            System.out.println("******");
+            sample.getRegisters().stream().forEach((register) -> {
+                System.out.printf("%d   %s  %s\n", register.getLine(), register.getAttributesInstance().get(0).toString(), register.getRotulo().toString());
             });
             System.out.println("******");
 
