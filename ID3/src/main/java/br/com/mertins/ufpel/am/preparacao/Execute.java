@@ -1,6 +1,6 @@
 package br.com.mertins.ufpel.am.preparacao;
 
-import br.com.mertins.ufpel.am.id3.Entropy;
+import br.com.mertins.ufpel.am.id3.CalcEntropy;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class Execute {
 
             });
             System.out.println("******");
-            Entropy entropy=new Entropy(sample.getRegisters(), sample.getLabels());
+            CalcEntropy entropy=new CalcEntropy(sample.getRegisters(), sample.getLabels());
             entropy.process();
 //            sample.getRotulos().stream().forEach((rotulo) -> {
 //                System.out.printf("%s\n", rotulo.toString());
