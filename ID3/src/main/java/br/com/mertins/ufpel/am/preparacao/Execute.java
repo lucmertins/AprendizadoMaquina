@@ -1,6 +1,6 @@
 package br.com.mertins.ufpel.am.preparacao;
 
-import br.com.mertins.ufpel.am.id3.CalcEntropy;
+import br.com.mertins.ufpel.am.id3.ID3;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,15 +21,15 @@ public class Execute {
             }
 
             System.out.println("******");
-            sample.getAttributes().stream().forEach((attribute) -> {
-                System.out.println(attribute.toString());
-                attribute.getAttributesInstance().stream().forEach((attributeInstance) -> {
-                    System.out.printf("\t\t%s\n", attributeInstance.toString());
-                });
-
-            });
+//            sample.getAttributes().stream().forEach((attribute) -> {
+//                System.out.println(attribute.toString());
+//                attribute.getAttributesInstance().stream().forEach((attributeInstance) -> {
+//                    System.out.printf("\t\t%s\n", attributeInstance.toString());
+//                });
+//
+//            });
             System.out.println("******");
-            CalcEntropy entropy=new CalcEntropy(sample.getRegisters(), sample.getLabels());
+            ID3 entropy=new ID3(sample.getRegisters(), sample.getAttributes(),sample.getLabels());
             entropy.process();
 //            sample.getRotulos().stream().forEach((rotulo) -> {
 //                System.out.printf("%s\n", rotulo.toString());

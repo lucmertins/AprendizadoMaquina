@@ -10,9 +10,11 @@ import java.util.Objects;
 public class Label implements Serializable {
 
     private String value;
+    private boolean positive;
 
     public Label(String value) {
         this.value = value;
+        this.positive="yes".equalsIgnoreCase(value);
     }
 
     public String getValue() {
@@ -21,6 +23,14 @@ public class Label implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isPositive() {
+        return positive;
+    }
+
+    public void setPositive(boolean positive) {
+        this.positive = positive;
     }
 
     @Override
@@ -50,7 +60,7 @@ public class Label implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Label {value= %s}", value);
+        return String.format("Label {value= %s  %s}", value,this.positive?"Positive":"Negative");
     }
 
 }
