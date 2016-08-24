@@ -28,8 +28,8 @@ public class ID3 {
     public void process() {
         double entropiaTotal = Entropy.calc(this.registers);
         this.attributes.forEach(attribute -> {
-             double calc = Gain.calc(registers, attribute);
-            System.out.printf("%s = %f\n",attribute,calc);
+            double calc = Gain.calc(registers, attribute);
+            System.out.printf("%s = %f\n", attribute, calc);
         });
 
 //        registers.forEach(register -> {

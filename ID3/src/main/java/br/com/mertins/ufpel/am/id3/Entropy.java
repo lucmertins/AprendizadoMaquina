@@ -36,6 +36,15 @@ public class Entropy {
             }
         }
         double total = positivos + negativos;
-        return -(positivos / total * (Math.log(positivos / total) / Math.log(2))) - (negativos / total * (Math.log(negativos / total) / Math.log(2)));
+        double parcial1 = -(positivos / total * log2(positivos / total));
+        double parcial2 = -(negativos / total * log2(negativos / total));
+
+        double result = parcial1 + parcial2;
+        return result;
+    }
+
+    private static double log2(double value) {
+        double ret = Math.log(value) / Math.log(2);
+        return ret == Double.NaN ? 0 : ret == Double.NEGATIVE_INFINITY ? 0 : ret == Double.POSITIVE_INFINITY ? 0 : ret;
     }
 }
