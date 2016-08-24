@@ -1,9 +1,11 @@
 package br.com.mertins.ufpel.am.id3;
 
 import br.com.mertins.ufpel.am.preparacao.Attribute;
+import br.com.mertins.ufpel.am.preparacao.AttributeInstance;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Register;
-import java.util.HashSet;
+import br.com.mertins.ufpel.am.tree.NodeRaiz;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,8 +19,6 @@ public class ID3 {
     private final List<Attribute> attributes;
     private final Set<Label> labels;
 
-    private Set<ParcialEntropy> resultParcial = new HashSet<>();
-
     public ID3(List<Register> registers, List<Attribute> attributes, Set<Label> labels) {
         this.registers = registers;
         this.attributes = attributes;
@@ -26,37 +26,57 @@ public class ID3 {
     }
 
     public void process() {
-        double entropiaTotal = Entropy.calc(this.registers);
-        this.attributes.forEach(attribute -> {
+        NodeRaiz root = null;
+        double calcMax = 0;
+        for (Attribute attribute : this.attributes) {
             double calc = Gain.calc(registers, attribute);
-            System.out.printf("%s = %f\n", attribute, calc);
-        });
+            if (calcMax < calc) {
+                root = new NodeRaiz(attribute, calc);
+                calcMax = calc;
+            }
+            //System.out.printf("%s = %f\n", attribute, calc);
+        }
 
-//        registers.forEach(register -> {
-//            register.getAttributesInstance().forEach(attributeInstance -> {
-//
-//                ParcialEntropy parcial = new ParcialEntropy(attributeInstance.getAttribute(), register.getLabel());
-//                if (resultParcial.contains(parcial)) {
-//                    resultParcial.forEach(parcialEntropy -> {
-//                        if (parcial.equals(parcialEntropy)) {
-//                            parcialEntropy.add();
-//                        }
-//                    });
-//                } else {
-//                    parcial.add();
-//                    resultParcial.add(parcial);
+//        System.out.println(root);
+//        root.getAttribute().getAttributesInstance().forEach(action->{
+//            System.out.println(action);
+//        });
+        if (root != null) {
+            for (AttributeInstance attributeInstance : root.getAttribute().getAttributesInstance()) {
+                List<Register> subconjunto = this.subconjunto(registers, root.getAttribute(), attributeInstance);
+                System.out.println("****");
+                subconjunto.forEach(action -> {
+                    System.out.printf("%d  %s  %s\n", action.getLine(), action.getAttributesInstance().get(0), action.getLabel());
+                }
+                );
+
+            }
+//            List<Register> avalRegister = this.registers;
+//            List<Attribute> avalAttributes = this.attributes;
+//            for (Attribute attribute : avalAttributes) {
+//                double calc = Gain.calc(avalRegister, attribute);
+//                if (calcMax < calc) {
+////                    root = new NodeRaiz(attribute, calc);
+////                    calcMax = calc;
 //                }
-//            });
-//            Attribute attribute = register.getAttributesInstance().get(0).getAttribute();
-//
-////            System.out.printf("%d   %s  %s\n", register.getLine(), register.getAttributesInstance().get(0).toString(), register.getLabel().toString());
-//        });
-//        labels.forEach(label -> {
-//            System.out.printf("\t\t%s\n", label.getValue());
-//        });
-//        this.resultParcial.forEach(action -> {
-//            System.out.println(action.toString());
-//        });
+//                //System.out.printf("%s = %f\n", attribute, calc);
+//            }
+        } else {
+            System.out.println("FIM sem ROOT");
+        }
+
+    }
+
+    private List<Register> subconjunto(List<Register> avalRegister, Attribute attribute, AttributeInstance attributeInstance) {
+        List<Register> retorno = new ArrayList<>();
+        avalRegister.forEach(register -> {
+            register.getAttributesInstance().forEach(attInst -> {
+                if (attInst.equals(attributeInstance) && attInst.getAttribute().equals(attribute)) {
+                    retorno.add(register);
+                }
+            });
+        });
+        return retorno;
     }
 
 }

@@ -29,19 +29,8 @@ public class Execute {
 //
 //            });
             System.out.println("******");
-            ID3 entropy=new ID3(sample.getRegisters(), sample.getAttributes(),sample.getLabels());
-            entropy.process();
-//            sample.getRotulos().stream().forEach((rotulo) -> {
-//                System.out.printf("%s\n", rotulo.toString());
-//            });
-//            System.out.println("******");
-//
-//            System.out.println("******");
-//            sample.getRegisters().stream().forEach((register) -> {
-//                System.out.printf("%d   %s  %s\n", register.getLine(), register.getAttributesInstance().get(0).toString(), register.getLabel().toString());
-//            });
-//            System.out.println("******");
-
+            ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
+            id3.process();
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
