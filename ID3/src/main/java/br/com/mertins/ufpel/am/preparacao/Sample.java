@@ -100,7 +100,6 @@ public class Sample implements Serializable {
         boolean firstLine = true;
         long pos = 0;
         while (linha != null) {
-            System.out.printf("%s\n", linha);
             if (firstLine) {
                 this.addLineAttribute(linha);
                 firstLine = false;

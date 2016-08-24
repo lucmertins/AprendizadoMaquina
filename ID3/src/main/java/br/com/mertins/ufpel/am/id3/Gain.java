@@ -6,7 +6,8 @@ import br.com.mertins.ufpel.am.preparacao.Register;
 import java.util.List;
 
 /**
- *  página 60 do livro informa os resultados para conferencia.
+ * página 60 do livro informa os resultados para conferencia.
+ *
  * @author mertins
  */
 public class Gain {
@@ -27,7 +28,19 @@ public class Gain {
         return entropiaTotal;
     }
 
-    private long positivos(List<Register> set, AttributeInstance attributeInstance) {
+    public static long positivos(List<Register> set) {
+        long positivos = 0;
+        for (Register registro : set) {
+            for (AttributeInstance instance : registro.getAttributesInstance()) {
+                if (registro.getLabel().isPositive()) {
+                    positivos++;
+                }
+            }
+        }
+        return positivos;
+    }
+
+    public static long positivos(List<Register> set, AttributeInstance attributeInstance) {
         long positivos = 0;
         for (Register registro : set) {
             for (AttributeInstance instance : registro.getAttributesInstance()) {
@@ -42,7 +55,19 @@ public class Gain {
         return positivos;
     }
 
-    private long negativos(List<Register> set, AttributeInstance attributeInstance) {
+    public static long negativos(List<Register> set) {
+        long negativos = 0;
+        for (Register registro : set) {
+            for (AttributeInstance instance : registro.getAttributesInstance()) {
+                if (!registro.getLabel().isPositive()) {
+                    negativos++;
+                }
+            }
+        }
+        return negativos;
+    }
+
+    public static long negativos(List<Register> set, AttributeInstance attributeInstance) {
         long negativos = 0;
         for (Register registro : set) {
             for (AttributeInstance instance : registro.getAttributesInstance()) {

@@ -19,7 +19,7 @@ public class Entropy {
                 negativos++;
             }
         }
-        return -(positivos / size * (Math.log(positivos / size) / Math.log(2))) - (negativos / size * (Math.log(negativos / size) / Math.log(2)));
+        return -(positivos / size * log2(positivos / size)) - (negativos / size * log2(negativos / size));
     }
 
     public static double calc(List<Register> set, AttributeInstance attributeInstance) {
@@ -36,11 +36,7 @@ public class Entropy {
             }
         }
         double total = positivos + negativos;
-        double parcial1 = -(positivos / total * log2(positivos / total));
-        double parcial2 = -(negativos / total * log2(negativos / total));
-
-        double result = parcial1 + parcial2;
-        return result;
+        return -(positivos / total * log2(positivos / total)) - (negativos / total * log2(negativos / total));
     }
 
     private static double log2(double value) {

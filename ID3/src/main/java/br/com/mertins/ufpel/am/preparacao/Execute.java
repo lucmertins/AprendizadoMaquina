@@ -19,15 +19,6 @@ public class Execute {
                 BufferedReader lerArq = new BufferedReader(arq);
                 sample.process(lerArq);
             }
-
-            System.out.println("******");
-//            sample.getAttributes().stream().forEach((attribute) -> {
-//                System.out.println(attribute.toString());
-//                attribute.getAttributesInstance().stream().forEach((attributeInstance) -> {
-//                    System.out.printf("\t\t%s\n", attributeInstance.toString());
-//                });
-//
-//            });
             System.out.println("******");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
             id3.process();

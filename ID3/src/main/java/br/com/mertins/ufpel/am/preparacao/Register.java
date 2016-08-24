@@ -61,4 +61,22 @@ public class Register implements Serializable {
         return Objects.equals(this.line, other.line);
     }
 
+    public static Label getLabelPositive(List<Register> registros) {
+        for (Register registro : registros) {
+            if (registro.getLabel().isPositive()) {
+                return registro.getLabel();
+            }
+        }
+        return null;
+    }
+
+    public static Label getLabelNegative(List<Register> registros) {
+        for (Register registro : registros) {
+            if (!registro.getLabel().isPositive()) {
+                return registro.getLabel();
+            }
+        }
+        return null;
+    }
+
 }
