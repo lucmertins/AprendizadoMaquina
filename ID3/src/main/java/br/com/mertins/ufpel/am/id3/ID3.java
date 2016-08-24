@@ -1,11 +1,9 @@
 package br.com.mertins.ufpel.am.id3;
 
 import br.com.mertins.ufpel.am.preparacao.Attribute;
-import br.com.mertins.ufpel.am.preparacao.AttributeInstance;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Register;
 import br.com.mertins.ufpel.am.tree.NodeRaiz;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +15,7 @@ public class ID3 {
 
     private final List<Register> registers;
     private final List<Attribute> attributes;
+    
     private final Set<Label> labels;
 
     public ID3(List<Register> registers, List<Attribute> attributes, Set<Label> labels) {
@@ -34,23 +33,10 @@ public class ID3 {
                 root = new NodeRaiz(attribute, calc);
                 calcMax = calc;
             }
-            //System.out.printf("%s = %f\n", attribute, calc);
         }
-
-//        System.out.println(root);
-//        root.getAttribute().getAttributesInstance().forEach(action->{
-//            System.out.println(action);
-//        });
         if (root != null) {
-            for (AttributeInstance attributeInstance : root.getAttribute().getAttributesInstance()) {
-                List<Register> subconjunto = this.subconjunto(registers, root.getAttribute(), attributeInstance);
-                System.out.println("****");
-                subconjunto.forEach(action -> {
-                    System.out.printf("%d  %s  %s\n", action.getLine(), action.getAttributesInstance().get(0), action.getLabel());
-                }
-                );
-
-            }
+            
+            root.addEdge(registers,attributes);
 //            List<Register> avalRegister = this.registers;
 //            List<Attribute> avalAttributes = this.attributes;
 //            for (Attribute attribute : avalAttributes) {
@@ -67,16 +53,6 @@ public class ID3 {
 
     }
 
-    private List<Register> subconjunto(List<Register> avalRegister, Attribute attribute, AttributeInstance attributeInstance) {
-        List<Register> retorno = new ArrayList<>();
-        avalRegister.forEach(register -> {
-            register.getAttributesInstance().forEach(attInst -> {
-                if (attInst.equals(attributeInstance) && attInst.getAttribute().equals(attribute)) {
-                    retorno.add(register);
-                }
-            });
-        });
-        return retorno;
-    }
+    
 
 }
