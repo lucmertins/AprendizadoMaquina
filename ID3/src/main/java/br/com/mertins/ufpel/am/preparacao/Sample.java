@@ -67,32 +67,34 @@ public class Sample implements Serializable {
     }
 
     private void addLineAttributeInstance(long pos, String line) {
-        String[] split = line.split(this.delimiter);
-        int posCol = 0;
-        int posColReal = 0;
-        Register register = new Register(pos);
-        for (String valor : split) {
-            if (!this.discardedColumns.contains(posColReal)) {
-                if (this.ColumnLabel == posColReal) {
-                    Label labelTemp = new Label(valor);
-                    if (labels.contains(labelTemp)) {
-                        labels.stream().filter((label) -> (label.equals(labelTemp))).forEach((label) -> {
-                            register.setLabel(label);
-                        });
+        if (line != null && line.trim().length() > 0) {
+            String[] split = line.split(this.delimiter);
+            int posCol = 0;
+            int posColReal = 0;
+            Register register = new Register(pos);
+            for (String valor : split) {
+                if (!this.discardedColumns.contains(posColReal)) {
+                    if (this.ColumnLabel == posColReal) {
+                        Label labelTemp = new Label(valor);
+                        if (labels.contains(labelTemp)) {
+                            labels.stream().filter((label) -> (label.equals(labelTemp))).forEach((label) -> {
+                                register.setLabel(label);
+                            });
+                        } else {
+                            labels.add(labelTemp);
+                            register.setLabel(labelTemp);
+                        }
                     } else {
-                        labels.add(labelTemp);
-                        register.setLabel(labelTemp);
-                    }
-                } else {
-                    Attribute attribute = attributes.get(posCol++);
-                    AttributeInstance addAttributeInstance = attribute.addAttributeInstance(valor);
+                        Attribute attribute = attributes.get(posCol++);
+                        AttributeInstance addAttributeInstance = attribute.addAttributeInstance(valor);
 
-                    register.addAttributesInstance(addAttributeInstance);
+                        register.addAttributesInstance(addAttributeInstance);
+                    }
                 }
+                posColReal++;
             }
-            posColReal++;
+            this.registers.add(register);
         }
-        this.registers.add(register);
     }
 
     public void process(BufferedReader arquivo) throws IOException {

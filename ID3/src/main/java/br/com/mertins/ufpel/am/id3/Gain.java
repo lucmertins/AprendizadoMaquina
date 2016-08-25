@@ -17,13 +17,14 @@ public class Gain {
 
     public static double calc(List<Register> set, Attribute attribute) {
         double entropiaTotal = Entropy.calc(set);
-        Gain gain = new Gain();
-        int total = set.size();
-        for (AttributeInstance attributeInstance : attribute.getAttributesInstance()) {
-            double totalAttributeInstance = gain.totalSet(set, attributeInstance);
-            double entropyInstance = Entropy.calc(set, attributeInstance);
-            entropiaTotal -= totalAttributeInstance / total * entropyInstance;
+        if (entropiaTotal > 0) {
+            int total = set.size();
+            for (AttributeInstance attributeInstance : attribute.getAttributesInstance()) {
+                double totalAttributeInstance = Gain.totalSet(set, attributeInstance);
+                double entropyInstance = Entropy.calc(set, attributeInstance);
+                entropiaTotal -= totalAttributeInstance / total * entropyInstance;
 //            System.out.printf(" %s = %f   de  %d    entropyInstance=%f      total = %f\n",attributeInstance,totalAttributeInstance,total,entropyInstance,totalAttributeInstance / total * entropyInstance);
+            }
         }
         return entropiaTotal;
     }
@@ -31,10 +32,8 @@ public class Gain {
     public static long positivos(List<Register> set) {
         long positivos = 0;
         for (Register registro : set) {
-            for (AttributeInstance instance : registro.getAttributesInstance()) {
-                if (registro.getLabel().isPositive()) {
-                    positivos++;
-                }
+            if (registro.getLabel().isPositive()) {
+                positivos++;
             }
         }
         return positivos;
@@ -58,10 +57,8 @@ public class Gain {
     public static long negativos(List<Register> set) {
         long negativos = 0;
         for (Register registro : set) {
-            for (AttributeInstance instance : registro.getAttributesInstance()) {
-                if (!registro.getLabel().isPositive()) {
-                    negativos++;
-                }
+            if (!registro.getLabel().isPositive()) {
+                negativos++;
             }
         }
         return negativos;
@@ -82,7 +79,7 @@ public class Gain {
         return negativos;
     }
 
-    private double totalSet(List<Register> set, AttributeInstance attributeInstance) {
+    private static double totalSet(List<Register> set, AttributeInstance attributeInstance) {
         long total = 0;
         for (Register registro : set) {
             for (AttributeInstance instance : registro.getAttributesInstance()) {

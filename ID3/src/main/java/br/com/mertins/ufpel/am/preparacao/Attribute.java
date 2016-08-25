@@ -74,7 +74,7 @@ public class Attribute implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Attribute {position= %s  name= %s}", position, name);
+        return String.format("{position= %s  name= %s}", position, name);
     }
 
 }
