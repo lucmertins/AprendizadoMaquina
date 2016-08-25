@@ -6,4 +6,7 @@ O projeto foi desenvolvido com o Netbeans 8.1 e JDK 1.8.0, com Maven, de forma a
 
 Rodar na pasta ID3:
 
-java -Xms6144m -Xmx6144m -jar target/ID3-1.0.jar 
+java -Xms6144m -Xmx6144m -jar target/ID3-1.0.jar [path/file.csv]
+
+O sistema esta preparado para interpretar arquivos no formato .csv, onde a primeira linha e coluna são consideradas inuteis.
+A última coluna esta sendo interpretada como a coluna do rótulo.

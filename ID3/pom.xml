@@ -34,7 +34,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>br.com.mertins.ufpel.am.preparacao.Execute</mainClass>
+                            <mainClass>br.com.mertins.ufpel.am.id3.Execute</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
