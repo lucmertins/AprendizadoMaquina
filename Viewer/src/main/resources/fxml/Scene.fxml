@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="518.0" prefWidth="884.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.102" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
+    <children>
+      <VBox prefHeight="518.0" prefWidth="884.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="519.0" prefWidth="884.0">
+              <panes>
+                <TitledPane animated="false" prefHeight="488.0" prefWidth="884.0" text="Preparação">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <TextField fx:id="txtFileChoose" alignment="TOP_LEFT" onMouseClicked="#onClickChooseFile" prefHeight="26.0" prefWidth="856.0" promptText="Informe o arquivo para ser avaliado!" />
+                           </children>
+                        </Pane>
+                     </content>
+                  </TitledPane>
+                <TitledPane animated="false" expanded="false" text="ID3" />
+              </panes>
+            </Accordion>
+         </children>
+      </VBox>
+    </children>
+</AnchorPane>

@@ -31,5 +31,6 @@
     </build>
     <modules>
         <module>ID3</module>
-    </modules>
+    <module>Viewer</module>
+  </modules>
 </project>
