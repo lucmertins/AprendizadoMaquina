@@ -78,11 +78,20 @@ public class FXMLController {
 
     @FXML
     void onClickBtExec(ActionEvent event) {
-        this.exec();
-        acPrincipal.setExpandedPane(pnID3);
+        TitledPane paneSelect = acPrincipal.getExpandedPane();
+        String opc = paneSelect == null ? "" : paneSelect.getId();
+
+        switch (opc) {
+            case "pnPreparacao":
+            case "pnID3":
+                this.execPreparacao();
+                acPrincipal.setExpandedPane(pnID3);
+                break;
+        }
+
     }
 
-    private void exec() {
+    private void execPreparacao() {
         try {
             String fileName = txtFileChoose.getText();
             File file = new File(fileName);
