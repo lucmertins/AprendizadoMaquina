@@ -104,21 +104,23 @@ public class Node implements Serializable {
         return String.format("Node %s gain=%f positive=%d negative=%d}", attribute, gain, positive, negative);
     }
 
-    public void print() {
-        print("", true);
+    public StringBuilder print() {
+        StringBuilder sb = new StringBuilder();
+        print("", true, sb);
+        return sb;
     }
 
-    private void print(String prefix, boolean isTail) {
-        String value = this.getAttributeInstanceParent()==null?"":this.getAttributeInstanceParent().getValue();
-        String text=this instanceof Leaf?((Leaf)this).getLabel().getValue():this.getAttribute().getName();
-        String proporcao=String.format("[%d+/%d-] %f",this.positive,this.negative,this.gain);
-        
-        System.out.printf("%s%s(%s) %s  %s\n",prefix, (isTail ? "└── " : "├── ") ,value, text,proporcao);
+    private void print(String prefix, boolean isTail, StringBuilder sb) {
+        String value = this.getAttributeInstanceParent() == null ? "" : this.getAttributeInstanceParent().getValue();
+        String text = this instanceof Leaf ? ((Leaf) this).getLabel().getValue() : this.getAttribute().getName();
+        String proporcao = String.format("[%d+/%d-] %f", this.positive, this.negative, this.gain);
+        sb.append(String.format("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao));
+       // System.out.printf("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao);
         for (int i = 0; i < children.size() - 1; i++) {
-            children.get(i).node.print(prefix + (isTail ? "             " : "│            "), false);
+            children.get(i).node.print(prefix + (isTail ? "             " : "│            "), false, sb);
         }
         if (children.size() > 0) {
-            children.get(children.size() - 1).node.print(prefix + (isTail ? "             " : "│            "), true);
+            children.get(children.size() - 1).node.print(prefix + (isTail ? "             " : "│            "), true, sb);
         }
     }
 

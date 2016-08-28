@@ -31,7 +31,8 @@ public class Execute {
             System.out.println("******");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes());
             Node root = id3.process();
-            root.print();
+            StringBuilder print = root.print();
+            System.out.println(print.toString());
             System.out.println("******");
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
