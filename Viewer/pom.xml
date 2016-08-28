@@ -109,5 +109,11 @@
             </plugin>
         </plugins>
     </build>
-
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ID3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -1,6 +1,5 @@
 package br.com.mertins.ufpel.am.id3;
 
-import br.com.mertins.ufpel.am.id3.ID3;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
 import java.io.BufferedReader;
