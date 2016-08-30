@@ -12,9 +12,9 @@ public class Label implements Serializable {
     private String value;
     private boolean positive;
 
-    public Label(String value) {
+    public Label(String value,String instancePositive) {
         this.value = value;
-        this.positive="yes".equalsIgnoreCase(value);
+        this.positive = value.trim().equalsIgnoreCase(instancePositive.trim());
     }
 
     public String getValue() {
@@ -60,7 +60,7 @@ public class Label implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Label {value= %s  %s}", value,this.positive?"Positive":"Negative");
+        return String.format("Label {value= %s  %s}", value, this.positive ? "Positive" : "Negative");
     }
 
 }

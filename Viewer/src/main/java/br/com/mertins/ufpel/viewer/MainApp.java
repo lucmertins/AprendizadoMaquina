@@ -22,6 +22,7 @@ public class MainApp extends Application {
 
         stage.setTitle("ID3 ");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
         
         

@@ -4,10 +4,13 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
@@ -18,11 +21,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="449.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
+<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="571.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
     <children>
       <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <MenuBar style="-fx-background-color: #336699;">
+            <MenuBar prefHeight="32.0" prefWidth="837.0">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
@@ -31,7 +34,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #336699;">
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
                <items>
                   <Button fx:id="btExec" mnemonicParsing="false" onAction="#onClickBtExec" styleClass="btExec" />
                </items></ToolBar>
@@ -41,29 +44,41 @@
                      <content>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <VBox prefHeight="367.0" prefWidth="1096.0">
-                                 <children>
-                                    <TextField fx:id="txtFileChoose" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" onMouseClicked="#onClickChooseFile" prefHeight="26.0" prefWidth="737.0" promptText="Informe o arquivo para ser avaliado!" VBox.vgrow="ALWAYS" />
-                                    <HBox fillHeight="false" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                              <ScrollPane fitToWidth="true" prefHeight="375.0" prefWidth="800.0">
+                                 <content>
+                                    <VBox fx:id="txtLabel" prefHeight="367.0" prefWidth="800.0">
                                        <children>
-                                          <RadioButton mnemonicParsing="false" selected="true" text="1º linha é o cabeçalho">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="prepara_cabecalho" />
-                                             </toggleGroup>
-                                          </RadioButton>
-                                          <RadioButton mnemonicParsing="false" text="Gerar cabeçalho" toggleGroup="$prepara_cabecalho" />
+                                          <TextField fx:id="txtFileChoose" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" onMouseClicked="#onClickChooseFile" prefHeight="26.0" prefWidth="671.0" promptText="Informe o arquivo para ser avaliado!" />
+                                          <HBox fillHeight="false" prefHeight="19.0" prefWidth="798.0">
+                                             <children>
+                                                <RadioButton fx:id="rbFirstLineCabecalho" mnemonicParsing="false" selected="true" text="1º linha é o cabeçalho">
+                                                   <toggleGroup>
+                                                      <ToggleGroup fx:id="prepara_cabecalho" />
+                                                   </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton mnemonicParsing="false" text="Gerar cabeçalho" toggleGroup="$prepara_cabecalho" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <Label alignment="BOTTOM_LEFT" prefHeight="28.0" prefWidth="60.0" text="Atributos" />
+                                          <TextArea fx:id="txtAtributos" editable="false" prefHeight="102.0" prefWidth="800.0" />
+                                          <Label alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="141.0" text="Remover os atributos" />
+                                          <TextField fx:id="txtRemoverAtributos" prefHeight="26.0" prefWidth="506.0" promptText="Informe a posição dos atributos a remover, separados por virgulas em caso de mais de 1" />
+                                          <Label alignment="BOTTOM_LEFT" prefHeight="29.0" prefWidth="36.0" text="Label" />
+                                          <ChoiceBox fx:id="cmbLabel" prefHeight="26.0" prefWidth="397.0" />
+                                          <Label alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="157.0" text="Rótulo Positivo do Label" />
+                                          <TextField fx:id="txtLabelPositivo" prefHeight="26.0" prefWidth="506.0" promptText="Informe qual o rótulo positivo" />
                                        </children>
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                    </HBox>
-                                 </children>
-                              </VBox>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
                            </children>
                         </Pane>
                      </content>
                   </TitledPane>
-                  <TitledPane prefHeight="200.0" prefWidth="200.0" text="Treinamento">
+                  <TitledPane fx:id="pnTreinamento" prefHeight="200.0" prefWidth="200.0" text="Treinamento">
                      <content>
                         <Pane prefHeight="200.0" prefWidth="200.0" />
                      </content>

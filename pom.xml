@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.debug>false</maven.compiler.debug>
+        <maven.compiler.debug>true</maven.compiler.debug>
     </properties>
     <build>
         <plugins>
@@ -24,6 +24,9 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <debug>${maven.compiler.debug}</debug>
+                    <compilerArguments>
+                        <bootclasspath>${sun.boot.class.path}${path.separator}${java.home}/lib/jfxrt.jar</bootclasspath>
+                    </compilerArguments>
                     <optimize>true</optimize>
                 </configuration>
             </plugin>

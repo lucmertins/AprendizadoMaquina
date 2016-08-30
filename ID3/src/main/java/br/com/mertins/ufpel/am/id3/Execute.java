@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -14,21 +16,31 @@ import java.io.IOException;
 public class Execute {
 
     public static void main(String[] args) {
-        String fileName="beach.csv";
+        String fileName = "beach.csv";
         if (args.length == 1) {
-            fileName=args[0];
-           
+            fileName = args[0];
+
         }
         try {
-            File file=new File(fileName);
-            System.out.printf("Arquivo %s\n",file.getAbsolutePath());
-            Sample sample = new Sample(5);
-            sample.addDiscardedColumns(0);
+            System.out.println("****** Preparação");
+            File file = new File(fileName);
+            System.out.printf("Arquivo %s\n", file.getAbsolutePath());
+            Sample sample = new Sample();
+            try (FileReader arq = new FileReader(fileName)) {
+                BufferedReader lerArq = new BufferedReader(arq);
+                sample.avaliaFirstLine(lerArq);
+            }
+            System.out.println("****** Ajuste");
+            List<Integer> remove = new ArrayList<>();
+            remove.add(0);
+            sample.removeAttributesPos(remove);
+            sample.defineColumnLabel(5, "yes");
             try (FileReader arq = new FileReader(fileName)) {
                 BufferedReader lerArq = new BufferedReader(arq);
                 sample.process(lerArq);
             }
-            System.out.println("******");
+            
+            System.out.println("******ID3");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes());
             Node root = id3.process();
             StringBuilder print = root.print();
