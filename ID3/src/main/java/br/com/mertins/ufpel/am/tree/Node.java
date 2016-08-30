@@ -13,6 +13,7 @@ import java.util.List;
  * @author mertins
  */
 public class Node implements Serializable {
+
     private Node parent;
     private final Attribute attribute;
     private final double gain;
@@ -80,6 +81,21 @@ public class Node implements Serializable {
         leaf.setParent(this);
     }
 
+    public void replace(Leaf leaf) {
+        if (this.getParent() != null) {
+            this.getParent().addChild(leaf);
+            List<Edge> remover = new ArrayList<>();
+            this.getParent().children.forEach(edge -> {
+                if (edge.node.equals(this)) {
+                    remover.add(edge);
+                }
+            });
+            remover.forEach(edge -> {
+                this.getParent().children.remove(edge);
+            });
+        }
+    }
+
     public void addEdge(List<Register> registers, List<Attribute> attributes) {
         attributes.remove(this.attribute);
         if (!registers.isEmpty() && !attributes.isEmpty()) {
@@ -140,7 +156,7 @@ public class Node implements Serializable {
     private void print(String prefix, boolean isTail, StringBuilder sb) {
         String value = this.getAttributeInstanceParent() == null ? "" : this.getAttributeInstanceParent().getValue();
         String text = this instanceof Leaf ? ((Leaf) this).getLabel().getValue() : this.getAttribute().getName();
-        String proporcao = String.format("[%d+/%d-] %f", this.positive, this.negative, this.gain);
+        String proporcao = String.format("[%d+/%d-]", this.positive, this.negative);
         sb.append(String.format("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao));
         // System.out.printf("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao);
         for (int i = 0; i < children.size() - 1; i++) {

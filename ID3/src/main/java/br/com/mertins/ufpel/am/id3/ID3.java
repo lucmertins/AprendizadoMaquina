@@ -44,23 +44,24 @@ public class ID3 {
     }
 
     private void avaliaRamoFolha(Node node) {
-        if (node != null && !(node instanceof Leaf) && !node.hasChildren()) {
-            Label label = getLabel(node.getPositive() - node.getNegative() >= 0);
-            Leaf leaf = new Leaf(node.getAttribute(), label);
-            leaf.setPositive(node.getPositive());
-            leaf.setNegative(node.getNegative());
-            leaf.setAttributeInstanceParent(node.getAttributeInstanceParent());
-            node.addChild(leaf);
-
-        } else {
-            List<Node> children = node.children();
-            children.forEach(nodeChild -> {
-                avaliaRamoFolha(nodeChild);
-            });
+        if (node != null && !(node instanceof Leaf)) {
+            if (!node.hasChildren()) {
+                Label label = getLabel(node.getPositive() - node.getNegative() >= 0);
+                Leaf leaf = new Leaf(node.getAttribute(), label);
+                leaf.setPositive(node.getPositive());
+                leaf.setNegative(node.getNegative());
+                leaf.setAttributeInstanceParent(node.getAttributeInstanceParent());
+                node.replace(leaf);
+            } else {
+                List<Node> children = node.children();
+                children.forEach(nodeChild -> {
+                    avaliaRamoFolha(nodeChild);
+                });
+            }
         }
     }
 
-    public Label getLabel(boolean positivo) {
+    private Label getLabel(boolean positivo) {
         for (Label label : labels) {
             if (positivo && label.isPositive()) {
                 return label;
