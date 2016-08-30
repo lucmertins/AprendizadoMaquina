@@ -7,19 +7,22 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="449.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
+<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="449.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
     <children>
       <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <MenuBar>
+            <MenuBar style="-fx-background-color: #336699;">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
@@ -28,7 +31,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
+            <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #336699;">
                <items>
                   <Button fx:id="btExec" mnemonicParsing="false" onAction="#onClickBtExec" styleClass="btExec" />
                </items></ToolBar>
@@ -38,7 +41,24 @@
                      <content>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <TextField fx:id="txtFileChoose" alignment="TOP_LEFT" layoutX="14.0" layoutY="8.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" onMouseClicked="#onClickChooseFile" prefHeight="26.0" prefWidth="737.0" promptText="Informe o arquivo para ser avaliado!" />
+                              <VBox prefHeight="367.0" prefWidth="1096.0">
+                                 <children>
+                                    <TextField fx:id="txtFileChoose" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" onMouseClicked="#onClickChooseFile" prefHeight="26.0" prefWidth="737.0" promptText="Informe o arquivo para ser avaliado!" VBox.vgrow="ALWAYS" />
+                                    <HBox fillHeight="false" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <RadioButton mnemonicParsing="false" selected="true" text="1º linha é o cabeçalho">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="prepara_cabecalho" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton mnemonicParsing="false" text="Gerar cabeçalho" toggleGroup="$prepara_cabecalho" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </Pane>
                      </content>

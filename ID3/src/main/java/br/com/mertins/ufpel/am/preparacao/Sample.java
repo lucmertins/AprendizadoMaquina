@@ -19,8 +19,11 @@ public class Sample implements Serializable {
     private final List<Register> registers = new ArrayList<>();
     private final List<Integer> discardedColumns = new ArrayList<>();
     private final Set<Label> labels = new HashSet<>();
-    private final int ColumnLabel;
+    private int ColumnLabel;
     private String labelName;
+
+    public Sample() {
+    }
 
     public Sample(int ColumnLabel) {
         this.ColumnLabel = ColumnLabel;
@@ -44,6 +47,10 @@ public class Sample implements Serializable {
 
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
+    }
+
+    public void setColumnLabel(int ColumnLabel) {
+        this.ColumnLabel = ColumnLabel;
     }
 
     public void addDiscardedColumns(int value) {
