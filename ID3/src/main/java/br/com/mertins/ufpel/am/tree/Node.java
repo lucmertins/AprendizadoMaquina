@@ -13,7 +13,7 @@ import java.util.List;
  * @author mertins
  */
 public class Node implements Serializable {
-
+    private Node parent;
     private final Attribute attribute;
     private final double gain;
     private long positive;
@@ -22,6 +22,7 @@ public class Node implements Serializable {
     private final List<Edge> children = new ArrayList<>();
 
     public Node(Attribute attribute, double gain) {
+
         this.attribute = attribute;
         this.gain = gain;
     }
@@ -50,6 +51,14 @@ public class Node implements Serializable {
         this.negative = negative;
     }
 
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
     public AttributeInstance getAttributeInstanceParent() {
         return attributeInstanceParent;
     }
@@ -60,6 +69,15 @@ public class Node implements Serializable {
 
     public long totalRegisters() {
         return this.positive + this.negative;
+    }
+
+    public boolean hasChildren() {
+        return !this.children.isEmpty();
+    }
+
+    public void addChild(Leaf leaf) {
+        children.add(new Edge(leaf.getAttributeInstanceParent(), leaf));
+        leaf.setParent(this);
     }
 
     public void addEdge(List<Register> registers, List<Attribute> attributes) {
@@ -90,6 +108,7 @@ public class Node implements Serializable {
                         node.setPositive(Gain.positivos(subconjunto, attributeInstance));
                         node.setNegative(Gain.negativos(subconjunto, attributeInstance));
                         children.add(new Edge(attributeInstance, node));
+                        node.setParent(this);
                         if (!(node instanceof Leaf)) {
                             node.addEdge(subconjunto, attributes);
                         }
@@ -97,6 +116,14 @@ public class Node implements Serializable {
                 }
             }
         }
+    }
+
+    public List<Node> children() {
+        List<Node> lista = new ArrayList<>();
+        this.children.forEach(edge -> {
+            lista.add(edge.getNode());
+        });
+        return lista;
     }
 
     @Override
@@ -115,7 +142,7 @@ public class Node implements Serializable {
         String text = this instanceof Leaf ? ((Leaf) this).getLabel().getValue() : this.getAttribute().getName();
         String proporcao = String.format("[%d+/%d-] %f", this.positive, this.negative, this.gain);
         sb.append(String.format("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao));
-       // System.out.printf("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao);
+        // System.out.printf("%s%s(%s) %s  %s\n", prefix, (isTail ? "└── " : "├── "), value, text, proporcao);
         for (int i = 0; i < children.size() - 1; i++) {
             children.get(i).node.print(prefix + (isTail ? "             " : "│            "), false, sb);
         }

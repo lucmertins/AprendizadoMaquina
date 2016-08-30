@@ -33,15 +33,16 @@ public class Execute {
             System.out.println("****** Ajuste");
             List<Integer> remove = new ArrayList<>();
             remove.add(0);
+            remove.add(1);
             sample.removeAttributesPos(remove);
             sample.defineColumnLabel(5, "yes");
             try (FileReader arq = new FileReader(fileName)) {
                 BufferedReader lerArq = new BufferedReader(arq);
                 sample.process(lerArq);
             }
-            
+
             System.out.println("******ID3");
-            ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes());
+            ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
             Node root = id3.process();
             StringBuilder print = root.print();
             System.out.println(print.toString());

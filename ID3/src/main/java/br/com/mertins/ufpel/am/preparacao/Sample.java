@@ -134,6 +134,7 @@ public class Sample implements Serializable {
         String linha = arquivo.readLine();
         boolean firstLine = true;
         long pos = 0;
+        this.registers.clear();
         while (linha != null) {
             if (firstLine) {
                 firstLine = false;

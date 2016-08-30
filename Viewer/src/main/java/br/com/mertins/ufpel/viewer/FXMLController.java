@@ -161,7 +161,7 @@ public class FXMLController {
                     BufferedReader lerArq = new BufferedReader(arq);
                     sample.process(lerArq);
                 }
-                ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes());
+                ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
                 Node root = id3.process();
                 StringBuilder print = root.print();
                 txtResultado.setText(print.toString());
