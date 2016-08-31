@@ -2,6 +2,7 @@ package br.com.mertins.ufpel.am.preparacao;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  *
@@ -12,7 +13,7 @@ public class Label implements Serializable {
     private String value;
     private boolean positive;
 
-    public Label(String value,String instancePositive) {
+    public Label(String value, String instancePositive) {
         this.value = value;
         this.positive = value.trim().equalsIgnoreCase(instancePositive.trim());
     }
@@ -31,6 +32,24 @@ public class Label implements Serializable {
 
     public void setPositive(boolean positive) {
         this.positive = positive;
+    }
+
+    public static Label positive(Set<Label> labels) {
+        for (Label label : labels) {
+            if (label.isPositive()) {
+                return label;
+            }
+        }
+        return null;
+    }
+
+    public static Label negative(Set<Label> labels) {
+        for (Label label : labels) {
+            if (!label.isPositive()) {
+                return label;
+            }
+        }
+        return null;
     }
 
     @Override

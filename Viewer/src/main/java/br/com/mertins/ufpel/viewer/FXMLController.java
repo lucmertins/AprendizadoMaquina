@@ -1,6 +1,7 @@
 package br.com.mertins.ufpel.viewer;
 
 import br.com.mertins.ufpel.am.id3.ID3;
+import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.validate.Indicatives;
@@ -210,8 +211,20 @@ public class FXMLController {
                 Investigate investigate = new Investigate(sample.getRegisters(), root);
                 investigate.process();
                 Indicatives indicativos = investigate.getIndicativos();
-                String format = String.format("\nVerdadeiroPositivo %d   FalsoPositivo %d   VerdadeiroNegativo %d   FalsoNegativo %d\n", indicativos.getVerdadeirosPositivos(), indicativos.getFalsosPositivos(),
-                        indicativos.getVerdadeirosNegativos(), indicativos.getFalsosNegativos());
+                String format = String.format("\nVerdadeiros Positivos\t[%d]\t\tFalsos Positivos\t[%d]\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
+                txtResultado.appendText(format);
+                format = String.format("Verdadeiros Negativos\t[%d]\t\tFalsos Negativos\t[%d]\n", indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
+                txtResultado.appendText(format);
+                format = String.format("\nAcurácia [%f]   Precisão [%f]   Recall [%f]   F1 [%f]\n", indicativos.accuracy().doubleValue(), indicativos.precision().doubleValue(), indicativos.recall().doubleValue(), indicativos.f1().doubleValue());
+                txtResultado.appendText(format);
+                txtResultado.appendText("\nMatriz de Confusão\n");
+                Label lbPositive = Label.positive(sample.getLabels());
+                Label lbNegative = Label.negative(sample.getLabels());
+                format = String.format("\t\t\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
+                txtResultado.appendText(format);
+                format = String.format("\t%s\t\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
+                txtResultado.appendText(format);
+                format = String.format("\t%s\t\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
                 txtResultado.appendText(format);
                 return true;
             } catch (Exception e) {
