@@ -101,9 +101,12 @@
                         </Pane>
                      </content>
                   </TitledPane>
-                  <TitledPane fx:id="pnTreinamento" prefHeight="200.0" prefWidth="200.0" text="Treinamento">
+                  <TitledPane fx:id="pnTeste" prefHeight="200.0" prefWidth="200.0" text="Testes">
                      <content>
-                        <Pane prefHeight="200.0" prefWidth="200.0" />
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="33.0" layoutY="23.0" text="Por hora testando com o conjunto de treinamento!" />
+                           </children></Pane>
                      </content>
                   </TitledPane>
                 <TitledPane fx:id="pnID3" animated="false" expanded="false" text="ID3">

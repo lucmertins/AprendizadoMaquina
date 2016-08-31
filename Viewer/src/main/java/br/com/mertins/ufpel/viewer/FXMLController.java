@@ -40,7 +40,7 @@ public class FXMLController {
     @FXML
     private Accordion acPrincipal;
     @FXML
-    private TitledPane pnCarga, pnPreparacao, pnTreinamento, pnID3, pnLog;
+    private TitledPane pnCarga, pnPreparacao, pnTeste, pnID3, pnLog;
     @FXML
     private TextArea txtResultado, txtAtributos, txtMsg;
     @FXML
@@ -105,12 +105,12 @@ public class FXMLController {
                 break;
             case "pnPreparacao":
                 if (this.execPreparacao()) {
-                    acPrincipal.setExpandedPane(pnTreinamento);
+                    acPrincipal.setExpandedPane(pnTeste);
                 } else {
                     acPrincipal.setExpandedPane(pnLog);
                 }
                 break;
-            case "pnTreinamento":
+            case "pnTeste":
                 if (this.execTreinamento()) {
                     acPrincipal.setExpandedPane(pnID3);
                 } else {
