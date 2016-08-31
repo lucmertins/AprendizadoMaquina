@@ -15,9 +15,6 @@ public class MainApp extends Application {
         setUserAgentStylesheet(STYLESHEET_MODENA);
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         Scene scene = new Scene(root);
-//        scene.getStylesheets().add("/styles/Styles.css");
-        
-        
         scene.getStylesheets().add(getClass().getResource("/styles/Styles.css").toExternalForm());
 
         stage.setTitle("ID3 ");

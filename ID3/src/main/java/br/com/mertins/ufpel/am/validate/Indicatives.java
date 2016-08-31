@@ -4,14 +4,14 @@ package br.com.mertins.ufpel.am.validate;
  *
  * @author mertins
  */
-public class Indicativos {
+public class Indicatives {
 
     private long verdadeirosPositivos;
     private long verdadeirosNegativos;
     private long falsosPositivos;
     private long falsosNegativos;
 
-    public Indicativos() {
+    public Indicatives() {
     }
 
     public long getVerdadeirosPositivos() {

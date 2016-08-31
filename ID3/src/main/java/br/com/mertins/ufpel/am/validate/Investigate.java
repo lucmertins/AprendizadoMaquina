@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Investigate {
 
-    private Indicativos indicativos;
+    private Indicatives indicativos;
 
     public Investigate() {
         this.registers = null;
@@ -27,17 +27,17 @@ public class Investigate {
         this.root = root;
     }
 
-    public Indicativos getIndicativos() {
+    public Indicatives getIndicativos() {
         return indicativos;
     }
 
     public void process() {
-        this.indicativos = new Indicativos();
+        this.indicativos = new Indicatives();
         this.registers.forEach(register -> {
             Node node = root;
             if (!(node instanceof Leaf)) {
                 for (AttributeInstance attributeInstance : register.getAttributesInstance()) {
-                    if (node.getAttribute().equals(attributeInstance.getAttribute())) {
+                    if (node != null && node.getAttribute() != null && node.getAttribute().equals(attributeInstance.getAttribute())) {
                         Node child = node.returnChild(attributeInstance);
                         if (child instanceof Leaf) {
                             boolean acertou = ((Leaf) child).getLabel().equals(register.getLabel());

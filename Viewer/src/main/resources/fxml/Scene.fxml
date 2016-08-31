@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="571.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
+<AnchorPane id="AnchorPane" fx:id="principal" prefHeight="571.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.mertins.ufpel.viewer.FXMLController">
     <children>
       <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -40,13 +40,13 @@
                </items></ToolBar>
             <Accordion fx:id="acPrincipal" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="299.0" prefWidth="617.0" VBox.vgrow="ALWAYS">
               <panes>
-                <TitledPane fx:id="pnPreparacao" prefHeight="488.0" prefWidth="884.0" text="Preparação">
+                  <TitledPane fx:id="pnCarga" prefHeight="488.0" prefWidth="884.0" text="Carga">
                      <content>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
                               <ScrollPane fitToWidth="true" prefHeight="375.0" prefWidth="800.0">
                                  <content>
-                                    <VBox fx:id="txtLabel" prefHeight="367.0" prefWidth="800.0">
+                                    <VBox fx:id="txtLabel1" prefHeight="367.0" prefWidth="800.0">
                                        <children>
                                           <TextField fx:id="txtFileChoose" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" onMouseClicked="#onClickChooseFile" prefHeight="26.0" prefWidth="671.0" promptText="Informe o arquivo para ser avaliado!" />
                                           <HBox fillHeight="false" prefHeight="19.0" prefWidth="798.0">
@@ -62,7 +62,30 @@
                                                 <Insets />
                                              </VBox.margin>
                                           </HBox>
-                                          <Label alignment="BOTTOM_LEFT" prefHeight="28.0" prefWidth="60.0" text="Atributos" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </Pane>
+                     </content>
+                  </TitledPane>
+                <TitledPane fx:id="pnPreparacao" prefHeight="488.0" prefWidth="884.0" text="Preparação">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <ScrollPane fitToWidth="true" prefHeight="375.0" prefWidth="800.0">
+                                 <content>
+                                    <VBox fx:id="txtLabel" prefHeight="367.0" prefWidth="800.0">
+                                       <children>
+                                          <HBox fillHeight="false" prefHeight="19.0" prefWidth="798.0">
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <children>
+                                                <Label alignment="BOTTOM_LEFT" prefHeight="28.0" prefWidth="60.0" text="Atributos" />
+                                             </children>
+                                          </HBox>
                                           <TextArea fx:id="txtAtributos" editable="false" prefHeight="102.0" prefWidth="800.0" />
                                           <Label alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="141.0" text="Remover os atributos" />
                                           <TextField fx:id="txtRemoverAtributos" prefHeight="26.0" prefWidth="506.0" promptText="Informe a posição dos atributos a remover, separados por virgulas em caso de mais de 1" />
@@ -87,10 +110,19 @@
                      <content>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <TextArea fx:id="txtResultado" prefHeight="257.0" prefWidth="836.0" />
+                              <TextArea fx:id="txtResultado" prefHeight="318.0" prefWidth="800.0" />
                            </children>
                         </Pane>
                      </content></TitledPane>
+                  <TitledPane fx:id="pnLog" animated="false" expanded="false" text="Log">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <TextArea fx:id="txtMsg" prefHeight="318.0" prefWidth="800.0" />
+                           </children>
+                        </Pane>
+                     </content>
+                  </TitledPane>
               </panes>
             </Accordion>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">

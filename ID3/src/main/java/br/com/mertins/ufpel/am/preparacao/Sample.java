@@ -121,6 +121,7 @@ public class Sample implements Serializable {
 
     public void removeAttributes(List<Attribute> attributesRemove) {
         this.attributes.clear();
+        this.discardedColumns.clear();
         this.attributesOrigin.forEach(attribute -> {
             if (!attributesRemove.contains(attribute)) {
                 this.attributes.add(attribute);

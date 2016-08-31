@@ -3,7 +3,7 @@ package br.com.mertins.ufpel.viewer;
 import br.com.mertins.ufpel.am.id3.ID3;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
-import br.com.mertins.ufpel.am.validate.Indicativos;
+import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,11 +39,9 @@ public class FXMLController {
     @FXML
     private Accordion acPrincipal;
     @FXML
-    private TitledPane pnPreparacao;
+    private TitledPane pnCarga, pnPreparacao, pnTreinamento, pnID3, pnLog;
     @FXML
-    private TitledPane pnID3;
-    @FXML
-    private TextArea txtResultado, txtAtributos;
+    private TextArea txtResultado, txtAtributos, txtMsg;
     @FXML
     private ChoiceBox<Choice> cmbLabel;
     @FXML
@@ -53,7 +53,7 @@ public class FXMLController {
         ConfigProperties conf = new ConfigProperties();
         String pathFileSource = conf.load("pathFileSource");
         txtFileChoose.setText(pathFileSource);
-        acPrincipal.setExpandedPane(pnPreparacao);
+        acPrincipal.setExpandedPane(pnCarga);
     }
 
     @FXML
@@ -95,22 +95,42 @@ public class FXMLController {
         String opc = paneSelect == null ? "" : paneSelect.getId();
 
         switch (opc) {
+            case "pnCarga":
+                if (this.execCarga()) {
+                    acPrincipal.setExpandedPane(pnPreparacao);
+                } else {
+                    acPrincipal.setExpandedPane(pnLog);
+                }
+                break;
             case "pnPreparacao":
-                this.execPreparacao();
+                if (this.execPreparacao()) {
+                    acPrincipal.setExpandedPane(pnTreinamento);
+                } else {
+                    acPrincipal.setExpandedPane(pnLog);
+                }
                 break;
             case "pnTreinamento":
-                this.execTreinamento();
-                acPrincipal.setExpandedPane(pnID3);
+                if (this.execTreinamento()) {
+                    acPrincipal.setExpandedPane(pnID3);
+                } else {
+                    acPrincipal.setExpandedPane(pnLog);
+                }
                 break;
             case "pnID3":
-                this.execID3();
+                if (this.execID3()) {
+                    acPrincipal.setExpandedPane(pnID3);
+                } else {
+                    acPrincipal.setExpandedPane(pnLog);
+                }
+
                 break;
 
         }
 
     }
 
-    private void execPreparacao() {
+    private boolean execCarga() {
+        txtMsg.setText(null);
         try {
             String fileName = txtFileChoose.getText();
             sample = new Sample();
@@ -131,33 +151,52 @@ public class FXMLController {
             if (!choices.isEmpty()) {
                 cmbLabel.setValue(choices.get(choices.size() - 1));
             }
+            return true;
         } catch (Exception e) {
-            txtResultado.setText(String.format("Erro na abertura do arquivo: %s.\n", e.getMessage()));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+            txtMsg.setText(String.format("Execução %s\n", sdf.format(new Date())));
+            txtMsg.appendText(String.format("Erro na abertura do arquivo: %s.\n", e.getMessage()));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             e.printStackTrace(ps);
-            txtResultado.appendText(new String(baos.toByteArray(), StandardCharsets.UTF_8));
+            txtMsg.appendText(new String(baos.toByteArray(), StandardCharsets.UTF_8));
+            return false;
         }
     }
 
-    private void execTreinamento() {
-
+    private boolean execPreparacao() {
+        txtMsg.setText(null);
+        try {
+            String[] split = txtRemoverAtributos.getText().split(",");
+            List<Integer> remove = new ArrayList<>();
+            for (String value : split) {
+                try {
+                    remove.add(Integer.valueOf(value));
+                } catch (Exception ex) {
+                }
+            }
+            sample.removeAttributesPos(remove);
+            sample.defineColumnLabel(cmbLabel.getValue().id, txtLabelPositivo.getText());
+            return true;
+        } catch (Exception ex) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+            txtMsg.setText(String.format("Execução %s\n", sdf.format(new Date())));
+            txtMsg.appendText(String.format("Falha ao preparar fase [%s] .\n", ex.getMessage()));
+            return false;
+        }
     }
 
-    private void execID3() {
+    private boolean execTreinamento() {
+        txtMsg.setText(null);
+        txtResultado.setText(null);
+        return true;
+    }
+
+    private boolean execID3() {
+        txtMsg.setText(null);
         if (sample != null) {
             try {
                 String fileName = txtFileChoose.getText();
-                String[] split = txtRemoverAtributos.getText().split(",");
-                List<Integer> remove = new ArrayList<>();
-                for (String value : split) {
-                    try {
-                        remove.add(Integer.valueOf(value));
-                    } catch (Exception ex) {
-                    }
-                }
-                sample.removeAttributesPos(remove);
-                sample.defineColumnLabel(cmbLabel.getValue().id, txtLabelPositivo.getText());
                 try (FileReader arq = new FileReader(fileName)) {
                     BufferedReader lerArq = new BufferedReader(arq);
                     sample.process(lerArq);
@@ -165,21 +204,33 @@ public class FXMLController {
                 ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
                 Node root = id3.process();
                 StringBuilder print = root.print();
-                txtResultado.setText(print.toString());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+                txtResultado.setText(String.format("Execução %s\n", sdf.format(new Date())));
+                txtResultado.appendText(print.toString());
                 Investigate investigate = new Investigate(sample.getRegisters(), root);
                 investigate.process();
-                Indicativos indicativos = investigate.getIndicativos();
+                Indicatives indicativos = investigate.getIndicativos();
                 String format = String.format("\nVerdadeiroPositivo %d   FalsoPositivo %d   VerdadeiroNegativo %d   FalsoNegativo %d\n", indicativos.getVerdadeirosPositivos(), indicativos.getFalsosPositivos(),
                         indicativos.getVerdadeirosNegativos(), indicativos.getFalsosNegativos());
                 txtResultado.appendText(format);
+                return true;
             } catch (Exception e) {
-                txtResultado.setText(String.format("Erro na abertura do arquivo: %s.\n", e.getMessage()));
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+                txtMsg.setText(String.format("Execução %s\n", sdf.format(new Date())));
+                txtMsg.appendText(String.format("Erro na abertura do arquivo: %s.\n", e.getMessage()));
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 PrintStream ps = new PrintStream(baos);
                 e.printStackTrace(ps);
-                txtResultado.appendText(new String(baos.toByteArray(), StandardCharsets.UTF_8));
+                txtMsg.appendText(new String(baos.toByteArray(), StandardCharsets.UTF_8));
+                return false;
             }
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+            txtMsg.setText(String.format("Execução %s\n", sdf.format(new Date())));
+            txtMsg.appendText(String.format("Fase de carga precisa ser executada.\n"));
+            return false;
         }
+
     }
 
     class Choice {
