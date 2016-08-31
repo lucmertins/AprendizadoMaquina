@@ -81,6 +81,15 @@ public class Node implements Serializable {
         leaf.setParent(this);
     }
 
+    public Node returnChild(AttributeInstance attributeInstance) {
+        for (Edge edge:this.children){
+            if (edge.attributeInstance.equals(attributeInstance)) {
+                 return edge.node;
+            }
+        }
+        return null;
+    }
+
     public void replace(Leaf leaf) {
         if (this.getParent() != null) {
             this.getParent().addChild(leaf);
