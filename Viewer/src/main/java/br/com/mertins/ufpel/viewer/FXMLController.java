@@ -3,13 +3,14 @@ package br.com.mertins.ufpel.viewer;
 import br.com.mertins.ufpel.am.id3.ID3;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.validate.Indicativos;
+import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -165,6 +166,12 @@ public class FXMLController {
                 Node root = id3.process();
                 StringBuilder print = root.print();
                 txtResultado.setText(print.toString());
+                Investigate investigate = new Investigate(sample.getRegisters(), root);
+                investigate.process();
+                Indicativos indicativos = investigate.getIndicativos();
+                String format = String.format("\nVerdadeiroPositivo %d   FalsoPositivo %d   VerdadeiroNegativo %d   FalsoNegativo %d\n", indicativos.getVerdadeirosPositivos(), indicativos.getFalsosPositivos(),
+                        indicativos.getVerdadeirosNegativos(), indicativos.getFalsosNegativos());
+                txtResultado.appendText(format);
             } catch (Exception e) {
                 txtResultado.setText(String.format("Erro na abertura do arquivo: %s.\n", e.getMessage()));
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

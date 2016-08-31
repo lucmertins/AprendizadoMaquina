@@ -13,57 +13,60 @@ import java.util.List;
  */
 public class Investigate {
 
-    private long verdadeirospositivos;
-    private long verdadeirosnegativos;
-    private long falsospositivos;
-    private long falsosnegativos;
+    private Indicativos indicativos;
+
+    public Investigate() {
+        this.registers = null;
+        this.root = null;
+    }
     private final List<Register> registers;
     private final Node root;
 
-//    private final Set<Label> labels;
     public Investigate(List<Register> registers, Node root) {
         this.registers = registers;
         this.root = root;
     }
-    
+
+    public Indicativos getIndicativos() {
+        return indicativos;
+    }
+
     public void process() {
-        verdadeirospositivos=0;
-        verdadeirosnegativos=0;
-        falsospositivos=0;
-        falsosnegativos=0;
+        this.indicativos = new Indicativos();
         this.registers.forEach(register -> {
             Node node = root;
-            if (node instanceof Leaf) {
-                System.out.printf("Chegou na folha Label=%s    Register Label=%s\n", ((Leaf) node).getLabel().getValue(), register.getLabel().getValue());
-            }
-            for (AttributeInstance attributeInstance : register.getAttributesInstance()) {
-                if (node.getAttribute().equals(attributeInstance.getAttribute())) {
-                    Node child = node.returnChild(attributeInstance);
-                    if (child instanceof Leaf) {
-                        boolean acertou = ((Leaf) child).getLabel().equals(register.getLabel());
-                        System.out.printf("%s Linha %d    label %s    encontrou = %s\n", acertou ? "Acertou" : "Errou", register.getLine(), register.getLabel(), ((Leaf) child).getLabel());
-                        this.registra(((Leaf) child).getLabel(), acertou);
-                    } else {
-                        node = child;
+            if (!(node instanceof Leaf)) {
+                for (AttributeInstance attributeInstance : register.getAttributesInstance()) {
+                    if (node.getAttribute().equals(attributeInstance.getAttribute())) {
+                        Node child = node.returnChild(attributeInstance);
+                        if (child instanceof Leaf) {
+                            boolean acertou = ((Leaf) child).getLabel().equals(register.getLabel());
+//                            System.out.printf("%s Linha %d    label %s    encontrou = %s\n", acertou ? "Acertou" : "Errou", register.getLine(), register.getLabel(), ((Leaf) child).getLabel());
+                            this.registra(((Leaf) child).getLabel(), acertou);
+                        } else {
+                            node = child;
+                        }
                     }
                 }
+            } else {
+                boolean acertou = ((Leaf) node).getLabel().equals(register.getLabel());
+//                System.out.printf("%s Linha %d    label %s    encontrou = %s\n", acertou ? "Acertou" : "Errou", register.getLine(), register.getLabel(), ((Leaf) node).getLabel());
+                this.registra(((Leaf) node).getLabel(), acertou);
             }
-        }
-        );
-        System.out.printf("vp %d    vn %d    fp %d    fn %d\n",verdadeirospositivos,verdadeirosnegativos,falsospositivos,falsosnegativos);
+        });
     }
-    
+
     private void registra(Label label, boolean acertou) {
         if (acertou) {
             if (label.isPositive()) {
-                verdadeirospositivos++;
+                this.indicativos.addVerdadeirosPositivos();
             } else {
-                verdadeirosnegativos++;
+                this.indicativos.addVerdadeirosNegativos();
             }
         } else if (label.isPositive()) {
-            falsospositivos++;
+            this.indicativos.addFalsosPositivos();
         } else {
-            falsosnegativos++;
+            this.indicativos.addFalsosNegativos();
         }
     }
 }
