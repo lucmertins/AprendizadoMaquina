@@ -3,7 +3,9 @@ package br.com.mertins.ufpel.viewer;
 import br.com.mertins.ufpel.am.id3.ID3;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Sample;
+import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.tree.PostPruning;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
@@ -16,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Queue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -226,6 +229,18 @@ public class FXMLController {
                 txtResultado.appendText(format);
                 format = String.format("\t%s\t\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
                 txtResultado.appendText(format);
+
+                PostPruning pruning = new PostPruning(root);
+                pruning.process();
+                List<Queue> regras = pruning.getRegras();
+                regras.forEach((Queue regra) -> {
+                    while (!regra.isEmpty()) {
+                        Node pop = (Node) regra.poll();
+                        String formatTemp = String.format("%s ", pop instanceof Leaf ? String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", ((Leaf) pop).getLabel().getValue()) : String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", pop.getAttribute().getName()));
+                        txtResultado.appendText(formatTemp);
+                    }
+                    txtResultado.appendText("\n");
+                });
                 return true;
             } catch (Exception e) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");

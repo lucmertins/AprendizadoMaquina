@@ -42,7 +42,7 @@ public class ID3 {
         avaliaRamoFolha(root);
         return root;
     }
-
+    
     private void avaliaRamoFolha(Node node) {
         if (node != null && !(node instanceof Leaf)) {
             if (!node.hasChildren()) {
