@@ -68,8 +68,8 @@ public class Execute {
 
             PostPruning pruning = new PostPruning(root);
             pruning.process(sample.getRegisters());
-            List<Queue> regras = pruning.getRegras();
-            
+            List<Queue<Node>> regras = pruning.getRegras();
+
             regras.forEach((Queue regra) -> {
                 while (!regra.isEmpty()) {
                     Node pop = (Node) regra.poll();
