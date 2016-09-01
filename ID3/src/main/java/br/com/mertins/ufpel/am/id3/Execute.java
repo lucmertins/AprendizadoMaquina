@@ -4,7 +4,6 @@ import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
-import br.com.mertins.ufpel.am.tree.PostPruning;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
@@ -68,7 +67,7 @@ public class Execute {
             System.out.println("*****");
 
             PostPruning pruning = new PostPruning(root);
-            pruning.process();
+            pruning.process(sample.getRegisters());
             List<Queue> regras = pruning.getRegras();
             
             regras.forEach((Queue regra) -> {

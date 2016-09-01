@@ -1,5 +1,9 @@
-package br.com.mertins.ufpel.am.tree;
+package br.com.mertins.ufpel.am.id3;
 
+import br.com.mertins.ufpel.am.preparacao.Register;
+import br.com.mertins.ufpel.am.tree.Leaf;
+import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.validate.Investigate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +17,6 @@ public class PostPruning {
 
     private final Node root;
     private List<Queue> regras;
-//    Queue<Node> lista;
 
     public PostPruning(Node root) {
         this.root = root;
@@ -23,12 +26,18 @@ public class PostPruning {
         return regras;
     }
 
-    public void process() {
+    public void process(List<Register> registers) {
         regras = new ArrayList<>();
         Queue<Node> lista = new LinkedList<>();
         this.geraRoles(this.root, lista);
-//        
-        System.out.println("Feito");
+        
+        // gerar arvores com os nodos
+        
+        
+        
+        Investigate investigate = new Investigate(registers, root);
+        investigate.process();
+        
     }
 
     private void geraRoles(Node node, Queue<Node> lista) {
@@ -43,5 +52,13 @@ public class PostPruning {
                 geraRoles(child, novaLista);
             });
         }
+    }
+    
+    private void recreateRamo(Queue<Node> regra){
+        
+        regra.forEach(node->{
+            
+        });
+        
     }
 }
