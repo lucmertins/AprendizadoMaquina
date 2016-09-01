@@ -10,3 +10,7 @@ java -Xms6144m -Xmx6144m -jar target/ID3-1.0.jar [path/file.csv]
 
 O sistema esta preparado para interpretar arquivos no formato .csv, onde a primeira linha e coluna são consideradas inuteis.
 A última coluna esta sendo interpretada como a coluna do rótulo.
+
+Modo visual usando JavaFx. Rodar na pasta Viewer:
+
+java -Xms6144m -Xmx6144m -jar target/Viewer-1.0.jar 
