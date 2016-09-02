@@ -233,6 +233,7 @@ public class FXMLController {
                 PostPruning pruning = new PostPruning(root);
                 pruning.process(sample.getRegisters());
                 List<Queue<Node>> regras = pruning.getRegras();
+
                 regras.forEach((Queue regra) -> {
                     while (!regra.isEmpty()) {
                         Node pop = (Node) regra.poll();

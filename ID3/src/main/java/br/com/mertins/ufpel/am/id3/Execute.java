@@ -38,7 +38,7 @@ public class Execute {
             System.out.println("****** Ajuste");
             List<Integer> remove = new ArrayList<>();
             remove.add(0);
-            remove.add(1);
+//            remove.add(1);
             sample.removeAttributesPos(remove);
             sample.defineColumnLabel(5, "yes");
             try (FileReader arq = new FileReader(fileName)) {
