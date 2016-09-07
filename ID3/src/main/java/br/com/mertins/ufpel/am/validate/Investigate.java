@@ -5,6 +5,7 @@ import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Register;
 import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.tree.NodeBase;
 import java.util.List;
 
 /**
@@ -34,11 +35,11 @@ public class Investigate {
     public Indicatives process() {
         this.indicativos = new Indicatives();
         this.registers.forEach(register -> {
-            Node node = root;
+            NodeBase node = root;
             if (!(node instanceof Leaf)) {
                 for (AttributeInstance attributeInstance : register.getAttributesInstance()) {
-                    if (node != null && node.getAttribute() != null && node.getAttribute().equals(attributeInstance.getAttribute())) {
-                        Node child = node.returnChild(attributeInstance);
+                    if (node instanceof Node && ((Node) node).getAttribute() != null && ((Node) node).getAttribute().equals(attributeInstance.getAttribute())) {
+                        NodeBase child = ((Node) node).returnChild(attributeInstance);
                         if (child instanceof Leaf) {
                             boolean acertou = ((Leaf) child).getLabel().equals(register.getLabel());
 //                            System.out.printf("%s Linha %d    label %s    encontrou = %s\n", acertou ? "Acertou" : "Errou", register.getLine(), register.getLabel(), ((Leaf) child).getLabel());
@@ -58,16 +59,16 @@ public class Investigate {
     }
 
     private void registra(Label label, boolean acertou) {
-        if (acertou) {
-            if (label.isPositive()) {
-                this.indicativos.addVerdadeirosPositivos();
-            } else {
-                this.indicativos.addVerdadeirosNegativos();
-            }
-        } else if (label.isPositive()) {
-            this.indicativos.addFalsosPositivos();
-        } else {
-            this.indicativos.addFalsosNegativos();
-        }
+//        if (acertou) {
+//            if (label.isPositive()) {
+//                this.indicativos.addVerdadeirosPositivos();
+//            } else {
+//                this.indicativos.addVerdadeirosNegativos();
+//            }
+//        } else if (label.isPositive()) {
+//            this.indicativos.addFalsosPositivos();
+//        } else {
+//            this.indicativos.addFalsosNegativos();
+//        }
     }
 }

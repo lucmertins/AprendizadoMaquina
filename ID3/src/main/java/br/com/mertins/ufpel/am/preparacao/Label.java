@@ -2,20 +2,17 @@ package br.com.mertins.ufpel.am.preparacao;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  *
  * @author mertins
  */
-public class Label implements Serializable {
+public class Label implements ElementValue,Serializable {
 
     private String value;
-    private boolean positive;
 
-    public Label(String value, String instancePositive) {
+    public Label(String value) {
         this.value = value;
-        this.positive = value.trim().equalsIgnoreCase(instancePositive.trim());
     }
 
     public String getValue() {
@@ -26,32 +23,23 @@ public class Label implements Serializable {
         this.value = value;
     }
 
-    public boolean isPositive() {
-        return positive;
-    }
-
-    public void setPositive(boolean positive) {
-        this.positive = positive;
-    }
-
-    public static Label positive(Set<Label> labels) {
-        for (Label label : labels) {
-            if (label.isPositive()) {
-                return label;
-            }
-        }
-        return null;
-    }
-
-    public static Label negative(Set<Label> labels) {
-        for (Label label : labels) {
-            if (!label.isPositive()) {
-                return label;
-            }
-        }
-        return null;
-    }
-
+//    public static Label positive(Label label,Set<Label> labels) {
+//        for (Label labelTemp : labels) {
+//            if (labelTemp.equals(label)) {
+//                return label;
+//            }
+//        }
+//        return null;
+//    }
+//
+//    public static Label negative(Set<Label> labels) {
+//        for (Label label : labels) {
+//            if (!label.isPositive()) {
+//                return label;
+//            }
+//        }
+//        return null;
+//    }
     @Override
     public int hashCode() {
         int hash = 5;
@@ -71,15 +59,12 @@ public class Label implements Serializable {
             return false;
         }
         final Label other = (Label) obj;
-        if (!Objects.equals(this.value, other.value)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.value, other.value);
     }
 
     @Override
     public String toString() {
-        return String.format("Label {value= %s  %s}", value, this.positive ? "Positive" : "Negative");
+        return String.format("Label {value= %s}", value);
     }
 
 }

@@ -1,20 +1,18 @@
 package br.com.mertins.ufpel.am.tree;
 
-import br.com.mertins.ufpel.am.preparacao.Attribute;
+import br.com.mertins.ufpel.am.preparacao.ElementValue;
 import br.com.mertins.ufpel.am.preparacao.Label;
-import java.util.Objects;
 
 /**
  *
  * @author mertins
  */
-public class Leaf extends Node {
+public class Leaf extends NodeBase {
 
     private final Label label;
 
-    public Leaf(Attribute attribute, Label label) {
-        super(attribute, 0);
-        this.label = label;
+    public Leaf(ElementValue label) {
+        this.label = (Label) label;
     }
 
     public Label getLabel() {
@@ -23,7 +21,7 @@ public class Leaf extends Node {
 
     @Override
     public String toString() {
-        return String.format("Leaf %s label=%s positive=%d negative=%d}", this.getAttribute(), label, this.getPositive(), this.getNegative());
+        return String.format("Leaf label=%s positive=%d negative=%d}", label, this.getPositive(), this.getNegative());
     }
 
     @Override

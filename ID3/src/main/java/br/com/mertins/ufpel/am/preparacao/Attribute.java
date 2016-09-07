@@ -8,7 +8,7 @@ import java.util.Set;
  *
  * @author mertins
  */
-public class Attribute implements Serializable {
+public class Attribute implements ElementValue, Serializable {
 
     private int position;
     private String name;
@@ -39,7 +39,7 @@ public class Attribute implements Serializable {
     }
 
     public AttributeInstance addAttributeInstance(String value) {
-        AttributeInstance temp = new AttributeInstance(this,value);
+        AttributeInstance temp = new AttributeInstance(this, value);
         for (AttributeInstance instance : attributesInstance) {
             if (temp.equals(instance)) {
                 return instance;

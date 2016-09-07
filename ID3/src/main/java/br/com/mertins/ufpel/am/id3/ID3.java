@@ -1,10 +1,11 @@
 package br.com.mertins.ufpel.am.id3;
 
-import br.com.mertins.ufpel.am.preparacao.Attribute;
+import br.com.mertins.ufpel.am.preparacao.ElementValue;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Register;
 import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.tree.NodeBase;
 import java.util.List;
 import java.util.Set;
 
@@ -15,10 +16,10 @@ import java.util.Set;
 public class ID3 {
 
     private final List<Register> registers;
-    private final List<Attribute> attributes;
+    private final List<ElementValue> attributes;
     private final Set<Label> labels;
 
-    public ID3(List<Register> registers, List<Attribute> attributes, Set<Label> labels) {
+    public ID3(List<Register> registers, List<ElementValue> attributes, Set<Label> labels) {
         this.registers = registers;
         this.attributes = attributes;
         this.labels = labels;
@@ -27,7 +28,7 @@ public class ID3 {
     public Node process() {
         Node root = null;
         double calcMax = 0;
-        for (Attribute attribute : this.attributes) {
+        for (ElementValue attribute : this.attributes) {
             double calc = Gain.calc(registers, attribute);
             if (calcMax < calc) {
                 root = new Node(attribute, calc);
@@ -35,25 +36,21 @@ public class ID3 {
             }
         }
         if (root != null) {
-            root.setPositive(Gain.positivos(registers));
-            root.setNegative(Gain.negativos(registers));
             root.addEdge(registers, attributes);
         }
         avaliaRamoFolha(root);
         return root;
     }
-    
-    private void avaliaRamoFolha(Node node) {
+
+    private void avaliaRamoFolha(NodeBase node) {
         if (node != null && !(node instanceof Leaf)) {
             if (!node.hasChildren()) {
                 Label label = getLabel(node.getPositive() - node.getNegative() >= 0);
-                Leaf leaf = new Leaf(node.getAttribute(), label);
-                leaf.setPositive(node.getPositive());
-                leaf.setNegative(node.getNegative());
-                leaf.setAttributeInstanceParent(node.getAttributeInstanceParent());
-                node.replace(leaf);
+                Leaf leaf = new Leaf(label);
+                leaf.setAttributeInstanceParent(((Node) node).getAttributeInstanceParent());
+                ((Node) node).replace(leaf);
             } else {
-                List<Node> children = node.children();
+                List<NodeBase> children = node.getChildren();
                 children.forEach(nodeChild -> {
                     avaliaRamoFolha(nodeChild);
                 });
@@ -62,13 +59,13 @@ public class ID3 {
     }
 
     private Label getLabel(boolean positivo) {
-        for (Label label : labels) {
-            if (positivo && label.isPositive()) {
-                return label;
-            } else if (!positivo && !label.isPositive()) {
-                return label;
-            }
-        }
+//        for (Label label : labels) {
+//            if (positivo && label.isPositive()) {
+//                return label;
+//            } else if (!positivo && !label.isPositive()) {
+//                return label;
+//            }
+//        }
         return null;
     }
 

@@ -1,12 +1,12 @@
 package br.com.mertins.ufpel.viewer;
 
 import br.com.mertins.ufpel.am.id3.ID3;
-import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.id3.PostPruning;
 import br.com.mertins.ufpel.am.id3.Rules;
 import br.com.mertins.ufpel.am.tree.Leaf;
+import br.com.mertins.ufpel.am.tree.NodeBase;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
@@ -181,7 +181,6 @@ public class FXMLController {
                 }
             }
             sample.removeAttributesPos(remove);
-            sample.defineColumnLabel(cmbLabel.getValue().id, txtLabelPositivo.getText());
             return true;
         } catch (Exception ex) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
@@ -221,23 +220,23 @@ public class FXMLController {
                 format = String.format("\nAcurácia [%f]   Precisão [%f]   Recall [%f]   F1 [%f]\n", indicativos.accuracy().doubleValue(), indicativos.precision().doubleValue(), indicativos.recall().doubleValue(), indicativos.f1().doubleValue());
                 txtResultado.appendText(format);
                 txtResultado.appendText("\nMatriz de Confusão\n");
-                Label lbPositive = Label.positive(sample.getLabels());
-                Label lbNegative = Label.negative(sample.getLabels());
-                format = String.format("\t\t\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
-                txtResultado.appendText(format);
-                format = String.format("\t%s\t\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
-                txtResultado.appendText(format);
-                format = String.format("\t%s\t\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
-                txtResultado.appendText(format);
+////                Label lbPositive = Label.positive(sample.getLabels());
+////                Label lbNegative = Label.negative(sample.getLabels());
+////                format = String.format("\t\t\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
+////                txtResultado.appendText(format);
+////                format = String.format("\t%s\t\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
+//                txtResultado.appendText(format);
+//                format = String.format("\t%s\t\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
+//                txtResultado.appendText(format);
 
                 txtResultado.appendText("\nRegras\n");
                 Rules rules = Rules.instance(root, sample.getRegisters());
-                List<Queue<Node>> regras = rules.getRules();
+                List<Queue<NodeBase>> regras = rules.getRules();
                 regras.forEach((Queue regra) -> {
                     while (!regra.isEmpty()) {
-                        Node pop = (Node) regra.poll();
-                        String formatTemp = String.format("%s ", pop instanceof Leaf ? String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", ((Leaf) pop).getLabel().getValue()) : String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", pop.getAttribute().getName()));
-                        txtResultado.appendText(formatTemp);
+                        NodeBase pop = (Node) regra.poll();
+                      //  String formatTemp = String.format("%s ", pop instanceof Leaf ? String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", ((Leaf) pop).getLabel().getValue()) : String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", pop.getAttribute().getName()));
+                     //s   txtResultado.appendText(formatTemp);
                     }
                     txtResultado.appendText("\n");
                 });

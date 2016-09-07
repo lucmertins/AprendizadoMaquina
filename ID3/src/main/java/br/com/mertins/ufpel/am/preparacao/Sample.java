@@ -16,13 +16,12 @@ public class Sample implements Serializable {
 
     private String delimiter = ",";
     private List<Attribute> attributesOrigin = new ArrayList<>();
-    private final List<Attribute> attributes = new ArrayList<>();
+    private final List<ElementValue> attributes = new ArrayList<>();
     private final List<Register> registers = new ArrayList<>();
     private final List<Integer> discardedColumns = new ArrayList<>();
     private final Set<Label> labels = new HashSet<>();
     private int columnLabel;
     private Attribute labelColumn;
-    private String labelInstancePositive;
 
     private boolean firstLineAttribute = true;
 
@@ -33,7 +32,7 @@ public class Sample implements Serializable {
         return registers;
     }
 
-    public List<Attribute> getAttributes() {
+    public List<ElementValue> getAttributes() {
         return attributes;
     }
 
@@ -53,9 +52,8 @@ public class Sample implements Serializable {
         this.delimiter = delimiter;
     }
 
-    public void defineColumnLabel(int columnLabel,String labelInstancePositive) {
+    public void defineColumnLabel(int columnLabel) {
         this.columnLabel = columnLabel;
-        this.labelInstancePositive = labelInstancePositive;
         this.getAttributesOrigin().forEach(atributo -> {
             if (atributo.getPosition() == columnLabel) {
                 labelColumn = atributo;
@@ -89,7 +87,7 @@ public class Sample implements Serializable {
             for (String valor : split) {
                 if (!this.discardedColumns.contains(posColReal)) {
                     if (this.columnLabel == posColReal) {
-                        Label labelTemp = new Label(valor,this.labelInstancePositive);
+                        Label labelTemp = new Label(valor);
                         if (labels.contains(labelTemp)) {
                             labels.stream().filter((label) -> (label.equals(labelTemp))).forEach((label) -> {
                                 register.setLabel(label);
@@ -99,7 +97,7 @@ public class Sample implements Serializable {
                             register.setLabel(labelTemp);
                         }
                     } else {
-                        Attribute attribute = attributes.get(posCol++);
+                        Attribute attribute = (Attribute) attributes.get(posCol++);
                         AttributeInstance addAttributeInstance = attribute.addAttributeInstance(valor);
 
                         register.addAttributesInstance(addAttributeInstance);

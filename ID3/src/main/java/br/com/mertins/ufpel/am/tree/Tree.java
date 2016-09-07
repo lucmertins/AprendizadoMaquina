@@ -24,16 +24,14 @@ public class Tree {
         findAllLeaf.forEach(leaf -> {
             System.out.printf("%s \n", leaf);
         });
-        
-        
-        
+
         return rootOrig;
     }
 
-    private Set<Leaf> findAllLeaf(Node node) {
+    private Set<Leaf> findAllLeaf(NodeBase node) {
         Set<Leaf> retorno = new HashSet<>();
         if (!(node instanceof Leaf)) {
-            node.children().forEach(child -> {
+            node.getChildren().forEach(child -> {
                 retorno.addAll(findAllLeaf(child));
             });
         } else {
