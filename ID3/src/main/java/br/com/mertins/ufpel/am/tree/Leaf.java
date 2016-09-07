@@ -2,6 +2,7 @@ package br.com.mertins.ufpel.am.tree;
 
 import br.com.mertins.ufpel.am.preparacao.Attribute;
 import br.com.mertins.ufpel.am.preparacao.Label;
+import java.util.Objects;
 
 /**
  *
@@ -23,5 +24,10 @@ public class Leaf extends Node {
     @Override
     public String toString() {
         return String.format("Leaf %s label=%s positive=%d negative=%d}", this.getAttribute(), label, this.getPositive(), this.getNegative());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj) && this.label.equals(((Leaf) obj).label);
     }
 }

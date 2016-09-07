@@ -1,7 +1,9 @@
 package br.com.mertins.ufpel.am.tree;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -10,29 +12,33 @@ import java.util.List;
 public class Tree {
 
     private final Node rootOrig;
-    private Node rootTemp;
     private final List<Leaf> avaliadas = new ArrayList<>();
 
     public Tree(Node root) {
         this.rootOrig = root;
     }
-    
-    public Node pruning(){
+
+    public Node pruning() {
+        Set<Leaf> findAllLeaf = this.findAllLeaf(rootOrig);
+
+        findAllLeaf.forEach(leaf -> {
+            System.out.printf("%s \n", leaf);
+        });
+        
+        
         
         return rootOrig;
     }
-    
-//    private void geraRules(Node node, Queue<Node> lista) {
-//        if (node instanceof Leaf) {
-//            Queue<Node> novaLista = new LinkedList<>(lista);
-//            novaLista.add(node);
-//            regrasList.add(novaLista);
-//        } else {
-//            Queue<Node> novaLista = new LinkedList<>(lista);
-//            novaLista.add(node);
-//            node.children().forEach(child -> {
-//                geraRules(child, novaLista);
-//            });
-//        }
-//    }
+
+    private Set<Leaf> findAllLeaf(Node node) {
+        Set<Leaf> retorno = new HashSet<>();
+        if (!(node instanceof Leaf)) {
+            node.children().forEach(child -> {
+                retorno.addAll(findAllLeaf(child));
+            });
+        } else {
+            retorno.add((Leaf) node);
+        }
+        return retorno;
+    }
 }

@@ -21,8 +21,8 @@ import java.util.Queue;
 public class Execute {
 
     public static void main(String[] args) {
-        String fileName = "beach.csv";
-//        String fileName = "beach_Ruido.csv";
+//        String fileName = "beach.csv";
+        String fileName = "beach_Ruido.csv";
         if (args.length == 1) {
             fileName = args[0];
 
