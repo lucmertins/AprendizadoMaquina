@@ -3,9 +3,10 @@ package br.com.mertins.ufpel.viewer;
 import br.com.mertins.ufpel.am.id3.ID3;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import br.com.mertins.ufpel.am.preparacao.Sample;
-import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.id3.PostPruning;
+import br.com.mertins.ufpel.am.id3.Rules;
+import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
@@ -212,8 +213,7 @@ public class FXMLController {
                 txtResultado.setText(String.format("Execução %s\n", sdf.format(new Date())));
                 txtResultado.appendText(print.toString());
                 Investigate investigate = new Investigate(sample.getRegisters(), root);
-                investigate.process();
-                Indicatives indicativos = investigate.getIndicativos();
+                Indicatives indicativos = investigate.process();
                 String format = String.format("\nVerdadeiros Positivos\t[%d]\t\tFalsos Positivos\t[%d]\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
                 txtResultado.appendText(format);
                 format = String.format("Verdadeiros Negativos\t[%d]\t\tFalsos Negativos\t[%d]\n", indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
@@ -230,10 +230,9 @@ public class FXMLController {
                 format = String.format("\t%s\t\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
                 txtResultado.appendText(format);
 
-                PostPruning pruning = new PostPruning(root);
-                pruning.process(sample.getRegisters());
-                List<Queue<Node>> regras = pruning.getRegras();
-
+                txtResultado.appendText("\nRegras\n");
+                Rules rules = Rules.instance(root, sample.getRegisters());
+                List<Queue<Node>> regras = rules.getRules();
                 regras.forEach((Queue regra) -> {
                     while (!regra.isEmpty()) {
                         Node pop = (Node) regra.poll();
@@ -242,6 +241,11 @@ public class FXMLController {
                     }
                     txtResultado.appendText("\n");
                 });
+                
+                txtResultado.appendText("\nPoda\n");
+                PostPruning pruning = new PostPruning(root);
+                pruning.process(sample.getRegisters());
+
                 return true;
             } catch (Exception e) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");

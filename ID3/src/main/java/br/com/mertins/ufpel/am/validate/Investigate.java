@@ -31,7 +31,7 @@ public class Investigate {
         return indicativos;
     }
 
-    public void process() {
+    public Indicatives process() {
         this.indicativos = new Indicatives();
         this.registers.forEach(register -> {
             Node node = root;
@@ -54,6 +54,7 @@ public class Investigate {
                 this.registra(((Leaf) node).getLabel(), acertou);
             }
         });
+        return this.indicativos;
     }
 
     private void registra(Label label, boolean acertou) {

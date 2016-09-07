@@ -22,6 +22,7 @@ public class Execute {
 
     public static void main(String[] args) {
         String fileName = "beach.csv";
+//        String fileName = "beach_Ruido.csv";
         if (args.length == 1) {
             fileName = args[0];
 
@@ -53,8 +54,7 @@ public class Execute {
             System.out.println(print.toString());
             System.out.println("****** Testa ID3");
             Investigate investigate = new Investigate(sample.getRegisters(), root);
-            investigate.process();
-            Indicatives indicativos = investigate.getIndicativos();
+            Indicatives indicativos = investigate.process();
             System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue(),
                     indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
             System.out.printf("Acurácia %f       Precisão %f    Recall %f    F1 %f\n", indicativos.accuracy().doubleValue(), indicativos.precision().doubleValue(), indicativos.recall().doubleValue(), indicativos.f1().doubleValue());
@@ -65,18 +65,21 @@ public class Execute {
             System.out.printf("%s\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
             System.out.printf("%s\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
             System.out.println("*****");
-
-            PostPruning pruning = new PostPruning(root);
-            pruning.process(sample.getRegisters());
-            List<Queue<Node>> regras = pruning.getRegras();
-
-            regras.forEach((Queue regra) -> {
-                while (!regra.isEmpty()) {
-                    Node pop = (Node) regra.poll();
+            Rules rules = Rules.instance(root, sample.getRegisters());
+            List<Queue<Node>> regras = rules.getRules();
+            regras.forEach((Queue rule) -> {
+                while (!rule.isEmpty()) {
+                    Node pop = (Node) rule.poll();
                     System.out.printf("%s ", pop instanceof Leaf ? String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", ((Leaf) pop).getLabel().getValue()) : String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", pop.getAttribute().getName()));
                 }
                 System.out.println();
             });
+            System.out.println("*****");
+            
+            
+            
+            PostPruning pruning = new PostPruning(root);
+            pruning.process(sample.getRegisters());
 
             System.out.println("*****");
 

@@ -7,6 +7,7 @@ import br.com.mertins.ufpel.am.preparacao.Register;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -82,9 +83,9 @@ public class Node implements Serializable {
     }
 
     public Node returnChild(AttributeInstance attributeInstance) {
-        for (Edge edge:this.children){
+        for (Edge edge : this.children) {
             if (edge.attributeInstance.equals(attributeInstance)) {
-                 return edge.node;
+                return edge.node;
             }
         }
         return null;
@@ -154,6 +155,36 @@ public class Node implements Serializable {
     @Override
     public String toString() {
         return String.format("Node %s gain=%f positive=%d negative=%d}", attribute, gain, positive, negative);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.attribute);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Node other = (Node) obj;
+        if (!Objects.equals(this.attribute, other.attribute)) {
+            return false;
+        }
+        if (this.parent != null && other.parent != null) {
+            if (!Objects.equals(this.parent.attributeInstanceParent, other.parent.getAttributeInstanceParent())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public StringBuilder print() {
