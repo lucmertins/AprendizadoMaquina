@@ -6,7 +6,11 @@ import br.com.mertins.ufpel.am.preparacao.Register;
 import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.tree.NodeBase;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -14,26 +18,27 @@ import java.util.List;
  */
 public class Investigate {
 
-    private Indicatives indicativos;
+    private final Map<Label, Acumulador> acumulado;
 
     public Investigate() {
+        this.acumulado = new HashMap<>();
         this.registers = null;
         this.root = null;
     }
     private final List<Register> registers;
     private final Node root;
 
-    public Investigate(List<Register> registers, Node root) {
+    public Investigate(Node root, List<Register> registers, Set<Label> labels) {
+        this.acumulado = new HashMap<>();
         this.registers = registers;
         this.root = root;
+        labels.forEach(label -> {
+            acumulado.put(label, new Acumulador());
+        });
     }
 
-    public Indicatives getIndicativos() {
-        return indicativos;
-    }
-
-    public Indicatives process() {
-        this.indicativos = new Indicatives();
+    public Set<Indicatives> process() {
+        Set<Indicatives> resultados = new HashSet<>();
         this.registers.forEach(register -> {
             NodeBase node = root;
             if (!(node instanceof Leaf)) {
@@ -41,34 +46,82 @@ public class Investigate {
                     if (node instanceof Node && ((Node) node).getAttribute() != null && ((Node) node).getAttribute().equals(attributeInstance.getAttribute())) {
                         NodeBase child = ((Node) node).returnChild(attributeInstance);
                         if (child instanceof Leaf) {
-                            boolean acertou = ((Leaf) child).getLabel().equals(register.getLabel());
-//                            System.out.printf("%s Linha %d    label %s    encontrou = %s\n", acertou ? "Acertou" : "Errou", register.getLine(), register.getLabel(), ((Leaf) child).getLabel());
-                            this.registra(((Leaf) child).getLabel(), acertou);
+                            this.registra(((Leaf) child).getLabel(), register.getLabel());
                         } else {
                             node = child;
                         }
                     }
                 }
             } else {
-                boolean acertou = ((Leaf) node).getLabel().equals(register.getLabel());
-//                System.out.printf("%s Linha %d    label %s    encontrou = %s\n", acertou ? "Acertou" : "Errou", register.getLine(), register.getLabel(), ((Leaf) node).getLabel());
-                this.registra(((Leaf) node).getLabel(), acertou);
+                this.registra(((Leaf) node).getLabel(), register.getLabel());
             }
         });
-        return this.indicativos;
+        acumulado.keySet().stream().forEach((label) -> {
+            Acumulador acumulador = acumulado.get(label);
+            Indicatives indic = new Indicatives(label, acumulador.getTruePositive(), acumulador.getFalsePositive(),acumulador.getTrueNegative(),acumulador.getFalseNegative());
+            resultados.add(indic);
+        });
+
+        return resultados;
     }
 
-    private void registra(Label label, boolean acertou) {
-//        if (acertou) {
-//            if (label.isPositive()) {
-//                this.indicativos.addVerdadeirosPositivos();
-//            } else {
-//                this.indicativos.addVerdadeirosNegativos();
-//            }
-//        } else if (label.isPositive()) {
-//            this.indicativos.addFalsosPositivos();
-//        } else {
-//            this.indicativos.addFalsosNegativos();
-//        }
+    private void registra(Label labelTree, Label labelCorreto) {
+        boolean acertou = labelTree.equals(labelCorreto);
+
+        if (acertou) {
+            acumulado.get(labelTree).addTruePositive();
+            acumulado.keySet().stream().forEach(label -> {
+                if (!labelTree.equals(label)) {
+                    acumulado.get(label).addTrueNegative();
+                }
+            });
+        } else {
+            acumulado.get(labelTree).addFalsePositive();
+            acumulado.get(labelCorreto).addFalseNegative();
+        }
+
+    }
+
+    private class Acumulador {
+
+        private long truePositive;
+        private long falsePositive;
+        private long trueNegative;
+        private long falseNegative;
+
+        public Acumulador() {
+        }
+
+        public long getTruePositive() {
+            return truePositive;
+        }
+
+        public long getFalsePositive() {
+            return falsePositive;
+        }
+
+        public long getTrueNegative() {
+            return trueNegative;
+        }
+
+        public long getFalseNegative() {
+            return falseNegative;
+        }
+
+        public void addTruePositive() {
+            this.truePositive++;
+        }
+
+        public void addFalsePositive() {
+            this.falsePositive++;
+        }
+
+        public void addTrueNegative() {
+            this.trueNegative++;
+        }
+
+        public void addFalseNegative() {
+            this.falseNegative++;
+        }
     }
 }

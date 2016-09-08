@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -49,12 +50,20 @@ public class Execute {
             StringBuilder print = root.print();
             System.out.println(print.toString());
             System.out.println("****** Testa ID3");
-            Investigate investigate = new Investigate(sample.getRegisters(), root);
-            Indicatives indicativos = investigate.process();
-            System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue(),
-                    indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
-            System.out.printf("Acurácia %f       Precisão %f    Recall %f    F1 %f\n", indicativos.accuracy().doubleValue(), indicativos.precision().doubleValue(), indicativos.recall().doubleValue(), indicativos.f1().doubleValue());
-            System.out.println("Matriz de Confusão");
+            Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
+            Set<Indicatives> indicativos = investigate.process();
+            indicativos.forEach(indicativo -> {
+                System.out.printf("Label [%s]\n", indicativo.getLabel().getValue());
+                System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives().intValue(), indicativo.getFalsePositives().intValue(),
+                        indicativo.getTrueNegatives().intValue(), indicativo.getFalseNegatives().intValue());
+                System.out.printf("Acurácia %f       Precisão %f    Recall %f    F1 %f\n", indicativo.accuracy().doubleValue(), indicativo.precision().doubleValue(), indicativo.recall().doubleValue(), indicativo.f1().doubleValue());
+
+            });
+
+//            System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue(),
+//                    indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
+//            System.out.printf("Acurácia %f       Precisão %f    Recall %f    F1 %f\n", indicativos.accuracy().doubleValue(), indicativos.precision().doubleValue(), indicativos.recall().doubleValue(), indicativos.f1().doubleValue());
+//            System.out.println("Matriz de Confusão");
 //            System.out.printf("\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
 //            System.out.printf("%s\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
 //            System.out.printf("%s\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());

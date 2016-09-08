@@ -53,8 +53,8 @@ public class Rules {
 
         Queue<NodeBase> lista = new LinkedList<>();
         this.geraRules(root, lista);
-        Investigate investigate = new Investigate(registers, root);
-        investigate.process();
+//        Investigate investigate = new Investigate(registers, root);
+//        investigate.process();
     }
 
     private void geraRules(NodeBase node, Queue<NodeBase> lista) {

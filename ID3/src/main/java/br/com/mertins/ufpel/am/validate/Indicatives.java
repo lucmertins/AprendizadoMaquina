@@ -1,7 +1,9 @@
 package br.com.mertins.ufpel.am.validate;
 
+import br.com.mertins.ufpel.am.preparacao.Label;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
  *
@@ -9,51 +11,64 @@ import java.math.RoundingMode;
  */
 public class Indicatives {
 
-    private BigDecimal verdadeirosPositivos;
-    private BigDecimal verdadeirosNegativos;
-    private BigDecimal falsosPositivos;
-    private BigDecimal falsosNegativos;
+    private final Label label;
+    private BigDecimal truePositives;
+    private BigDecimal trueNegatives;
+    private BigDecimal falsePositives;
+    private BigDecimal falseNegatives;
 
-    public Indicatives() {
-        reset();
+    Indicatives(Label label, long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
+        this.label = label;
+        this.truePositives = new BigDecimal(truePositives);
+        this.falsePositives = new BigDecimal(falsePositives);
+        this.trueNegatives = new BigDecimal(trueNegatives);
+        this.falseNegatives = new BigDecimal(falseNegatives);
     }
 
-    public BigDecimal getVerdadeirosPositivos() {
-        return verdadeirosPositivos;
+    public void add(Label label, long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
+
     }
 
-    public BigDecimal getVerdadeirosNegativos() {
-        return verdadeirosNegativos;
+    public Label getLabel() {
+        return label;
     }
 
-    public BigDecimal getFalsosPositivos() {
-        return falsosPositivos;
+    public BigDecimal getTruePositives() {
+        return truePositives;
     }
 
-    public BigDecimal getFalsosNegativos() {
-        return falsosNegativos;
+    public BigDecimal getTrueNegatives() {
+        return trueNegatives;
+    }
+
+    public BigDecimal getFalsePositives() {
+        return falsePositives;
+    }
+
+    public BigDecimal getFalseNegatives() {
+        return falseNegatives;
     }
 
     public void addVerdadeirosPositivos() {
-        this.verdadeirosPositivos = this.verdadeirosPositivos.add(BigDecimal.ONE);
+        this.truePositives = this.truePositives.add(BigDecimal.ONE);
     }
 
     public void addVerdadeirosNegativos() {
-        this.verdadeirosNegativos = this.verdadeirosNegativos.add(BigDecimal.ONE);
+        this.trueNegatives = this.trueNegatives.add(BigDecimal.ONE);
     }
 
     public void addFalsosPositivos() {
-        this.falsosPositivos = this.falsosPositivos.add(BigDecimal.ONE);
+        this.falsePositives = this.falsePositives.add(BigDecimal.ONE);
     }
 
     public void addFalsosNegativos() {
-        this.falsosNegativos = this.falsosNegativos.add(BigDecimal.ONE);
+        this.falseNegatives = this.falseNegatives.add(BigDecimal.ONE);
     }
 
     public BigDecimal accuracy() {
         try {
-            BigDecimal dividendo = this.verdadeirosPositivos.add(this.verdadeirosNegativos);
-            BigDecimal divisor = this.verdadeirosPositivos.add(this.verdadeirosNegativos.add(this.falsosPositivos.add(this.falsosNegativos)));
+            BigDecimal dividendo = this.truePositives.add(this.trueNegatives);
+            BigDecimal divisor = this.truePositives.add(this.trueNegatives.add(this.falsePositives.add(this.falseNegatives)));
             return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
@@ -62,8 +77,8 @@ public class Indicatives {
 
     public BigDecimal precision() {
         try {
-            BigDecimal divisor = this.verdadeirosPositivos.add(this.falsosPositivos);
-            return this.verdadeirosPositivos.divide(divisor, 3, RoundingMode.HALF_UP);
+            BigDecimal divisor = this.truePositives.add(this.falsePositives);
+            return this.truePositives.divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
         }
@@ -71,8 +86,8 @@ public class Indicatives {
 
     public BigDecimal recall() {
         try {
-            BigDecimal divisor = this.verdadeirosPositivos.add(this.falsosNegativos);
-            return this.verdadeirosPositivos.divide(divisor, 3, RoundingMode.HALF_UP);
+            BigDecimal divisor = this.truePositives.add(this.falseNegatives);
+            return this.truePositives.divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
         }
@@ -90,11 +105,36 @@ public class Indicatives {
         }
     }
 
-    public void reset() {
-        this.verdadeirosPositivos = BigDecimal.ZERO;
-        this.verdadeirosNegativos = BigDecimal.ZERO;
-        this.falsosPositivos = BigDecimal.ZERO;
-        this.falsosNegativos = BigDecimal.ZERO;
-
+//    public void reset() {
+//        this.truePositives = BigDecimal.ZERO;
+//        this.trueNegatives = BigDecimal.ZERO;
+//        this.falsePositives = BigDecimal.ZERO;
+//        this.falseNegatives = BigDecimal.ZERO;
+//
+//    }
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.label);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Indicatives other = (Indicatives) obj;
+        if (!Objects.equals(this.label, other.label)) {
+            return false;
+        }
+        return true;
+    }
+
 }
