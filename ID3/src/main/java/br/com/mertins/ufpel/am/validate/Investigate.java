@@ -7,7 +7,6 @@ import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.tree.NodeBase;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +66,6 @@ public class Investigate {
 
     private void registra(Label labelTree, Label labelCorreto) {
         boolean acertou = labelTree.equals(labelCorreto);
-
         if (acertou) {
             acumulado.get(labelTree).addTruePositive();
             acumulado.keySet().stream().forEach(label -> {

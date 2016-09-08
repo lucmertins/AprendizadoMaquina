@@ -1,10 +1,8 @@
 package br.com.mertins.ufpel.am.id3;
 
-import br.com.mertins.ufpel.am.preparacao.Register;
 import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.tree.NodeBase;
-import br.com.mertins.ufpel.am.validate.Investigate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,18 +41,15 @@ public class Rules {
         return result;
     }
 
-    public static Rules instance(Node root, List<Register> registers) {
+    public static Rules instance(Node root) {
         Rules lista = new Rules();
-        lista.process(root, registers);
+        lista.process(root);
         return lista;
     }
 
-    private void process(Node root, List<Register> registers) {
-
+    private void process(Node root) {
         Queue<NodeBase> lista = new LinkedList<>();
         this.geraRules(root, lista);
-//        Investigate investigate = new Investigate(registers, root);
-//        investigate.process();
     }
 
     private void geraRules(NodeBase node, Queue<NodeBase> lista) {
@@ -65,11 +60,31 @@ public class Rules {
         } else {
             Queue<NodeBase> novaLista = new LinkedList<>(lista);
             novaLista.add(node);
-
             node.getChildren().forEach(child -> {
                 geraRules(child, novaLista);
             });
         }
+    }
+
+    public StringBuilder print() {
+        StringBuilder sb = new StringBuilder();
+        this.getRules().forEach(queue -> {
+            queue.forEach(pop -> {
+                if (pop.getParent() == null) {
+                    if (pop instanceof Node) {
+                        sb.append(String.format("%s ", ((Node) pop).getAttribute().getName()));
+                    } else {
+                        sb.append(String.format("%s ", ((Leaf) pop).getLabel().getValue()));
+                    }
+                } else if (pop instanceof Node) {
+                    sb.append(String.format("(%s) -> %s ", pop.getAttributeInstanceParent().getValue(), ((Node) pop).getAttribute().getName()));
+                } else {
+                    sb.append(String.format("(%s) -> %s ", pop.getAttributeInstanceParent().getValue(), ((Leaf) pop).getLabel().getValue()));
+                }
+            });
+            sb.append("\n");
+        });
+        return sb;
     }
 
 }

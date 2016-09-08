@@ -1,7 +1,9 @@
 package br.com.mertins.ufpel.am.id3;
 
 import br.com.mertins.ufpel.am.preparacao.Sample;
+import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.tree.NodeBase;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
@@ -10,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Queue;
 
 /**
  *
@@ -61,7 +63,7 @@ public class Execute {
                         indicativo.recall(label).doubleValue(), indicativo.f1(label).doubleValue());
 
             });
-            System.out.printf("\nAcurácia %f\n",indicativo.accuracy().doubleValue());
+            System.out.printf("\nAcurácia %f\n", indicativo.accuracy().doubleValue());
 
 //            System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue(),
 //                    indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
@@ -70,17 +72,11 @@ public class Execute {
 //            System.out.printf("\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
 //            System.out.printf("%s\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
 //            System.out.printf("%s\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
+            System.out.println("***** Regras");
+            Rules rules = Rules.instance(root);
+            print = rules.print();
+            System.out.println(print.toString());
             System.out.println("*****");
-//            Rules rules = Rules.instance(root, sample.getRegisters());
-//            List<Queue<NodeBase>> regras = rules.getRules();
-//            regras.forEach((Queue rule) -> {
-//                while (!rule.isEmpty()) {
-//                    NodeBase pop = (NodeBase) rule.poll();
-//                    System.out.printf("%s ", pop instanceof Leaf ? String.format("%s", ((Leaf) pop).getLabel().getValue()) : String.format("(%s) %s", ((Node) pop).getAttributeInstanceParent() != null ? ((Node) pop).getAttributeInstanceParent().getValue() : "", ((Node) pop).getAttribute().getName()));
-//                }
-//                System.out.println();
-//            });
-//            System.out.println("*****");
 //
 //            PostPruning pruning = new PostPruning(root);
 //            pruning.process(sample.getRegisters());

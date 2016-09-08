@@ -1,11 +1,9 @@
 package br.com.mertins.ufpel.viewer;
 
 import br.com.mertins.ufpel.am.id3.ID3;
+import br.com.mertins.ufpel.am.id3.Rules;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
-import br.com.mertins.ufpel.am.id3.PostPruning;
-import br.com.mertins.ufpel.am.id3.Rules;
-import br.com.mertins.ufpel.am.tree.NodeBase;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.BufferedReader;
@@ -18,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Queue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -211,40 +208,38 @@ public class FXMLController {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
                 txtResultado.setText(String.format("Execução %s\n", sdf.format(new Date())));
                 txtResultado.appendText(print.toString());
-//                Investigate investigate = new Investigate(sample.getRegisters(), root);
-//                Indicatives indicativos = investigate.process();
-//                String format = String.format("\nVerdadeiros Positivos\t[%d]\t\tFalsos Positivos\t[%d]\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
-//                txtResultado.appendText(format);
-//                format = String.format("Verdadeiros Negativos\t[%d]\t\tFalsos Negativos\t[%d]\n", indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());
-//                txtResultado.appendText(format);
-//                format = String.format("\nAcurácia [%f]   Precisão [%f]   Recall [%f]   F1 [%f]\n", indicativos.accuracy().doubleValue(), indicativos.precision().doubleValue(), indicativos.recall().doubleValue(), indicativos.f1().doubleValue());
-//                txtResultado.appendText(format);
+                Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
+                Indicatives indicativo = investigate.process();
+                sample.getLabels().forEach(label -> {
+                    String format = String.format("\n[%s]\t\t", label.getValue());
+                    txtResultado.appendText(format);
+                    format = String.format("VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives(label).intValue(),
+                            indicativo.getFalsePositives(label).intValue(),
+                            indicativo.getTrueNegatives(label).intValue(), indicativo.getFalseNegatives(label).intValue());
+                    txtResultado.appendText(format);
+                    format = String.format("\t\tPrecisão %f    Recall %f    F1 %f\n", indicativo.precision(label).doubleValue(),
+                            indicativo.recall(label).doubleValue(), indicativo.f1(label).doubleValue());
+                    txtResultado.appendText(format);
+
+                });
+                txtResultado.appendText(String.format("\nAcurácia %f\n", indicativo.accuracy().doubleValue()));
 //                txtResultado.appendText("\nMatriz de Confusão\n");
-////                Label lbPositive = Label.positive(sample.getLabels());
-////                Label lbNegative = Label.negative(sample.getLabels());
-////                format = String.format("\t\t\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
-////                txtResultado.appendText(format);
-////                format = String.format("\t%s\t\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
+//                Label lbPositive = Label.positive(sample.getLabels());
+//                Label lbNegative = Label.negative(sample.getLabels());
+//                format = String.format("\t\t\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
+//                txtResultado.appendText(format);
+//                format = String.format("\t%s\t\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
 //                txtResultado.appendText(format);
 //                format = String.format("\t%s\t\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
 //                txtResultado.appendText(format);
+                txtResultado.appendText("\nRegras\n");
+                Rules rules = Rules.instance(root);
+                print = rules.print();
+                txtResultado.appendText(print.toString());
 
-//                txtResultado.appendText("\nRegras\n");
-//                Rules rules = Rules.instance(root, sample.getRegisters());
-//                List<Queue<NodeBase>> regras = rules.getRules();
-//                regras.forEach((Queue regra) -> {
-//                    while (!regra.isEmpty()) {
-//                        NodeBase pop = (Node) regra.poll();
-//                      //  String formatTemp = String.format("%s ", pop instanceof Leaf ? String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", ((Leaf) pop).getLabel().getValue()) : String.format("(%s) %s", pop.getAttributeInstanceParent() != null ? pop.getAttributeInstanceParent().getValue() : "", pop.getAttribute().getName()));
-//                     //s   txtResultado.appendText(formatTemp);
-//                    }
-//                    txtResultado.appendText("\n");
-//                });
-//                
 //                txtResultado.appendText("\nPoda\n");
 //                PostPruning pruning = new PostPruning(root);
 //                pruning.process(sample.getRegisters());
-
                 return true;
             } catch (Exception e) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
