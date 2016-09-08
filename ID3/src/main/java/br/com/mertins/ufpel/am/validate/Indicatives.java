@@ -3,7 +3,8 @@ package br.com.mertins.ufpel.am.validate;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -11,92 +12,73 @@ import java.util.Objects;
  */
 public class Indicatives {
 
-    private final Label label;
-    private BigDecimal truePositives;
-    private BigDecimal trueNegatives;
-    private BigDecimal falsePositives;
-    private BigDecimal falseNegatives;
+    private final Map<Label, Estrutura> indicadores;
 
-    Indicatives(Label label, long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
-        this.label = label;
-        this.truePositives = new BigDecimal(truePositives);
-        this.falsePositives = new BigDecimal(falsePositives);
-        this.trueNegatives = new BigDecimal(trueNegatives);
-        this.falseNegatives = new BigDecimal(falseNegatives);
+    Indicatives() {
+        this.indicadores = new HashMap();
     }
 
     public void add(Label label, long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
-
+        indicadores.put(label, new Estrutura(truePositives, falsePositives, trueNegatives, falseNegatives));
     }
 
-    public Label getLabel() {
-        return label;
+    public BigDecimal getTruePositives(Label label) {
+        return this.indicadores.get(label).getTruePositives();
     }
 
-    public BigDecimal getTruePositives() {
-        return truePositives;
+    public BigDecimal getTrueNegatives(Label label) {
+        return this.indicadores.get(label).getTrueNegatives();
     }
 
-    public BigDecimal getTrueNegatives() {
-        return trueNegatives;
+    public BigDecimal getFalsePositives(Label label) {
+        return this.indicadores.get(label).getFalsePositives();
     }
 
-    public BigDecimal getFalsePositives() {
-        return falsePositives;
-    }
-
-    public BigDecimal getFalseNegatives() {
-        return falseNegatives;
-    }
-
-    public void addVerdadeirosPositivos() {
-        this.truePositives = this.truePositives.add(BigDecimal.ONE);
-    }
-
-    public void addVerdadeirosNegativos() {
-        this.trueNegatives = this.trueNegatives.add(BigDecimal.ONE);
-    }
-
-    public void addFalsosPositivos() {
-        this.falsePositives = this.falsePositives.add(BigDecimal.ONE);
-    }
-
-    public void addFalsosNegativos() {
-        this.falseNegatives = this.falseNegatives.add(BigDecimal.ONE);
+    public BigDecimal getFalseNegatives(Label label) {
+        return this.indicadores.get(label).getFalseNegatives();
     }
 
     public BigDecimal accuracy() {
+        if (!this.indicadores.isEmpty()) {
+            for (Label label : this.indicadores.keySet()) {
+                Estrutura estrutura = this.indicadores.get(label);
+                try {
+                    BigDecimal dividendo = estrutura.getTruePositives().add(estrutura.getTrueNegatives());
+                    BigDecimal divisor = estrutura.getTruePositives().add(estrutura.getTrueNegatives().add(
+                            estrutura.getFalsePositives().add(estrutura.getFalseNegatives())));
+                    return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
+                } catch (Exception ex) {
+                    return BigDecimal.ZERO;
+                }
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+
+    public BigDecimal precision(Label label) {
         try {
-            BigDecimal dividendo = this.truePositives.add(this.trueNegatives);
-            BigDecimal divisor = this.truePositives.add(this.trueNegatives.add(this.falsePositives.add(this.falseNegatives)));
-            return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
+            Estrutura estrutura = this.indicadores.get(label);
+            BigDecimal divisor = estrutura.getTruePositives().add(estrutura.getFalsePositives());
+            return estrutura.getTruePositives().divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
         }
     }
 
-    public BigDecimal precision() {
+    public BigDecimal recall(Label label) {
         try {
-            BigDecimal divisor = this.truePositives.add(this.falsePositives);
-            return this.truePositives.divide(divisor, 3, RoundingMode.HALF_UP);
+            Estrutura estrutura = this.indicadores.get(label);
+            BigDecimal divisor = estrutura.getTruePositives().add(estrutura.getFalseNegatives());
+            return estrutura.getTruePositives().divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
         }
     }
 
-    public BigDecimal recall() {
+    public BigDecimal f1(Label label) {
         try {
-            BigDecimal divisor = this.truePositives.add(this.falseNegatives);
-            return this.truePositives.divide(divisor, 3, RoundingMode.HALF_UP);
-        } catch (Exception ex) {
-            return BigDecimal.ZERO;
-        }
-    }
-
-    public BigDecimal f1() {
-        try {
-            BigDecimal precision = this.precision();
-            BigDecimal recall = this.recall();
+            BigDecimal precision = this.precision(label);
+            BigDecimal recall = this.recall(label);
             BigDecimal dividendo = precision.multiply(recall);
             BigDecimal divisor = precision.add(recall);
             return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
@@ -105,36 +87,36 @@ public class Indicatives {
         }
     }
 
-//    public void reset() {
-//        this.truePositives = BigDecimal.ZERO;
-//        this.trueNegatives = BigDecimal.ZERO;
-//        this.falsePositives = BigDecimal.ZERO;
-//        this.falseNegatives = BigDecimal.ZERO;
-//
-//    }
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 83 * hash + Objects.hashCode(this.label);
-        return hash;
-    }
+    private class Estrutura {
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+        private final BigDecimal truePositives;
+        private final BigDecimal trueNegatives;
+        private final BigDecimal falsePositives;
+        private final BigDecimal falseNegatives;
+
+        Estrutura(long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
+            this.truePositives = new BigDecimal(truePositives);
+            this.falsePositives = new BigDecimal(falsePositives);
+            this.trueNegatives = new BigDecimal(trueNegatives);
+            this.falseNegatives = new BigDecimal(falseNegatives);
         }
-        if (obj == null) {
-            return false;
+
+        public BigDecimal getTruePositives() {
+            return truePositives;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+
+        public BigDecimal getTrueNegatives() {
+            return trueNegatives;
         }
-        final Indicatives other = (Indicatives) obj;
-        if (!Objects.equals(this.label, other.label)) {
-            return false;
+
+        public BigDecimal getFalsePositives() {
+            return falsePositives;
         }
-        return true;
+
+        public BigDecimal getFalseNegatives() {
+            return falseNegatives;
+        }
+
     }
 
 }

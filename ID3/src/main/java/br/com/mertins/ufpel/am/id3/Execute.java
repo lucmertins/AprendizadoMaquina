@@ -51,14 +51,17 @@ public class Execute {
             System.out.println(print.toString());
             System.out.println("****** Testa ID3");
             Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
-            Set<Indicatives> indicativos = investigate.process();
-            indicativos.forEach(indicativo -> {
-                System.out.printf("Label [%s]\n", indicativo.getLabel().getValue());
-                System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives().intValue(), indicativo.getFalsePositives().intValue(),
-                        indicativo.getTrueNegatives().intValue(), indicativo.getFalseNegatives().intValue());
-                System.out.printf("Acurácia %f       Precisão %f    Recall %f    F1 %f\n", indicativo.accuracy().doubleValue(), indicativo.precision().doubleValue(), indicativo.recall().doubleValue(), indicativo.f1().doubleValue());
+            Indicatives indicativo = investigate.process();
+            sample.getLabels().forEach(label -> {
+                System.out.printf("Label [%s]\n", label.getValue());
+                System.out.printf("  VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives(label).intValue(),
+                        indicativo.getFalsePositives(label).intValue(),
+                        indicativo.getTrueNegatives(label).intValue(), indicativo.getFalseNegatives(label).intValue());
+                System.out.printf("  Precisão %f    Recall %f    F1 %f\n", indicativo.precision(label).doubleValue(),
+                        indicativo.recall(label).doubleValue(), indicativo.f1(label).doubleValue());
 
             });
+            System.out.printf("\nAcurácia %f\n",indicativo.accuracy().doubleValue());
 
 //            System.out.printf("VP %d   FP %d   VN %d   FN %d\n", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue(),
 //                    indicativos.getVerdadeirosNegativos().intValue(), indicativos.getFalsosNegativos().intValue());

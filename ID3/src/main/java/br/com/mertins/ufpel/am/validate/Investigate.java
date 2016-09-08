@@ -37,8 +37,8 @@ public class Investigate {
         });
     }
 
-    public Set<Indicatives> process() {
-        Set<Indicatives> resultados = new HashSet<>();
+    public Indicatives process() {
+
         this.registers.forEach(register -> {
             NodeBase node = root;
             if (!(node instanceof Leaf)) {
@@ -56,13 +56,13 @@ public class Investigate {
                 this.registra(((Leaf) node).getLabel(), register.getLabel());
             }
         });
+        Indicatives indicador = new Indicatives();
         acumulado.keySet().stream().forEach((label) -> {
             Acumulador acumulador = acumulado.get(label);
-            Indicatives indic = new Indicatives(label, acumulador.getTruePositive(), acumulador.getFalsePositive(),acumulador.getTrueNegative(),acumulador.getFalseNegative());
-            resultados.add(indic);
+            indicador.add(label, acumulador.getTruePositive(), acumulador.getFalsePositive(), acumulador.getTrueNegative(), acumulador.getFalseNegative());
         });
 
-        return resultados;
+        return indicador;
     }
 
     private void registra(Label labelTree, Label labelCorreto) {
