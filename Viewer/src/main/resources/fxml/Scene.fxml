@@ -91,8 +91,6 @@
                                           <TextField fx:id="txtRemoverAtributos" prefHeight="26.0" prefWidth="506.0" promptText="Informe a posição dos atributos a remover, separados por virgulas em caso de mais de 1" />
                                           <Label alignment="BOTTOM_LEFT" prefHeight="29.0" prefWidth="36.0" text="Label" />
                                           <ChoiceBox fx:id="cmbLabel" prefHeight="26.0" prefWidth="397.0" />
-                                          <Label alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="157.0" text="Rótulo Positivo do Label" />
-                                          <TextField fx:id="txtLabelPositivo" prefHeight="26.0" prefWidth="506.0" promptText="Informe qual o rótulo positivo" />
                                        </children>
                                     </VBox>
                                  </content>
