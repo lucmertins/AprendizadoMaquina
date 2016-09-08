@@ -43,7 +43,7 @@ public class Node extends NodeBase {
 
     public void replace(Leaf leaf) {
         if (this.getParent() != null) {
-            this.getParent().addChild(this.getParent().getAttributeInstanceParent(), leaf);
+            this.getParent().addChild(this.getAttributeInstanceParent(), leaf);
             List<Edge> remover = new ArrayList<>();
             this.getParent().childrenEdge.forEach(edge -> {
                 if (edge.getNode().equals(this)) {
