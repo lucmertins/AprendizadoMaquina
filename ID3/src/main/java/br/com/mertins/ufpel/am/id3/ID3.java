@@ -37,17 +37,19 @@ public class ID3 {
         }
         if (root != null) {
             root.addEdge(registers, attributes);
+            root.add(registers);
+            avaliaRamoFolha(root);
         }
-        avaliaRamoFolha(root);
         return root;
     }
 
     private void avaliaRamoFolha(NodeBase node) {
         if (node != null && !(node instanceof Leaf)) {
             if (!node.hasChildren()) {
-                Label label = getLabel(node.getPositive() - node.getNegative() >= 0);
-                Leaf leaf = new Leaf(label);
+                List<Register> subconjunto = Register.subconjunto(registers, ((Node)node.getParent()).getAttribute(), node.getAttributeInstanceParent());
+                Leaf leaf = new Leaf(Register.dominant(subconjunto));
                 leaf.setAttributeInstanceParent(((Node) node).getAttributeInstanceParent());
+                leaf.add(subconjunto);
                 ((Node) node).replace(leaf);
             } else {
                 List<NodeBase> children = node.getChildren();
@@ -57,16 +59,4 @@ public class ID3 {
             }
         }
     }
-
-    private Label getLabel(boolean positivo) {
-//        for (Label label : labels) {
-//            if (positivo && label.isPositive()) {
-//                return label;
-//            } else if (!positivo && !label.isPositive()) {
-//                return label;
-//            }
-//        }
-        return null;
-    }
-
 }

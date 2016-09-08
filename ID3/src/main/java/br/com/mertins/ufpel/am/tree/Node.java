@@ -32,14 +32,6 @@ public class Node extends NodeBase {
         return gain;
     }
 
-    public AttributeInstance getAttributeInstanceParent() {
-        return attributeInstanceParent;
-    }
-
-    public void setAttributeInstanceParent(AttributeInstance attributeInstanceParent) {
-        this.attributeInstanceParent = attributeInstanceParent;
-    }
-
     public NodeBase returnChild(AttributeInstance attributeInstance) {
         for (Edge edge : this.childrenEdge) {
             if (edge.getAttributeInstance().equals(attributeInstance)) {
@@ -51,7 +43,7 @@ public class Node extends NodeBase {
 
     public void replace(Leaf leaf) {
         if (this.getParent() != null) {
-            this.getParent().addChild(((Node) this.getParent()).attributeInstanceParent, leaf);
+            this.getParent().addChild(this.getParent().getAttributeInstanceParent(), leaf);
             List<Edge> remover = new ArrayList<>();
             this.getParent().childrenEdge.forEach(edge -> {
                 if (edge.getNode().equals(this)) {
@@ -66,13 +58,14 @@ public class Node extends NodeBase {
 
     public void addEdge(List<Register> registers, List<ElementValue> attributes) {
         attributes.remove(this.attribute);
-        if (!registers.isEmpty() && !attributes.isEmpty()) {
+        List<ElementValue> attributesTemp = new ArrayList<>(attributes);
+        if (!registers.isEmpty() && !attributesTemp.isEmpty()) {
             for (AttributeInstance attributeInstance : this.getAttribute().getAttributesInstance()) {
                 List<Register> subconjunto = this.subconjunto(registers, this.getAttribute(), attributeInstance);
                 if (!subconjunto.isEmpty()) {
                     NodeBase node = null;
                     double calcMax = 0;
-                    for (ElementValue attributeTemp : attributes) {
+                    for (ElementValue attributeTemp : attributesTemp) {
                         double calc = Gain.calc(subconjunto, attributeTemp);
                         if (calc == 0) {
                             node = new Leaf(Register.dominant(subconjunto));
@@ -87,8 +80,9 @@ public class Node extends NodeBase {
                     if (node != null) {
                         this.childrenEdge.add(new Edge(attributeInstance, node));
                         node.setParent(this);
+                        node.add(subconjunto);
                         if (!(node instanceof Leaf)) {
-                            ((Node) node).addEdge(subconjunto, attributes);
+                            ((Node) node).addEdge(subconjunto, attributesTemp);
                         }
                     }
                 }
@@ -96,11 +90,9 @@ public class Node extends NodeBase {
         }
     }
 
-   
-
     @Override
     public String toString() {
-        return String.format("Node %s gain=%f positive=%d negative=%d}", attribute, gain, getPositive(), getNegative());
+        return String.format("Node %s gain=%f }", attribute, gain);
     }
 
     @Override
@@ -126,7 +118,7 @@ public class Node extends NodeBase {
             return false;
         }
         if (this.getParent() != null && other.getParent() != null) {
-            if (!Objects.equals(this.getParent().attributeInstanceParent, other.getParent().attributeInstanceParent)) {
+            if (!Objects.equals(this.getParent().getAttributeInstanceParent(), other.getParent().getAttributeInstanceParent())) {
                 return false;
             }
         }

@@ -21,7 +21,7 @@ public class Leaf extends NodeBase {
 
     @Override
     public String toString() {
-        return String.format("Leaf label=%s positive=%d negative=%d}", label, this.getPositive(), this.getNegative());
+        return String.format("Leaf label=%s instance=%s}", label, this.getAttributeInstanceParent() == null ? "" : this.getAttributeInstanceParent().getValue());
     }
 
     @Override

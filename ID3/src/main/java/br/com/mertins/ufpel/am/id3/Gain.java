@@ -30,56 +30,6 @@ public class Gain {
         return entropiaTotal;
     }
 
-//    public static long positivos(List<Register> set) {
-//        long positivos = 0;
-//        for (Register registro : set) {
-//            if (registro.getLabel().isPositive()) {
-//                positivos++;
-//            }
-//        }
-//        return positivos;
-//    }
-//
-//    public static long positivos(List<Register> set, AttributeInstance attributeInstance) {
-//        long positivos = 0;
-//        for (Register registro : set) {
-//            for (AttributeInstance instance : registro.getAttributesInstance()) {
-//                if (attributeInstance.equals(instance)) {
-//                    if (registro.getLabel().isPositive()) {
-//                        positivos++;
-//                    }
-//
-//                }
-//            }
-//        }
-//        return positivos;
-//    }
-
-//    public static long negativos(List<Register> set) {
-//        long negativos = 0;
-//        for (Register registro : set) {
-//            if (!registro.getLabel().isPositive()) {
-//                negativos++;
-//            }
-//        }
-//        return negativos;
-//    }
-
-//    public static long negativos(List<Register> set, AttributeInstance attributeInstance) {
-//        long negativos = 0;
-//        for (Register registro : set) {
-//            for (AttributeInstance instance : registro.getAttributesInstance()) {
-//                if (attributeInstance.equals(instance)) {
-//                    if (!registro.getLabel().isPositive()) {
-//                        negativos++;
-//                    }
-//
-//                }
-//            }
-//        }
-//        return negativos;
-//    }
-
     private static double totalSet(List<Register> set, AttributeInstance attributeInstance) {
         long total = 0;
         for (Register registro : set) {

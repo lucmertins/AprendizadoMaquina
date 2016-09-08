@@ -65,6 +65,18 @@ public class Register implements Serializable {
         return domi;
     }
 
+    public static List<Register> subconjunto(List<Register> avalRegister, Attribute attribute, AttributeInstance attributeInstance) {
+        List<Register> retorno = new ArrayList<>();
+        avalRegister.forEach(register -> {
+            register.getAttributesInstance().forEach(attInst -> {
+                if (attInst.equals(attributeInstance) && attInst.getAttribute().equals(attribute)) {
+                    retorno.add(register);
+                }
+            });
+        });
+        return retorno;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -87,21 +99,4 @@ public class Register implements Serializable {
         return Objects.equals(this.line, other.line);
     }
 
-//    public static Label getLabelPositive(List<Register> registros) {
-//        for (Register registro : registros) {
-//            if (registro.getLabel().isPositive()) {
-//                return registro.getLabel();
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public static Label getLabelNegative(List<Register> registros) {
-//        for (Register registro : registros) {
-//            if (!registro.getLabel().isPositive()) {
-//                return registro.getLabel();
-//            }
-//        }
-//        return null;
-//    }
 }
