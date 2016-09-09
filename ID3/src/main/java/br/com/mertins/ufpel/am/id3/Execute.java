@@ -66,10 +66,10 @@ public class Execute {
             System.out.println(print.toString());
             System.out.println("*****");
 //
-//            PostPruning pruning = new PostPruning(root);
-//            pruning.process(sample.getRegisters());
-//
-//            System.out.println("*****");
+            PostPruning pruning = new PostPruning(root);
+            pruning.process(sample.getRegisters(),sample.getLabels());
+
+            System.out.println("*****");
 
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());

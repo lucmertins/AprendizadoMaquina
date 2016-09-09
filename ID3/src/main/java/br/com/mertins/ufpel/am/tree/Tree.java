@@ -1,8 +1,6 @@
 package br.com.mertins.ufpel.am.tree;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,10 +10,18 @@ import java.util.Set;
 public class Tree {
 
     private final Node rootOrig;
-    private final List<Leaf> avaliadas = new ArrayList<>();
+    private Set<Leaf> valued = new HashSet<>();
 
     public Tree(Node root) {
         this.rootOrig = root;
+    }
+
+    public Set<Leaf> getValued() {
+        return valued;
+    }
+
+    public void setValued(Set<Leaf> valued) {
+        this.valued = valued;
     }
 
     public Node pruning() {
