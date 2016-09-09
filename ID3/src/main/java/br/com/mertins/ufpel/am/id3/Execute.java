@@ -1,18 +1,13 @@
 package br.com.mertins.ufpel.am.id3;
 
 import br.com.mertins.ufpel.am.preparacao.Sample;
-import br.com.mertins.ufpel.am.tree.Leaf;
 import br.com.mertins.ufpel.am.tree.Node;
-import br.com.mertins.ufpel.am.tree.NodeBase;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  *
@@ -31,21 +26,14 @@ public class Execute {
             File file = new File(fileName);
             System.out.printf("Arquivo %s\n", file.getAbsolutePath());
             Sample sample = new Sample();
-            try (FileReader arq = new FileReader(fileName)) {
-                BufferedReader lerArq = new BufferedReader(arq);
-                sample.avaliaFirstLine(lerArq);
-            }
+            sample.avaliaFirstLine(file);
             System.out.println("****** Ajuste");
             List<Integer> remove = new ArrayList<>();
             remove.add(0);
 //            remove.add(1);
             sample.removeAttributesPos(remove);
             sample.defineColumnLabel(5);
-            try (FileReader arq = new FileReader(fileName)) {
-                BufferedReader lerArq = new BufferedReader(arq);
-                sample.process(lerArq);
-            }
-
+            sample.process(file);
             System.out.println("******ID3");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
             Node root = id3.process();

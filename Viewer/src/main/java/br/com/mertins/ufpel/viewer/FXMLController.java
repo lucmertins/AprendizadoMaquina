@@ -136,10 +136,7 @@ public class FXMLController {
             String fileName = txtFileChoose.getText();
             sample = new Sample();
             sample.setFirstLineAttribute(rbFirstLineCabecalho.isSelected());
-            try (FileReader arq = new FileReader(fileName)) {
-                BufferedReader lerArq = new BufferedReader(arq);
-                sample.avaliaFirstLine(lerArq);
-            }
+            sample.avaliaFirstLine(fileName);
             txtAtributos.setText(null);
             cmbLabel.getItems().clear();
             ObservableList<Choice> choices = FXCollections.observableArrayList();
@@ -198,10 +195,7 @@ public class FXMLController {
         if (sample != null) {
             try {
                 String fileName = txtFileChoose.getText();
-                try (FileReader arq = new FileReader(fileName)) {
-                    BufferedReader lerArq = new BufferedReader(arq);
-                    sample.process(lerArq);
-                }
+                sample.process(fileName);
                 ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
                 Node root = id3.process();
                 StringBuilder print = root.print();
