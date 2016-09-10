@@ -24,6 +24,11 @@ public class Tree {
         this.valued = valued;
     }
 
+    public Node pruning(Set<Leaf> valued) {
+        this.valued = valued;
+        return this.pruning();
+    }
+
     public Node pruning() {
         Set<Leaf> findAllLeaf = this.findAllLeaf(rootOrig);
 
