@@ -77,11 +77,11 @@ public class NodeBase implements Serializable {
     }
 
     public Map<Label, BigDecimal> sumary() {
-        this.sumary.keySet().stream().map((label) -> {
-            return label;
-        }).forEach((label) -> {
-            System.out.printf("%s %d\n", label.getValue(), this.sumary.get(label).intValue());
-        });
+//        this.sumary.keySet().stream().map((label) -> {
+//            return label;
+//        }).forEach((label) -> {
+//            System.out.printf("%s %d\n", label.getValue(), this.sumary.get(label).intValue());
+//        });
         return this.sumary;
 
     }

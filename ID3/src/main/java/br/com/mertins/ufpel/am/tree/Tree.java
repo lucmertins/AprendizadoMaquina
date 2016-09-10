@@ -2,6 +2,7 @@ package br.com.mertins.ufpel.am.tree;
 
 import br.com.mertins.ufpel.am.preparacao.Label;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,19 +39,32 @@ public class Tree {
 
         if (!findAllLeaf.isEmpty()) {
             Leaf leafCand = (Leaf) findAllLeaf.toArray()[0];
-
+            this.valued.add(leafCand);
             if (leafCand.getParent() != null) {
-
                 Node node = (Node) leafCand.getParent();
                 List<NodeBase> children = node.getChildren();
                 if (children != null) {
+                    Map<Label, BigDecimal> novoSumario = new HashMap<>();
                     children.forEach(nodebase -> {
-                        System.out.printf("Sibling %s \n", nodebase);
+                        
                         Map<Label, BigDecimal> sumary = nodebase.sumary();
                         sumary.keySet().forEach(label -> {
-                            System.out.printf("\t\t label[%s]  %d", label, sumary.get(label).longValue());
+//                            System.out.printf("\t\t label[%s]  %d\n", label, sumary.get(label).longValue());
+                            if (novoSumario.containsKey(label)) {
+                                novoSumario.put(label, novoSumario.get(label).add(sumary.get(label)));
+                            } else {
+                                novoSumario.put(label, sumary.get(label));
+                            }
                         });
 // totalizar o total de labels, escolhendo o que mais tem
+                        System.out.printf("Sibling %s \n", nodebase);
+                        novoSumario.keySet().forEach(label->{
+                              System.out.printf("\t\t label[%s]  %d\n", label, sumary.get(label).longValue());
+                        
+                        });
+
+
+
                     });
 
                 }
