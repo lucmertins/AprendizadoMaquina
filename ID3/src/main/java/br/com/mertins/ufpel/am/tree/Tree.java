@@ -1,6 +1,10 @@
 package br.com.mertins.ufpel.am.tree;
 
+import br.com.mertins.ufpel.am.preparacao.Label;
+import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,9 +36,30 @@ public class Tree {
     public Node pruning() {
         Set<Leaf> findAllLeaf = this.findAllLeaf(rootOrig);
 
-        findAllLeaf.forEach(leaf -> {
-            System.out.printf("%s \n", leaf);
-        });
+        if (!findAllLeaf.isEmpty()) {
+            Leaf leafCand = (Leaf) findAllLeaf.toArray()[0];
+
+            if (leafCand.getParent() != null) {
+
+                Node node = (Node) leafCand.getParent();
+                List<NodeBase> children = node.getChildren();
+                if (children != null) {
+                    children.forEach(nodebase -> {
+                        System.out.printf("Sibling %s \n", nodebase);
+                        Map<Label, BigDecimal> sumary = nodebase.sumary();
+                        sumary.keySet().forEach(label -> {
+                            System.out.printf("\t\t label[%s]  %d", label, sumary.get(label).longValue());
+                        });
+// totalizar o total de labels, escolhendo o que mais tem
+                    });
+
+                }
+                System.out.printf("Tentar podar %s   pai %s\n", leafCand, leafCand.getParent());
+            }
+//            findAllLeaf.forEach(leaf -> {
+//                System.out.printf("%s \n", leaf);
+//            });
+        }
 
         return rootOrig;
     }
@@ -43,7 +68,9 @@ public class Tree {
         Set<Leaf> retorno = new HashSet<>();
         if (!(node instanceof Leaf)) {
             node.getChildren().forEach(child -> {
-                retorno.addAll(findAllLeaf(child));
+                if (!this.valued.contains(child)) {
+                    retorno.addAll(findAllLeaf(child));
+                }
             });
         } else {
             retorno.add((Leaf) node);
