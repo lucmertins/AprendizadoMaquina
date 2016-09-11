@@ -47,6 +47,7 @@ public class Tree {
                     return leaf;
                 } else {
                     node.replace(leaf);
+                    leaf.setAttributeInstanceParent(node.getAttributeInstanceParent());
                     return node.getParent();
                 }
             }
