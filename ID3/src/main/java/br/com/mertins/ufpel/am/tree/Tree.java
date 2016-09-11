@@ -1,5 +1,6 @@
 package br.com.mertins.ufpel.am.tree;
 
+import br.com.mertins.ufpel.am.preparacao.AttributeInstance;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class Tree {
 
     public Tree(NodeBase root) {
         this.nodeRoot = root.copy();
+//        this.nodeRoot = Tree.copy(root);
     }
 
     public NodeBase getNodeRoot() {
@@ -115,5 +117,22 @@ public class Tree {
             }
         }
         return label;
+    }
+
+    private static NodeBase copy(NodeBase nodeBase) {
+        NodeBase nodeBaseCopy = nodeBase.copy();
+        if (!(nodeBase instanceof Leaf)) {
+            Node node = (Node) nodeBase;
+            Node nodeCopy = node.copy();
+            node.childrenEdge.forEach(edge -> {
+                AttributeInstance attributeInstanceCopy = edge.getAttributeInstance().copy();
+                nodeCopy.AddEdge(attributeInstanceCopy, nodeCopy);
+                
+            });
+
+            // refazer Edge, apondando para as cópias tbm
+        }
+        return nodeBaseCopy;
+        
     }
 }

@@ -78,17 +78,21 @@ public abstract class NodeBase implements Serializable {
     public Map<Label, BigDecimal> sumary() {
         return this.sumary;
     }
-
+    
     protected NodeBase copy(NodeBase newNodeBase) {
         newNodeBase.parent = this.parent;
         newNodeBase.attributeInstanceParent = this.attributeInstanceParent == null ? null : this.attributeInstanceParent.copy();
-        newNodeBase.childrenEdge = new ArrayList<>(this.childrenEdge);
+//        newNodeBase.childrenEdge = new ArrayList<>(this.childrenEdge);
         newNodeBase.sumary = new HashMap<>(this.sumary);
         return newNodeBase;
     }
 
     protected abstract NodeBase copy();
     
+    void AddEdge(AttributeInstance attributeInstance, NodeBase node){
+        this.childrenEdge.add(new Edge(attributeInstance, node));
+        
+    }
     private void print(String prefix, boolean isTail, StringBuilder sb) {
         String value = this.getAttributeInstanceParent() == null ? "" : this.getAttributeInstanceParent().getValue();
         String text = this instanceof Leaf ? ((Leaf) this).getLabel().getValue() : ((Node) this).getAttribute().getName();

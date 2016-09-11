@@ -72,7 +72,7 @@ public class Execute {
             System.out.println(bestTree.print());
             System.out.println("*****");
 
-             System.out.println("***** Origin tree");
+            System.out.println("***** Origin tree");
             System.out.println(root.print());
             System.out.println("*****");
         } catch (IOException e) {
