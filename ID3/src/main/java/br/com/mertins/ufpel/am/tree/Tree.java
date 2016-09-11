@@ -47,7 +47,7 @@ public class Tree {
                     return leaf;
                 } else {
                     node.replace(leaf);
-                    return node;
+                    return node.getParent();
                 }
             }
 

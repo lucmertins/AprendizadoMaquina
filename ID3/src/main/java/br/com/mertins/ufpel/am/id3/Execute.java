@@ -64,7 +64,7 @@ public class Execute {
             Rules rules = Rules.instance(root);
             print = rules.print();
             System.out.println(print.toString());
-            System.out.println("*****");
+            System.out.println("***** Poda");
 //
             PostPruning pruning = new PostPruning(root);
             pruning.process(sample.getRegisters(),sample.getLabels());
