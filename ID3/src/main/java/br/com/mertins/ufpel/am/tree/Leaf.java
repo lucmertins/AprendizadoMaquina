@@ -38,4 +38,11 @@ public class Leaf extends NodeBase {
     public boolean equals(Object obj) {
         return super.equals(obj) && this.label.equals(((Leaf) obj).label);
     }
+
+    @Override
+    protected NodeBase copy() {
+        Leaf newLeaf = new Leaf(this.label.copy());
+        super.copy(newLeaf);
+        return newLeaf;
+    }
 }

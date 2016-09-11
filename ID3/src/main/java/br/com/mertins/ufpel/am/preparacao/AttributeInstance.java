@@ -27,6 +27,10 @@ public class AttributeInstance {
         return attribute;
     }
 
+    public AttributeInstance copy() {
+        return new AttributeInstance(attribute.copy(), value);
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;

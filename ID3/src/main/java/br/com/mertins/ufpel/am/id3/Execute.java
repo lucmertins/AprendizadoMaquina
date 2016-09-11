@@ -2,6 +2,7 @@ package br.com.mertins.ufpel.am.id3;
 
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.tree.NodeBase;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.File;
@@ -37,8 +38,7 @@ public class Execute {
             System.out.println("******ID3");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
             Node root = id3.process();
-            StringBuilder print = root.print();
-            System.out.println(print.toString());
+            System.out.println(root.print());
             System.out.println("****** Testa ID3");
             Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
             Indicatives indicativo = investigate.process();
@@ -62,15 +62,19 @@ public class Execute {
 //            System.out.printf("%s\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
             System.out.println("***** Regras");
             Rules rules = Rules.instance(root);
-            print = rules.print();
-            System.out.println(print.toString());
+            System.out.println(rules.print());
             System.out.println("***** Poda");
 //
             PostPruning pruning = new PostPruning(root);
-            pruning.process(sample.getRegisters(),sample.getLabels());
+            NodeBase bestTree = pruning.process(sample.getRegisters(), sample.getLabels());
 
+            System.out.println("***** Best tree");
+            System.out.println(bestTree.print());
             System.out.println("*****");
 
+             System.out.println("***** Origin tree");
+            System.out.println(root.print());
+            System.out.println("*****");
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }

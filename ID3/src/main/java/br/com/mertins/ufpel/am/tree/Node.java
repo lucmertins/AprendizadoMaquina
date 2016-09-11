@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 public class Node extends NodeBase {
 
-    private final ElementValue attribute;
+    private ElementValue attribute;
     private final double gain;
 
     public Node(ElementValue attribute, double gain) {
@@ -123,6 +123,14 @@ public class Node extends NodeBase {
             }
         }
         return true;
+    }
+
+    @Override
+    protected Node copy() {
+        Node newNode = new Node(this.attribute.copy(), gain);
+        super.copy(newNode);
+        return newNode;
+
     }
 
     private List<Register> subconjunto(List<Register> avalRegister, Attribute attribute, AttributeInstance attributeInstance) {

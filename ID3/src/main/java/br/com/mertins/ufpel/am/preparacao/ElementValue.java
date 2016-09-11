@@ -4,6 +4,6 @@ package br.com.mertins.ufpel.am.preparacao;
  *
  * @author mertins
  */
-    public interface ElementValue {
-    
+public interface ElementValue {
+    ElementValue copy();
 }

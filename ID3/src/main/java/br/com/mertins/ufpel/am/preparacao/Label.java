@@ -2,12 +2,14 @@ package br.com.mertins.ufpel.am.preparacao;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author mertins
  */
-public class Label implements ElementValue,Serializable {
+public class Label implements ElementValue, Serializable {
 
     private String value;
 
@@ -23,23 +25,6 @@ public class Label implements ElementValue,Serializable {
         this.value = value;
     }
 
-//    public static Label positive(Label label,Set<Label> labels) {
-//        for (Label labelTemp : labels) {
-//            if (labelTemp.equals(label)) {
-//                return label;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public static Label negative(Set<Label> labels) {
-//        for (Label label : labels) {
-//            if (!label.isPositive()) {
-//                return label;
-//            }
-//        }
-//        return null;
-//    }
     @Override
     public int hashCode() {
         int hash = 5;
@@ -65,6 +50,21 @@ public class Label implements ElementValue,Serializable {
     @Override
     public String toString() {
         return String.format("Label {value= %s}", value);
+    }
+
+    @Override
+    public ElementValue clone() {
+        try {
+            return (ElementValue) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Label.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public ElementValue copy() {
+        return new Label(this.value);
     }
 
 }

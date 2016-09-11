@@ -14,12 +14,12 @@ import java.util.Map;
  *
  * @author mertins
  */
-public class NodeBase implements Serializable {
+public abstract class NodeBase implements Serializable {
 
     private NodeBase parent;
     private AttributeInstance attributeInstanceParent;
-    protected final List<NodeBase.Edge> childrenEdge = new ArrayList<>();
-    protected final Map<Label, BigDecimal> sumary = new HashMap<>();
+    protected List<NodeBase.Edge> childrenEdge = new ArrayList<>();
+    protected Map<Label, BigDecimal> sumary = new HashMap<>();
 
     public NodeBase() {
     }
@@ -65,7 +65,6 @@ public class NodeBase implements Serializable {
     }
 
     public void add(List<Register> registers) {
-        double size = registers.size();
         registers.stream().forEach((register) -> {
             if (sumary.containsKey(register.getLabel())) {
                 sumary.put(register.getLabel(), sumary.get(register.getLabel()).add(BigDecimal.ONE));
@@ -77,15 +76,19 @@ public class NodeBase implements Serializable {
     }
 
     public Map<Label, BigDecimal> sumary() {
-//        this.sumary.keySet().stream().map((label) -> {
-//            return label;
-//        }).forEach((label) -> {
-//            System.out.printf("%s %d\n", label.getValue(), this.sumary.get(label).intValue());
-//        });
         return this.sumary;
-
     }
 
+    protected NodeBase copy(NodeBase newNodeBase) {
+        newNodeBase.parent = this.parent;
+        newNodeBase.attributeInstanceParent = this.attributeInstanceParent == null ? null : this.attributeInstanceParent.copy();
+        newNodeBase.childrenEdge = new ArrayList<>(this.childrenEdge);
+        newNodeBase.sumary = new HashMap<>(this.sumary);
+        return newNodeBase;
+    }
+
+    protected abstract NodeBase copy();
+    
     private void print(String prefix, boolean isTail, StringBuilder sb) {
         String value = this.getAttributeInstanceParent() == null ? "" : this.getAttributeInstanceParent().getValue();
         String text = this instanceof Leaf ? ((Leaf) this).getLabel().getValue() : ((Node) this).getAttribute().getName();

@@ -12,7 +12,7 @@ public class Attribute implements ElementValue, Serializable {
 
     private int position;
     private String name;
-    private final Set<AttributeInstance> attributesInstance = new HashSet<>();
+    private Set<AttributeInstance> attributesInstance = new HashSet<>();
 
     public Attribute() {
     }
@@ -77,4 +77,10 @@ public class Attribute implements ElementValue, Serializable {
         return String.format("{position= %s  name= %s}", position, name);
     }
 
+    public Attribute copy() {
+        Attribute newAttribute = new Attribute(position, name);
+        newAttribute.attributesInstance = new HashSet<>(this.attributesInstance);
+        return newAttribute;
+
+    }
 }
