@@ -2,6 +2,8 @@ package br.com.mertins.ufpel.am.tree;
 
 import br.com.mertins.ufpel.am.preparacao.ElementValue;
 import br.com.mertins.ufpel.am.preparacao.Label;
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  *
@@ -13,6 +15,14 @@ public class Leaf extends NodeBase {
 
     public Leaf(ElementValue label) {
         this.label = (Label) label;
+    }
+
+    public Leaf(ElementValue label, Map<Label, BigDecimal> newSumary) {
+        this.label = (Label) label;
+        this.sumary.clear();
+        newSumary.keySet().forEach(labelSumary -> {
+            this.sumary.put(labelSumary, newSumary.get(labelSumary));
+        });
     }
 
     public Label getLabel() {

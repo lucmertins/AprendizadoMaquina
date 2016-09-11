@@ -18,16 +18,16 @@ import java.util.Set;
 public class Investigate {
 
     private final Map<Label, Acumulador> acumulado;
+    private final List<Register> registers;
+    private final NodeBase root;
 
     public Investigate() {
         this.acumulado = new HashMap<>();
         this.registers = null;
         this.root = null;
     }
-    private final List<Register> registers;
-    private final Node root;
 
-    public Investigate(Node root, List<Register> registers, Set<Label> labels) {
+    public Investigate(NodeBase root, List<Register> registers, Set<Label> labels) {
         this.acumulado = new HashMap<>();
         this.registers = registers;
         this.root = root;

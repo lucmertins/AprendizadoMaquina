@@ -19,7 +19,7 @@ public class NodeBase implements Serializable {
     private NodeBase parent;
     private AttributeInstance attributeInstanceParent;
     protected final List<NodeBase.Edge> childrenEdge = new ArrayList<>();
-    private final Map<Label, BigDecimal> sumary = new HashMap<>();
+    protected final Map<Label, BigDecimal> sumary = new HashMap<>();
 
     public NodeBase() {
     }

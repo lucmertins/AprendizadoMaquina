@@ -1,15 +1,14 @@
 package br.com.mertins.ufpel.viewer;
 
 import br.com.mertins.ufpel.am.id3.ID3;
+import br.com.mertins.ufpel.am.id3.PostPruning;
 import br.com.mertins.ufpel.am.id3.Rules;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -231,9 +230,9 @@ public class FXMLController {
                 print = rules.print();
                 txtResultado.appendText(print.toString());
 
-//                txtResultado.appendText("\nPoda\n");
-//                PostPruning pruning = new PostPruning(root);
-//                pruning.process(sample.getRegisters());
+                txtResultado.appendText("\nPoda\n");
+                PostPruning pruning = new PostPruning(root);
+                pruning.process(sample.getRegisters(),sample.getLabels());
                 return true;
             } catch (Exception e) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");

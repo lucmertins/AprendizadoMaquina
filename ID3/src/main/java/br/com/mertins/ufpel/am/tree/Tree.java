@@ -14,10 +14,10 @@ import java.util.Set;
  */
 public class Tree {
 
-    private final Node rootOrig;
+    private final NodeBase rootOrig;
     private Set<Leaf> valued = new HashSet<>();
 
-    public Tree(Node root) {
+    public Tree(NodeBase root) {
         this.rootOrig = root;
     }
 
@@ -29,53 +29,30 @@ public class Tree {
         this.valued = valued;
     }
 
-    public Node pruning(Set<Leaf> valued) {
+    public NodeBase pruning(Set<Leaf> valued) {
         this.valued = valued;
         return this.pruning();
     }
 
-    public Node pruning() {
+    public NodeBase pruning() {
         Set<Leaf> findAllLeaf = this.findAllLeaf(rootOrig);
-
         if (!findAllLeaf.isEmpty()) {
             Leaf leafCand = (Leaf) findAllLeaf.toArray()[0];
             this.valued.add(leafCand);
             if (leafCand.getParent() != null) {
                 Node node = (Node) leafCand.getParent();
-                List<NodeBase> children = node.getChildren();
-                if (children != null) {
-                    Map<Label, BigDecimal> novoSumario = new HashMap<>();
-                    children.forEach(nodebase -> {
-                        
-                        Map<Label, BigDecimal> sumary = nodebase.sumary();
-                        sumary.keySet().forEach(label -> {
-//                            System.out.printf("\t\t label[%s]  %d\n", label, sumary.get(label).longValue());
-                            if (novoSumario.containsKey(label)) {
-                                novoSumario.put(label, novoSumario.get(label).add(sumary.get(label)));
-                            } else {
-                                novoSumario.put(label, sumary.get(label));
-                            }
-                        });
-// totalizar o total de labels, escolhendo o que mais tem
-                        System.out.printf("Sibling %s \n", nodebase);
-                        novoSumario.keySet().forEach(label->{
-                              System.out.printf("\t\t label[%s]  %d\n", label, sumary.get(label).longValue());
-                        
-                        });
-
-
-
-                    });
-
+                Map<Label, BigDecimal> sumarioAcumulado = this.sumarioAcumulado(rootOrig);
+                Leaf leaf = new Leaf(this.bestLabel(sumarioAcumulado), sumarioAcumulado);
+                if (node.getParent() == null) {
+                    return leaf;
+                } else {
+                    node.replace(leaf);
+                    return node;
                 }
-                System.out.printf("Tentar podar %s   pai %s\n", leafCand, leafCand.getParent());
             }
-//            findAllLeaf.forEach(leaf -> {
-//                System.out.printf("%s \n", leaf);
-//            });
-        }
 
-        return rootOrig;
+        }
+        return null;
     }
 
     private Set<Leaf> findAllLeaf(NodeBase node) {
@@ -90,5 +67,35 @@ public class Tree {
             retorno.add((Leaf) node);
         }
         return retorno;
+    }
+
+    private Map<Label, BigDecimal> sumarioAcumulado(NodeBase node) {
+        List<NodeBase> children = node.getChildren();
+        Map<Label, BigDecimal> novoSumario = new HashMap<>();
+        if (children != null) {
+            children.forEach(nodebase -> {
+                Map<Label, BigDecimal> sumary = nodebase.sumary();
+                sumary.keySet().forEach(label -> {
+                    if (novoSumario.containsKey(label)) {
+                        novoSumario.put(label, novoSumario.get(label).add(sumary.get(label)));
+                    } else {
+                        novoSumario.put(label, sumary.get(label));
+                    }
+                });
+            });
+        }
+        return novoSumario;
+    }
+
+    private Label bestLabel(Map<Label, BigDecimal> sumarioAcumulado) {
+        Label label = null;
+        long valueLabel = 0L;
+        for (Label labelTemp : sumarioAcumulado.keySet()) {
+            if (label == null || sumarioAcumulado.get(labelTemp).longValue() > valueLabel) {
+                label = labelTemp;
+                valueLabel = sumarioAcumulado.get(label).longValue();
+            }
+        }
+        return label;
     }
 }
