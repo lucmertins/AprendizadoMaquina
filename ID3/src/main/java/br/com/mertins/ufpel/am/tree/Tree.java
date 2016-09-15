@@ -20,7 +20,7 @@ public class Tree {
 
     public Tree(NodeBase root) {
         this.nodeRoot = NodeBase.copyNode(root);
-        this.nodeOrigin=NodeBase.copyNode(root);
+        this.nodeOrigin = NodeBase.copyNode(root);
     }
 
     public NodeBase getNodeRoot() {
@@ -77,12 +77,13 @@ public class Tree {
     private Set<Leaf> findAllLeaf(NodeBase node) {
         Set<Leaf> retorno = new HashSet<>();
         if (!(node instanceof Leaf)) {
-            this.pruned.forEach(leaf->{
-            System.out.printf("Já podados %s\n",leaf.toString());
-            });
             node.getChildren().forEach(child -> {
-                System.out.printf("Candidatos %s\n",child.toString());
-                if (!this.pruned.contains(child)) {
+                if (child instanceof Leaf) {
+                    if (!this.pruned.contains(child)) {
+                        retorno.addAll(findAllLeaf(child));
+
+                    }
+                } else {
                     retorno.addAll(findAllLeaf(child));
                 }
             });

@@ -4,6 +4,7 @@ import br.com.mertins.ufpel.am.preparacao.ElementValue;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -36,7 +37,23 @@ public class Leaf extends NodeBase {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj) && this.label.equals(((Leaf) obj).label);
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Leaf other = (Leaf) obj;
+        if (!Objects.equals(this.label, other.label)) {
+            return false;
+        }
+        if (!Objects.equals(this.getParent(), other.getParent())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
