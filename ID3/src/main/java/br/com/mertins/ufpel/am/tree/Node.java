@@ -92,7 +92,7 @@ public class Node extends NodeBase {
 
     @Override
     public String toString() {
-        return String.format("Node %s gain=%f }", attribute, gain);
+        return String.format("Node (%s)%s", this.getAttributeInstanceParent(),attribute);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class Node extends NodeBase {
 
     @Override
     protected Node copy() {
-        Node newNode = new Node(this.attribute.copy(), gain);
+        Node newNode = new Node(this.attribute, gain);
         super.copy(newNode);
         return newNode;
 

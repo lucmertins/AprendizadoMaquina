@@ -10,12 +10,9 @@ import java.util.Set;
  */
 public class Attribute implements ElementValue, Serializable {
 
-    private int position;
-    private String name;
-    private Set<AttributeInstance> attributesInstance = new HashSet<>();
-
-    public Attribute() {
-    }
+    private final int position;
+    private final String name;
+    private final Set<AttributeInstance> attributesInstance = new HashSet<>();
 
     public Attribute(int position, String name) {
         this.position = position;
@@ -74,13 +71,7 @@ public class Attribute implements ElementValue, Serializable {
 
     @Override
     public String toString() {
-        return String.format("{position= %s  name= %s}", position, name);
+        return String.format("attribute{%s}", name);
     }
 
-    public Attribute copy() {
-        Attribute newAttribute = new Attribute(position, name);
-        newAttribute.attributesInstance = new HashSet<>(this.attributesInstance);
-        return newAttribute;
-
-    }
 }

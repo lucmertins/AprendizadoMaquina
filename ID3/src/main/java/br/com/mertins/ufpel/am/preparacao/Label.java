@@ -62,9 +62,4 @@ public class Label implements ElementValue, Serializable {
         return null;
     }
 
-    @Override
-    public ElementValue copy() {
-        return new Label(this.value);
-    }
-
 }

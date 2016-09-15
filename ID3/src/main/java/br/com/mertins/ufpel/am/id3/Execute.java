@@ -38,7 +38,7 @@ public class Execute {
             System.out.println("******ID3");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
             Node root = id3.process();
-            System.out.println(root.print());
+//            System.out.println(root.print());
             System.out.println("****** Testa ID3");
             Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
             Indicatives indicativo = investigate.process();
@@ -60,21 +60,30 @@ public class Execute {
 //            System.out.printf("\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
 //            System.out.printf("%s\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
 //            System.out.printf("%s\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
-            System.out.println("***** Regras");
-            Rules rules = Rules.instance(root);
-            System.out.println(rules.print());
+//            System.out.println("***** Regras");
+//            Rules rules = Rules.instance(root);
+//            System.out.println(rules.print());
             System.out.println("***** Poda");
 //
             PostPruning pruning = new PostPruning(root);
             NodeBase bestTree = pruning.process(sample.getRegisters(), sample.getLabels());
 
+            System.out.println("***** Origin tree");
+            System.out.println(root.print());
+            System.out.println("*****");
+
             System.out.println("***** Best tree");
             System.out.println(bestTree.print());
             System.out.println("*****");
 
-            System.out.println("***** Origin tree");
-            System.out.println(root.print());
-            System.out.println("*****");
+            System.out.printf("avalia pai %s  %s  %b %b \n", root, bestTree, root == bestTree, root.equals(bestTree));
+            bestTree.getChildren().forEach(nodebaseOrig -> {
+                root.getChildren().forEach(nodeBaseCopy -> {
+                    System.out.printf("avalia %s  %s  %b %b \n", nodebaseOrig, nodeBaseCopy, nodebaseOrig == nodeBaseCopy, nodebaseOrig.equals(nodeBaseCopy));
+                });
+
+            });
+
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }

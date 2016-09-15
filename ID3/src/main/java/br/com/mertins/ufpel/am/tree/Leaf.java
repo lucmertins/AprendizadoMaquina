@@ -41,7 +41,7 @@ public class Leaf extends NodeBase {
 
     @Override
     protected NodeBase copy() {
-        Leaf newLeaf = new Leaf(this.label.copy());
+        Leaf newLeaf = new Leaf(this.label);
         super.copy(newLeaf);
         return newLeaf;
     }

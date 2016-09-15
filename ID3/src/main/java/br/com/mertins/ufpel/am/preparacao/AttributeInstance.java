@@ -27,10 +27,6 @@ public class AttributeInstance {
         return attribute;
     }
 
-    public AttributeInstance copy() {
-        return new AttributeInstance(attribute.copy(), value);
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
@@ -62,6 +58,6 @@ public class AttributeInstance {
 
     @Override
     public String toString() {
-        return String.format("AttributeInstance {attribute = %s value= %s}", attribute.toString(), value);
+        return String.format("{%s}",  value);
     }
 }

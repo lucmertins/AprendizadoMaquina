@@ -1,6 +1,5 @@
 package br.com.mertins.ufpel.am.tree;
 
-import br.com.mertins.ufpel.am.preparacao.AttributeInstance;
 import br.com.mertins.ufpel.am.preparacao.Label;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -16,11 +15,12 @@ import java.util.Set;
 public class Tree {
 
     private final NodeBase nodeRoot;
+    private final NodeBase nodeOrigin;
     private Set<Leaf> pruned = new HashSet<>();
 
     public Tree(NodeBase root) {
-        this.nodeRoot = root.copy();
-//        this.nodeRoot = Tree.copy(root);
+        this.nodeRoot = NodeBase.copyNode(root);
+        this.nodeOrigin=NodeBase.copyNode(root);
     }
 
     public NodeBase getNodeRoot() {
@@ -40,19 +40,7 @@ public class Tree {
         return this.pruning();
     }
 
-    /**
-     * Retorna a árvore original, indicando quais folhas foram podadas.
-     *
-     * @return
-     */
-    public Tree origin() {
-        Tree tree = new Tree(nodeRoot);
-        tree.setPruned(pruned);
-        return tree;
-    }
-
     public NodeBase pruning() {
-
         Set<Leaf> findAllLeaf = this.findAllLeaf(nodeRoot);
         if (!findAllLeaf.isEmpty()) {
             Leaf leafCand = (Leaf) findAllLeaf.toArray()[0];
@@ -75,10 +63,25 @@ public class Tree {
         return null;
     }
 
+    /**
+     * Retorna a árvore original, indicando quais folhas foram podadas.
+     *
+     * @return
+     */
+    public Tree origin() {
+        Tree tree = new Tree(nodeOrigin);
+        tree.setPruned(pruned);
+        return tree;
+    }
+
     private Set<Leaf> findAllLeaf(NodeBase node) {
         Set<Leaf> retorno = new HashSet<>();
         if (!(node instanceof Leaf)) {
+            this.pruned.forEach(leaf->{
+            System.out.printf("Já podados %s\n",leaf.toString());
+            });
             node.getChildren().forEach(child -> {
+                System.out.printf("Candidatos %s\n",child.toString());
                 if (!this.pruned.contains(child)) {
                     retorno.addAll(findAllLeaf(child));
                 }
@@ -117,22 +120,5 @@ public class Tree {
             }
         }
         return label;
-    }
-
-    private static NodeBase copy(NodeBase nodeBase) {
-        NodeBase nodeBaseCopy = nodeBase.copy();
-        if (!(nodeBase instanceof Leaf)) {
-            Node node = (Node) nodeBase;
-            Node nodeCopy = node.copy();
-            node.childrenEdge.forEach(edge -> {
-                AttributeInstance attributeInstanceCopy = edge.getAttributeInstance().copy();
-                nodeCopy.AddEdge(attributeInstanceCopy, nodeCopy);
-                
-            });
-
-            // refazer Edge, apondando para as cópias tbm
-        }
-        return nodeBaseCopy;
-        
     }
 }
