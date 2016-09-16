@@ -31,7 +31,6 @@ public class PostPruning {
         while ((nodeAval = tree.pruning()) != null) {
             Investigate investigateAval = new Investigate(nodeAval, registers, labels);
             Indicatives indicativosAval = investigateAval.process();
-
             System.out.printf("***arvore podada \n%s\n***\n", nodeAval.print());
             if (indicativos.accuracy().compareTo(indicativosAval.accuracy()) > 0) {
                 tree = tree.origin();

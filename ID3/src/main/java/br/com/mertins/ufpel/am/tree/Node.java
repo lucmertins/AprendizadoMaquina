@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 public class Node extends NodeBase {
 
-    private ElementValue attribute;
+    private final ElementValue attribute;
     private final double gain;
 
     public Node(ElementValue attribute, double gain) {
