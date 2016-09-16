@@ -38,7 +38,7 @@ public class Execute {
             System.out.println("******ID3");
             ID3 id3 = new ID3(sample.getRegisters(), sample.getAttributes(), sample.getLabels());
             Node root = id3.process();
-//            System.out.println(root.print());
+            System.out.println(root.print());
             System.out.println("****** Testa ID3");
             Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
             Indicatives indicativo = investigate.process();
@@ -64,7 +64,6 @@ public class Execute {
 //            Rules rules = Rules.instance(root);
 //            System.out.println(rules.print());
             System.out.println("***** Poda");
-//
             PostPruning pruning = new PostPruning(root);
             NodeBase bestTree = pruning.process(sample.getRegisters(), sample.getLabels());
 
@@ -74,16 +73,18 @@ public class Execute {
 
             System.out.println("***** Best tree");
             System.out.println(bestTree.print());
-            System.out.println("*****");
 
-            System.out.printf("avalia pai %s  %s  %b %b \n", root, bestTree, root == bestTree, root.equals(bestTree));
-            bestTree.getChildren().forEach(nodebaseOrig -> {
-                root.getChildren().forEach(nodeBaseCopy -> {
-                    System.out.printf("avalia %s  %s  %b %b \n", nodebaseOrig, nodeBaseCopy, nodebaseOrig == nodeBaseCopy, nodebaseOrig.equals(nodeBaseCopy));
-                });
+            Investigate investigateBest = new Investigate(bestTree, sample.getRegisters(), sample.getLabels());
+            Indicatives indicativoBest = investigateBest.process();
+            sample.getLabels().forEach(label -> {
+                System.out.printf("Label [%s]\n", label.getValue());
+                System.out.printf("  VP %d   FP %d   VN %d   FN %d\n", indicativoBest.getTruePositives(label).intValue(), indicativoBest.getFalsePositives(label).intValue(),
+                        indicativoBest.getTrueNegatives(label).intValue(), indicativoBest.getFalseNegatives(label).intValue());
+                System.out.printf("  Precisão %f    Recall %f    F1 %f\n", indicativoBest.precision(label).doubleValue(), indicativoBest.recall(label).doubleValue(), indicativoBest.f1(label).doubleValue());
 
             });
-
+            System.out.printf("\nAcurácia %f\n", indicativoBest.accuracy().doubleValue());
+            System.out.println("*****");
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }

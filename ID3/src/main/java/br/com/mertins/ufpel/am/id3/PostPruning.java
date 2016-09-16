@@ -16,10 +16,15 @@ import java.util.Set;
 public class PostPruning {
 
     private final NodeBase rootCopy;
+    private StringBuilder logPrunning;
 
     public PostPruning(NodeBase root) {
         rootCopy = NodeBase.copyNode(root);
 
+    }
+
+    public StringBuilder getLogPrunning() {
+        return logPrunning;
     }
 
     public NodeBase process(List<Register> registers, Set<Label> labels) {
@@ -27,25 +32,24 @@ public class PostPruning {
         Indicatives indicativos = investigate.process();
         NodeBase bestRoot = rootCopy;
         Tree tree = new Tree(rootCopy);
+        logPrunning = new StringBuilder();
         NodeBase nodeAval;
         while ((nodeAval = tree.pruning()) != null) {
             Investigate investigateAval = new Investigate(nodeAval, registers, labels);
             Indicatives indicativosAval = investigateAval.process();
-            System.out.printf("***arvore podada \n%s\n***\n", nodeAval.print());
+            logPrunning.append(String.format("Arvore podada \n%s\n***\n", nodeAval.print()));
             if (indicativos.accuracy().compareTo(indicativosAval.accuracy()) > 0) {
                 tree = tree.origin();
-                System.out.printf("Poda piorou a acuracia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), indicativosAval.accuracy().doubleValue());
-                System.out.printf("voltar para arvore\n %s",tree.getNodeRoot().print());
+                logPrunning.append(String.format("Poda piorou a acuracia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), 
+                        indicativosAval.accuracy().doubleValue()));
+                logPrunning.append(String.format("Voltar para arvore anterior\n %s", tree.getNodeRoot().print()));
             } else {
                 bestRoot = nodeAval;
-                tree=new Tree(bestRoot);
-                System.out.printf("Poda melhorou ou deixou igual a acuracia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), indicativosAval.accuracy().doubleValue());
+                tree = new Tree(bestRoot);
+                logPrunning.append(String.format("Poda melhorou ou deixou igual a acuracia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), 
+                        indicativosAval.accuracy().doubleValue()));
             }
         }
-        System.out.println("+++++");
-        System.out.println(bestRoot.print());
-
-        System.out.println("----");
         return bestRoot;
     }
 

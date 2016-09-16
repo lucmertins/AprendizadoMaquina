@@ -81,7 +81,6 @@ public class Tree {
                 if (child instanceof Leaf) {
                     if (!this.pruned.contains(child)) {
                         retorno.addAll(findAllLeaf(child));
-
                     }
                 } else {
                     retorno.addAll(findAllLeaf(child));
