@@ -5,6 +5,7 @@ import br.com.mertins.ufpel.am.id3.PostPruning;
 import br.com.mertins.ufpel.am.id3.Rules;
 import br.com.mertins.ufpel.am.preparacao.Sample;
 import br.com.mertins.ufpel.am.tree.Node;
+import br.com.mertins.ufpel.am.tree.NodeBase;
 import br.com.mertins.ufpel.am.validate.Indicatives;
 import br.com.mertins.ufpel.am.validate.Investigate;
 import java.io.ByteArrayOutputStream;
@@ -229,10 +230,20 @@ public class FXMLController {
                 Rules rules = Rules.instance(root);
                 print = rules.print();
                 txtResultado.appendText(print.toString());
-
                 txtResultado.appendText("\nPoda\n");
                 PostPruning pruning = new PostPruning(root);
-                pruning.process(sample.getRegisters(),sample.getLabels());
+                NodeBase bestTree = pruning.process(sample.getRegisters(), sample.getLabels());
+                txtResultado.appendText(bestTree.print().toString());
+                Investigate investigateBest = new Investigate(bestTree, sample.getRegisters(), sample.getLabels());
+                Indicatives indicativoBest = investigateBest.process();
+                sample.getLabels().forEach(label -> {
+                    txtResultado.appendText(String.format("Label [%s]\n", label.getValue()));
+                    txtResultado.appendText(String.format("  VP %d   FP %d   VN %d   FN %d\n", indicativoBest.getTruePositives(label).intValue(), indicativoBest.getFalsePositives(label).intValue(),
+                            indicativoBest.getTrueNegatives(label).intValue(), indicativoBest.getFalseNegatives(label).intValue()));
+                    txtResultado.appendText(String.format("  Precisão %f    Recall %f    F1 %f\n", indicativoBest.precision(label).doubleValue(), indicativoBest.recall(label).doubleValue(), indicativoBest.f1(label).doubleValue()));
+                });
+                txtResultado.appendText(String.format("\nAcurácia %f\n", indicativoBest.accuracy().doubleValue()));
+
                 return true;
             } catch (Exception e) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
