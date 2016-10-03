@@ -6,7 +6,7 @@ package br.com.mertins.ufpel.am.perceptron;
  */
 class Sinaps {
 
-    private final double in;
+    private double in;
     private double weight;
 
     public Sinaps(double in, double weight) {
@@ -16,6 +16,10 @@ class Sinaps {
 
     public double getIn() {
         return in;
+    }
+
+    public void setIn(double in) {
+        this.in = in;
     }
 
     public double getWeight() {
