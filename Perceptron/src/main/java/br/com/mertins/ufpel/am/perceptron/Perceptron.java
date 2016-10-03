@@ -31,7 +31,7 @@ public class Perceptron {
      * @return
      */
     public int addIn(double in) {
-        return this.addIn(in, 1);
+        return this.addIn(in, 0);
     }
 
     /**
