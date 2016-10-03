@@ -74,8 +74,8 @@ public class Investigate {
                 }
             });
         } else {
-            acumulado.get(labelTree).addFalsePositive();
-            acumulado.get(labelCorreto).addFalseNegative();
+            acumulado.get(labelTree).addFalsePositive();     // acrescentar o falso positivo informando o label correto
+            acumulado.get(labelCorreto).addFalseNegative();  // acrescentar o falso negativo informando qual o label que errou
         }
 
     }

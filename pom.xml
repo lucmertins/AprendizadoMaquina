@@ -41,6 +41,7 @@
     </build>
     <modules>
         <module>ID3</module>
+        <module>Perceptron</module>
         <module>Viewer</module>
     </modules>
 </project>
