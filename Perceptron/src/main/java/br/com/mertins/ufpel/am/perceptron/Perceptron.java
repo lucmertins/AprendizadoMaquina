@@ -15,7 +15,7 @@ public class Perceptron {
     public Perceptron(double bias) {
         this.bias = bias;
     }
-    
+
     public double getBias() {
         return bias;
     }
@@ -46,6 +46,10 @@ public class Perceptron {
         return sinapsList.size();
     }
 
+    public int amountIn() {
+        return this.sinapsList.size();
+    }
+
     /**
      * Altera o valor da entrada, conforme a posição especificada
      *
@@ -60,6 +64,29 @@ public class Perceptron {
         }
     }
 
+    public void updateWeight(int pos, double in) {
+        if (pos > 0 && pos <= sinapsList.size()) {
+            Sinaps get = sinapsList.get(pos - 1);
+            get.setWeight(in);
+        }
+    }
+
+    public double in(int pos) {
+        if (pos > 0 && pos <= sinapsList.size()) {
+            Sinaps get = sinapsList.get(pos - 1);
+            return get.getIn();
+        }
+        return 0;
+    }
+
+    public double weigth(int pos) {
+        if (pos > 0 && pos <= sinapsList.size()) {
+            Sinaps get = sinapsList.get(pos - 1);
+            return get.getWeight();
+        }
+        return 0;
+    }
+
     double sum() {
         double result = 1 * bias;
         result = sinapsList.stream().map((sin) -> sin.getIn() * sin.getWeight()).reduce(result, (accumulator, _item) -> accumulator + _item);
@@ -72,6 +99,6 @@ public class Perceptron {
      * @return
      */
     public int out() {
-        return sum() > 0 ? 1 : 0;
+        return sum() > -1? 1 : -1;
     }
 }
