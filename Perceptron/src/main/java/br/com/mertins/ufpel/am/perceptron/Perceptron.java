@@ -115,7 +115,7 @@ public class Perceptron {
      * @return
      */
     public int out() {
-        return sum() > 0 ? 1 : -1;
+        return sum() >= 0 ? 1 : -1;
     }
 
     private static double random() {

@@ -14,13 +14,13 @@ public class Training {
     }
 
     public Perceptron withDelta(List<Sample> samples, double learningRate, int epoca) {
-        Perceptron neuronio = new Perceptron();  
+        Perceptron perceptron = new Perceptron();  
         int entradas = 0;
-        //preparar o neuronio com o numero de entradas adequados. Colocando pesos randomicos
+        //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.isEmpty()) {
             entradas = samples.get(0).amountIn();
             for (int i = 1; i <= entradas; i++) {
-                neuronio.addIn(0);
+                perceptron.addIn(0);
             }
         }
         for (int epocaTemp = 0; epocaTemp < epoca; epocaTemp++) {
@@ -32,25 +32,26 @@ public class Training {
             for (Sample sample : samples) {
                 int pos = 1;
                 for (Double value : sample.getValues()) {
-                    neuronio.updateIn(pos++, value);
+                    perceptron.updateIn(pos++, value);
                 }
-                double outFind = neuronio.sum();
+                double outFind = perceptron.sum();
                 int outReal = sample.getValue();
-                //calcular o peso do bias tbm
-                pesoBias+=learningRate * (outReal - outFind) * neuronio.getBias();
-                
+                // recalcular o peso do bias 
+                pesoBias+=learningRate * (outReal - outFind) * perceptron.getBias();
+                // recalcular pesos das entradas
                 pos = 1;
                 for (int i = 0; i < entradas; i++) {
-                    double pesoTemp = pesosTemp.get(i) + learningRate * (outReal - outFind) * neuronio.in(pos++);
+                    double pesoTemp = pesosTemp.get(i) + learningRate * (outReal - outFind) * perceptron.in(pos++);
                     pesosTemp.set(i, pesoTemp);
                 }
             }
-            neuronio.setBiasWeight(pesoBias);
+            // atualizar pesos no perceptron
+            perceptron.setBiasWeight(pesoBias);
             int pos = 1;
             for (Double value : pesosTemp) {
-                neuronio.updateWeight(pos++, value);
+                perceptron.updateWeight(pos++, value);
             }
         }
-        return neuronio;
+        return perceptron;
     }
 }
