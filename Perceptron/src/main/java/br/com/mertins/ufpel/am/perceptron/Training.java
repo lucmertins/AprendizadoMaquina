@@ -14,18 +14,18 @@ public class Training {
     }
 
     public Perceptron withDelta(List<Sample> samples, double learningRate, int epoca) {
-        Perceptron neuronio = new Perceptron(0.5);  // inicializa o perceptron com bias=0;
+        Perceptron neuronio = new Perceptron();  
         int entradas = 0;
-        //preparar o neuronio com o numero de entradas adequados. Colocando pesos iniciais zerados
+        //preparar o neuronio com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.isEmpty()) {
             entradas = samples.get(0).amountIn();
             for (int i = 1; i <= entradas; i++) {
-                neuronio.addIn(0, 0);
+                neuronio.addIn(0);
             }
         }
-
         for (int epocaTemp = 0; epocaTemp < epoca; epocaTemp++) {
             List<Double> pesosTemp = new ArrayList<>();
+            double pesoBias=0.0;
             for (int i = 1; i <= entradas; i++) {
                 pesosTemp.add(0.0);
             }
@@ -36,12 +36,16 @@ public class Training {
                 }
                 double outFind = neuronio.sum();
                 int outReal = sample.getValue();
+                //calcular o peso do bias tbm
+                pesoBias+=learningRate * (outReal - outFind) * neuronio.getBias();
+                
                 pos = 1;
                 for (int i = 0; i < entradas; i++) {
                     double pesoTemp = pesosTemp.get(i) + learningRate * (outReal - outFind) * neuronio.in(pos++);
                     pesosTemp.set(i, pesoTemp);
                 }
             }
+            neuronio.setBiasWeight(pesoBias);
             int pos = 1;
             for (Double value : pesosTemp) {
                 neuronio.updateWeight(pos++, value);

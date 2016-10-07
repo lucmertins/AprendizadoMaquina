@@ -12,11 +12,11 @@ public class PerceptronTest {
     public PerceptronTest() {
     }
 
-//    @Test
+    @Test
     public void testOr() {
-        Perceptron neuronioOr = new Perceptron(0);
-        assertEquals("inserindo primeira entrada com valor 0 peso default", 1, neuronioOr.addIn(0,1));
-        assertEquals("inserindo segunda entrada com valor 0 peso default", 2, neuronioOr.addIn(0,1));
+        Perceptron neuronioOr = new Perceptron(1,0);
+        assertEquals("inserindo primeira entrada com valor 0 ", 1, neuronioOr.addIn(0,1));
+        assertEquals("inserindo segunda entrada com valor 0 ", 2, neuronioOr.addIn(0,1));
         assertEquals("Deve ser zero", -1, neuronioOr.out());
         neuronioOr.updateIn(1, 1);
         assertEquals("Deve ser 1", 1, neuronioOr.out());
@@ -27,14 +27,11 @@ public class PerceptronTest {
         assertEquals("Deve ser 1", 1, neuronioOr.out());
     }
 
-//    @Test
+    @Test
     public void testAnd() {
-
-        // sem mexer na função de ativação, precisamos colocar as referencias como valores negados 0 passa a ser -1
-        // não foi necessário modificar os pesos
-        Perceptron neuronioAnd = new Perceptron(0);
-        assertEquals("inserindo primeira entrada com valor 0 peso default", 1, neuronioAnd.addIn(-1,1));
-        assertEquals("inserindo segunda entrada com valor 0 peso default", 2, neuronioAnd.addIn(-1,1));
+        Perceptron neuronioAnd = new Perceptron(1,0);
+        assertEquals("inserindo primeira entrada com valor 0 peso 1 pois não tem treinamento", 1, neuronioAnd.addIn(-1,1));
+        assertEquals("inserindo segunda entrada com valor 0 peso 1 pois não tem treinamento", 2, neuronioAnd.addIn(-1,1));
         assertEquals("Deve ser -1", -1, neuronioAnd.out());
         neuronioAnd.updateIn(1, 1);
         assertEquals("Deve ser -1", -1, neuronioAnd.out());

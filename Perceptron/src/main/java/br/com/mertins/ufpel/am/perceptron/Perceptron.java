@@ -2,6 +2,7 @@ package br.com.mertins.ufpel.am.perceptron;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -9,19 +10,34 @@ import java.util.List;
  */
 public class Perceptron {
 
+    private static final Random RANDOM = new Random();
     private final List<Sinaps> sinapsList = new ArrayList<>();
-    private double bias;
+    private int bias;
+    private double biasWeight;
 
-    public Perceptron(double bias) {
+    public Perceptron() {
+        this(1, Perceptron.random());
+    }
+
+    public Perceptron(int bias, double biasWeight) {
         this.bias = bias;
+        this.biasWeight = biasWeight;
     }
 
     public double getBias() {
         return bias;
     }
 
-    public void setBias(double bias) {
+    public void setBias(int bias) {
         this.bias = bias;
+    }
+
+    public double getBiasWeight() {
+        return biasWeight;
+    }
+
+    public void setBiasWeight(double biasWeight) {
+        this.biasWeight = biasWeight;
     }
 
     /**
@@ -31,7 +47,7 @@ public class Perceptron {
      * @return
      */
     public int addIn(double in) {
-        return this.addIn(in, 0);
+        return this.addIn(in, Perceptron.random());
     }
 
     /**
@@ -88,7 +104,7 @@ public class Perceptron {
     }
 
     double sum() {
-        double result = 1 * bias;
+        double result = bias * biasWeight;
         result = sinapsList.stream().map((sin) -> sin.getIn() * sin.getWeight()).reduce(result, (accumulator, _item) -> accumulator + _item);
         return result;
     }
@@ -99,6 +115,16 @@ public class Perceptron {
      * @return
      */
     public int out() {
-        return sum() > -1? 1 : -1;
+        return sum() > 0 ? 1 : -1;
     }
+
+    private static double random() {
+        double min = 0.001;
+        double max = 0.999;
+        double range = max - min;
+        double scaled = RANDOM.nextDouble() * range;
+        double shifted = scaled - min;
+        return shifted;
+    }
+
 }

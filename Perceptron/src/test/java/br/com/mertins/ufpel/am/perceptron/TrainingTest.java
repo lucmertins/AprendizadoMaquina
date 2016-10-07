@@ -3,6 +3,7 @@ package br.com.mertins.ufpel.am.perceptron;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
@@ -13,7 +14,7 @@ public class TrainingTest {
     public TrainingTest() {
     }
 
-//    @Test
+    @Test
     public void testANDWithDelta() {
 
         Training training = new Training();
@@ -39,12 +40,13 @@ public class TrainingTest {
         sampleAND.addIn(1);
         sampleAND.setValue(1);
         lista.add(sampleAND);
-        Perceptron neuronioAnd = training.withDelta(lista, 0.01, 1000);
-
+        
+        
+        Perceptron neuronioAnd = training.withDelta(lista, 0.1, 5);
+        System.out.printf("Bias [%f] PesoBias [%f]\n", neuronioAnd.getBias(), neuronioAnd.getBiasWeight());
         for (int i = 1; i <= neuronioAnd.amountIn(); i++) {
             System.out.printf("Peso [%d] = [%f] \n", i, neuronioAnd.weigth(i));
         }
-
         neuronioAnd.updateIn(1, -1);
         neuronioAnd.updateIn(2, -1);
         assertEquals("Deve ser -1", -1, neuronioAnd.out());
@@ -57,48 +59,49 @@ public class TrainingTest {
         assertEquals("Deve ser 1", 1, neuronioAnd.out());
     }
 
-//    @Test
-    public void testXORWithDelta() {
+    @Test
+    public void testORWithDelta() {
 
         Training training = new Training();
 
         List<Sample> lista = new ArrayList<>();
-        Sample sampleXOR = new Sample();
-        sampleXOR.addIn(-1);
-        sampleXOR.addIn(-1);
-        sampleXOR.setValue(1);
-        lista.add(sampleXOR);
-        sampleXOR = new Sample();
-        sampleXOR.addIn(1);
-        sampleXOR.addIn(-1);
-        sampleXOR.setValue(-1);
-        lista.add(sampleXOR);
-        sampleXOR = new Sample();
-        sampleXOR.addIn(-1);
-        sampleXOR.addIn(1);
-        sampleXOR.setValue(-1);
-        lista.add(sampleXOR);
-        sampleXOR = new Sample();
-        sampleXOR.addIn(1);
-        sampleXOR.addIn(1);
-        sampleXOR.setValue(1);
-        lista.add(sampleXOR);
-        Perceptron neuronioXOR = training.withDelta(lista, 0.01, 1000);
-
-        for (int i = 1; i <= neuronioXOR.amountIn(); i++) {
-            System.out.printf("Peso [%d] = [%f] \n", i, neuronioXOR.weigth(i));
+        Sample sampleOR = new Sample();
+        sampleOR.addIn(-1);
+        sampleOR.addIn(-1);
+        sampleOR.setValue(-1);
+        lista.add(sampleOR);
+        sampleOR = new Sample();
+        sampleOR.addIn(1);
+        sampleOR.addIn(-1);
+        sampleOR.setValue(1);
+        lista.add(sampleOR);
+        sampleOR = new Sample();
+        sampleOR.addIn(-1);
+        sampleOR.addIn(1);
+        sampleOR.setValue(1);
+        lista.add(sampleOR);
+        sampleOR = new Sample();
+        sampleOR.addIn(1);
+        sampleOR.addIn(1);
+        sampleOR.setValue(1);
+        lista.add(sampleOR);
+        
+        
+        Perceptron neuronioOR = training.withDelta(lista, 0.1, 5);
+        System.out.printf("Bias [%f] PesoBias [%f]\n", neuronioOR.getBias(), neuronioOR.getBiasWeight());
+        for (int i = 1; i <= neuronioOR.amountIn(); i++) {
+            System.out.printf("Peso [%d] = [%f] \n", i, neuronioOR.weigth(i));
         }
-
-        neuronioXOR.updateIn(1, -1);
-        neuronioXOR.updateIn(2, -1);
-        assertEquals("Deve ser 1", 1, neuronioXOR.out());
-        neuronioXOR.updateIn(1, 1);
-        assertEquals("Deve ser -1", -1, neuronioXOR.out());
-        neuronioXOR.updateIn(1, -1);
-        neuronioXOR.updateIn(2, 1);
-        assertEquals("Deve ser -1", -1, neuronioXOR.out());
-        neuronioXOR.updateIn(1, 1);
-        assertEquals("Deve ser 1", 1, neuronioXOR.out());
+        neuronioOR.updateIn(1, -1);
+        neuronioOR.updateIn(2, -1);
+        assertEquals("Deve ser -1", -1, neuronioOR.out());
+        neuronioOR.updateIn(1, 1);
+        assertEquals("Deve ser 1", 1, neuronioOR.out());
+        neuronioOR.updateIn(1, -1);
+        neuronioOR.updateIn(2, 1);
+        assertEquals("Deve ser 1", 1, neuronioOR.out());
+        neuronioOR.updateIn(1, 1);
+        assertEquals("Deve ser 1", 1, neuronioOR.out());
     }
 
 }
