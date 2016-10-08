@@ -204,18 +204,18 @@ public class FXMLController {
                 txtResultado.appendText(print.toString());
                 Investigate investigate = new Investigate(root, sample.getRegisters(), sample.getLabels());
                 Indicatives indicativo = investigate.process();
-                sample.getLabels().forEach(label -> {
-                    String format = String.format("\n[%s]\t\t", label.getValue());
-                    txtResultado.appendText(format);
-                    format = String.format("VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives(label).intValue(),
-                            indicativo.getFalsePositives(label).intValue(),
-                            indicativo.getTrueNegatives(label).intValue(), indicativo.getFalseNegatives(label).intValue());
-                    txtResultado.appendText(format);
-                    format = String.format("\t\tPrecisão %f    Recall %f    F1 %f\n", indicativo.precision(label).doubleValue(),
-                            indicativo.recall(label).doubleValue(), indicativo.f1(label).doubleValue());
-                    txtResultado.appendText(format);
-
-                });
+//                sample.getLabels().forEach(label -> {
+//                    String format = String.format("\n[%s]\t\t", label.getValue());
+//                    txtResultado.appendText(format);
+//                    format = String.format("VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives(label).intValue(),
+//                            indicativo.getFalsePositives(label).intValue(),
+//                            indicativo.getTrueNegatives(label).intValue(), indicativo.getFalseNegatives(label).intValue());
+//                    txtResultado.appendText(format);
+//                    format = String.format("\t\tPrecisão %f    Recall %f    F1 %f\n", indicativo.precision(label).doubleValue(),
+//                            indicativo.recall(label).doubleValue(), indicativo.f1(label).doubleValue());
+//                    txtResultado.appendText(format);
+//
+//                });
                 txtResultado.appendText(String.format("\nAcurácia %f\n", indicativo.accuracy().doubleValue()));
 //                txtResultado.appendText("\nMatriz de Confusão\n");
 //                Label lbPositive = Label.positive(sample.getLabels());
@@ -236,12 +236,12 @@ public class FXMLController {
                 txtResultado.appendText(bestTree.print().toString());
                 Investigate investigateBest = new Investigate(bestTree, sample.getRegisters(), sample.getLabels());
                 Indicatives indicativoBest = investigateBest.process();
-                sample.getLabels().forEach(label -> {
-                    txtResultado.appendText(String.format("Label [%s]\n", label.getValue()));
-                    txtResultado.appendText(String.format("  VP %d   FP %d   VN %d   FN %d\n", indicativoBest.getTruePositives(label).intValue(), indicativoBest.getFalsePositives(label).intValue(),
-                            indicativoBest.getTrueNegatives(label).intValue(), indicativoBest.getFalseNegatives(label).intValue()));
-                    txtResultado.appendText(String.format("  Precisão %f    Recall %f    F1 %f\n", indicativoBest.precision(label).doubleValue(), indicativoBest.recall(label).doubleValue(), indicativoBest.f1(label).doubleValue()));
-                });
+//                sample.getLabels().forEach(label -> {
+//                    txtResultado.appendText(String.format("Label [%s]\n", label.getValue()));
+//                    txtResultado.appendText(String.format("  VP %d   FP %d   VN %d   FN %d\n", indicativoBest.getTruePositives(label).intValue(), indicativoBest.getFalsePositives(label).intValue(),
+//                            indicativoBest.getTrueNegatives(label).intValue(), indicativoBest.getFalseNegatives(label).intValue()));
+//                    txtResultado.appendText(String.format("  Precisão %f    Recall %f    F1 %f\n", indicativoBest.precision(label).doubleValue(), indicativoBest.recall(label).doubleValue(), indicativoBest.f1(label).doubleValue()));
+//                });
                 txtResultado.appendText(String.format("\nAcurácia %f\n", indicativoBest.accuracy().doubleValue()));
 
                 return true;

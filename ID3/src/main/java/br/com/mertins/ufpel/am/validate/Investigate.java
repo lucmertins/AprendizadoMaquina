@@ -55,7 +55,7 @@ public class Investigate {
                 this.registra(((Leaf) node).getLabel(), register.getLabel());
             }
         });
-        Indicatives indicador = new Indicatives();
+        Indicatives indicador = new Indicatives(this.registers.size());
         acumulado.keySet().stream().forEach((label) -> {
             Acumulador acumulador = acumulado.get(label);
             indicador.add(label, acumulador.getTruePositive(), acumulador.getFalsePositive(), acumulador.getTrueNegative(), acumulador.getFalseNegative());
@@ -74,8 +74,8 @@ public class Investigate {
                 }
             });
         } else {
-            acumulado.get(labelTree).addFalsePositive();     // acrescentar o falso positivo informando o label correto
-            acumulado.get(labelCorreto).addFalseNegative();  // acrescentar o falso negativo informando qual o label que errou
+            acumulado.get(labelTree).addFalsePositive(labelCorreto);  // acrescentar o falso positivo informando o label correto
+            acumulado.get(labelCorreto).addFalseNegative(labelTree);  // acrescentar o falso negativo informando qual o label que errou
         }
 
     }
@@ -83,9 +83,9 @@ public class Investigate {
     private class Acumulador {
 
         private long truePositive;
-        private long falsePositive;
         private long trueNegative;
-        private long falseNegative;
+        private final Map<Label, Long> falsePositive = new HashMap<>();
+        private final Map<Label, Long> falseNegative = new HashMap<>();
 
         public Acumulador() {
         }
@@ -94,7 +94,7 @@ public class Investigate {
             return truePositive;
         }
 
-        public long getFalsePositive() {
+        public Map getFalsePositive() {
             return falsePositive;
         }
 
@@ -102,7 +102,7 @@ public class Investigate {
             return trueNegative;
         }
 
-        public long getFalseNegative() {
+        public Map getFalseNegative() {
             return falseNegative;
         }
 
@@ -110,16 +110,24 @@ public class Investigate {
             this.truePositive++;
         }
 
-        public void addFalsePositive() {
-            this.falsePositive++;
+        public void addFalsePositive(Label label) {
+            if (falsePositive.containsKey(label)) {
+                falsePositive.put(label, falsePositive.get(label).longValue() + 1);
+            } else {
+                falsePositive.put(label, 1L);
+            }
         }
 
         public void addTrueNegative() {
             this.trueNegative++;
         }
 
-        public void addFalseNegative() {
-            this.falseNegative++;
+        public void addFalseNegative(Label label) {
+            if (falseNegative.containsKey(label)) {
+                falseNegative.put(label, falseNegative.get(label).longValue() + 1);
+            } else {
+                falseNegative.put(label, 1L);
+            }
         }
     }
 }

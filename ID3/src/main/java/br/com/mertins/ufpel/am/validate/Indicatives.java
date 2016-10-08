@@ -13,12 +13,14 @@ import java.util.Map;
 public class Indicatives {
 
     private final Map<Label, Estrutura> indicadores;
+    private BigDecimal sizeSamples;
 
-    Indicatives() {
+    Indicatives(long sizeSamples) {
         this.indicadores = new HashMap();
+        this.sizeSamples = new BigDecimal(sizeSamples);
     }
 
-    public void add(Label label, long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
+    public void add(Label label, long truePositives, Map<Label, Long> falsePositives, long trueNegatives, Map<Label, Long> falseNegatives) {
         indicadores.put(label, new Estrutura(truePositives, falsePositives, trueNegatives, falseNegatives));
     }
 
@@ -26,30 +28,64 @@ public class Indicatives {
         return this.indicadores.get(label).getTruePositives();
     }
 
+    public BigDecimal ammountTruePositives() {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (Label key : this.indicadores.keySet()) {
+            ret = ret.add(this.indicadores.get(key).truePositives);
+        }
+        return ret;
+    }
+
     public BigDecimal getTrueNegatives(Label label) {
         return this.indicadores.get(label).getTrueNegatives();
     }
 
-    public BigDecimal getFalsePositives(Label label) {
+    public BigDecimal ammountTrueNegatives() {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (Label key : this.indicadores.keySet()) {
+            ret = ret.add(this.indicadores.get(key).trueNegatives);
+        }
+        return ret;
+    }
+
+    public Map<Label, BigDecimal> getFalsePositives(Label label) {
         return this.indicadores.get(label).getFalsePositives();
     }
 
-    public BigDecimal getFalseNegatives(Label label) {
+    public Map<Label, BigDecimal> getFalseNegatives(Label label) {
         return this.indicadores.get(label).getFalseNegatives();
+    }
+
+    public BigDecimal ammountFalsePositives(Label label) {
+        Map<Label, BigDecimal> falsePositives = this.getFalsePositives(label);
+        BigDecimal ret = BigDecimal.ZERO;
+        if (falsePositives != null) {
+            for (Label key : falsePositives.keySet()) {
+                ret = ret.add(falsePositives.get(key));
+            }
+        }
+        return ret;
+    }
+
+    public BigDecimal ammountFalseNegatives(Label label) {
+        Map<Label, BigDecimal> falseNegatives = this.getFalseNegatives(label);
+        BigDecimal ret = BigDecimal.ZERO;
+        if (falseNegatives != null) {
+            for (Label key : falseNegatives.keySet()) {
+                ret = ret.add(falseNegatives.get(key));
+            }
+        }
+        return ret;
     }
 
     public BigDecimal accuracy() {
         if (!this.indicadores.isEmpty()) {
-            for (Label label : this.indicadores.keySet()) {
-                Estrutura estrutura = this.indicadores.get(label);
-                try {
-                    BigDecimal dividendo = estrutura.getTruePositives().add(estrutura.getTrueNegatives());
-                    BigDecimal divisor = estrutura.getTruePositives().add(estrutura.getTrueNegatives().add(
-                            estrutura.getFalsePositives().add(estrutura.getFalseNegatives())));
-                    return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
-                } catch (Exception ex) {
-                    return BigDecimal.ZERO;
-                }
+            try {
+                BigDecimal dividendo = this.ammountTruePositives();
+                BigDecimal divisor = sizeSamples;
+                return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
+            } catch (Exception ex) {
+                return BigDecimal.ZERO;
             }
         }
         return BigDecimal.ZERO;
@@ -58,7 +94,9 @@ public class Indicatives {
     public BigDecimal precision(Label label) {
         try {
             Estrutura estrutura = this.indicadores.get(label);
-            BigDecimal divisor = estrutura.getTruePositives().add(estrutura.getFalsePositives());
+            Map<Label, BigDecimal> falsePositives = estrutura.getFalsePositives();
+            BigDecimal falsePositive = falsePositives.get(label) == null ? BigDecimal.ZERO : falsePositives.get(label);
+            BigDecimal divisor = estrutura.getTruePositives().add(falsePositive);
             return estrutura.getTruePositives().divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
@@ -68,7 +106,9 @@ public class Indicatives {
     public BigDecimal recall(Label label) {
         try {
             Estrutura estrutura = this.indicadores.get(label);
-            BigDecimal divisor = estrutura.getTruePositives().add(estrutura.getFalseNegatives());
+            Map<Label, BigDecimal> falseNegatives = estrutura.getFalseNegatives();
+            BigDecimal falseNegative = falseNegatives.get(label) == null ? BigDecimal.ZERO : falseNegatives.get(label);
+            BigDecimal divisor = estrutura.getTruePositives().add(falseNegative);
             return estrutura.getTruePositives().divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
@@ -84,6 +124,7 @@ public class Indicatives {
             return dividendo.divide(divisor, 3, RoundingMode.HALF_UP);
         } catch (Exception ex) {
             return BigDecimal.ZERO;
+
         }
     }
 
@@ -91,14 +132,18 @@ public class Indicatives {
 
         private final BigDecimal truePositives;
         private final BigDecimal trueNegatives;
-        private final BigDecimal falsePositives;
-        private final BigDecimal falseNegatives;
+        private final Map<Label, BigDecimal> falsePositives = new HashMap<>();
+        private final Map<Label, BigDecimal> falseNegatives = new HashMap<>();
 
-        Estrutura(long truePositives, long falsePositives, long trueNegatives, long falseNegatives) {
+        Estrutura(long truePositives, Map<Label, Long> falsePositives, long trueNegatives, Map<Label, Long> falseNegatives) {
             this.truePositives = new BigDecimal(truePositives);
-            this.falsePositives = new BigDecimal(falsePositives);
+            falsePositives.keySet().forEach(key -> {
+                this.falsePositives.put(key, new BigDecimal(falsePositives.get(key)));
+            });
             this.trueNegatives = new BigDecimal(trueNegatives);
-            this.falseNegatives = new BigDecimal(falseNegatives);
+            falseNegatives.keySet().forEach(key -> {
+                this.falseNegatives.put(key, new BigDecimal(falseNegatives.get(key)));
+            });
         }
 
         public BigDecimal getTruePositives() {
@@ -109,11 +154,11 @@ public class Indicatives {
             return trueNegatives;
         }
 
-        public BigDecimal getFalsePositives() {
+        public Map<Label, BigDecimal> getFalsePositives() {
             return falsePositives;
         }
 
-        public BigDecimal getFalseNegatives() {
+        public Map<Label, BigDecimal> getFalseNegatives() {
             return falseNegatives;
         }
 

@@ -45,20 +45,19 @@ public class Execute {
             sample.getLabels().forEach(label -> {
                 System.out.printf("Label [%s]\n", label.getValue());
                 System.out.printf("  VP %d   FP %d   VN %d   FN %d\n", indicativo.getTruePositives(label).intValue(),
-                        indicativo.getFalsePositives(label).intValue(),
-                        indicativo.getTrueNegatives(label).intValue(), indicativo.getFalseNegatives(label).intValue());
+                        indicativo.ammountFalsePositives(label).intValue(),
+                        indicativo.getTrueNegatives(label).intValue(), indicativo.ammountFalseNegatives(label).intValue());
                 System.out.printf("  Precisão %f    Recall %f    F1 %f\n", indicativo.precision(label).doubleValue(),
                         indicativo.recall(label).doubleValue(), indicativo.f1(label).doubleValue());
-
             });
             System.out.printf("\nAcurácia %f\n", indicativo.accuracy().doubleValue());
-//            System.out.println("Matriz de Confusão");
+            System.out.println("Matriz de Confusão");
 //            System.out.printf("\t%s\t\t%s\n", lbPositive != null ? lbPositive.getValue() : "?", lbNegative != null ? lbNegative.getValue() : "?");
 //            System.out.printf("%s\t%d\t\t%d\n", lbPositive != null ? lbPositive.getValue() : "?", indicativos.getVerdadeirosPositivos().intValue(), indicativos.getFalsosPositivos().intValue());
 //            System.out.printf("%s\t%d\t\t%d\n", lbNegative != null ? lbNegative.getValue() : "?", indicativos.getFalsosNegativos().intValue(), indicativos.getVerdadeirosNegativos().intValue());
 //            System.out.println("***** Regras");
-//            Rules rules = Rules.instance(root);
-//            System.out.println(rules.print());
+            Rules rules = Rules.instance(root);
+            System.out.println(rules.print());
             System.out.println("***** Poda");
             PostPruning pruning = new PostPruning(root);
             NodeBase bestTree = pruning.process(sample.getRegisters(), sample.getLabels());
@@ -74,8 +73,8 @@ public class Execute {
             Indicatives indicativoBest = investigateBest.process();
             sample.getLabels().forEach(label -> {
                 System.out.printf("Label [%s]\n", label.getValue());
-                System.out.printf("  VP %d   FP %d   VN %d   FN %d\n", indicativoBest.getTruePositives(label).intValue(), indicativoBest.getFalsePositives(label).intValue(),
-                        indicativoBest.getTrueNegatives(label).intValue(), indicativoBest.getFalseNegatives(label).intValue());
+                System.out.printf("  VP %d   FP %d   VN %d   FN %d\n", indicativoBest.getTruePositives(label).intValue(), indicativoBest.ammountFalsePositives(label).intValue(),
+                        indicativoBest.getTrueNegatives(label).intValue(), indicativoBest.ammountFalseNegatives(label).intValue());
                 System.out.printf("  Precisão %f    Recall %f    F1 %f\n", indicativoBest.precision(label).doubleValue(), indicativoBest.recall(label).doubleValue(), indicativoBest.f1(label).doubleValue());
 
             });
