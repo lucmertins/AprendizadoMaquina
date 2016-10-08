@@ -42,9 +42,9 @@ public class TrainingTest {
         lista.add(sampleOR);
 
         Perceptron neuronioOR = training.withDelta(lista, 0.1, 5);
-        System.out.printf("Bias [%f] PesoBias [%f]\n", neuronioOR.getBias(), neuronioOR.getBiasWeight());
+        System.out.printf("OR Bias [%f] PesoBias [%f]\n", neuronioOR.getBias(), neuronioOR.getBiasWeight());
         for (int i = 1; i <= neuronioOR.amountIn(); i++) {
-            System.out.printf("Peso [%d] = [%f] \n", i, neuronioOR.weigth(i));
+            System.out.printf("OR Peso [%d] = [%f] \n", i, neuronioOR.weigth(i));
         }
         neuronioOR.updateIn(1, -1);
         neuronioOR.updateIn(2, -1);
@@ -86,9 +86,9 @@ public class TrainingTest {
         lista.add(sampleAND);
 
         Perceptron neuronioAnd = training.withDelta(lista, 0.1, 5);
-        System.out.printf("Bias [%f] PesoBias [%f]\n", neuronioAnd.getBias(), neuronioAnd.getBiasWeight());
+        System.out.printf("AND Bias [%f] PesoBias [%f]\n", neuronioAnd.getBias(), neuronioAnd.getBiasWeight());
         for (int i = 1; i <= neuronioAnd.amountIn(); i++) {
-            System.out.printf("Peso [%d] = [%f] \n", i, neuronioAnd.weigth(i));
+            System.out.printf("AND Peso [%d] = [%f] \n", i, neuronioAnd.weigth(i));
         }
         neuronioAnd.updateIn(1, -1);
         neuronioAnd.updateIn(2, -1);
