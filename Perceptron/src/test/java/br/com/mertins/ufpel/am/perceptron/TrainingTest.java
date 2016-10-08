@@ -16,9 +16,7 @@ public class TrainingTest {
 
     @Test
     public void testORWithDelta() {
-
         Training training = new Training();
-
         List<Sample> lista = new ArrayList<>();
         Sample sampleOR = new Sample();
         sampleOR.addIn(-1);
@@ -60,9 +58,7 @@ public class TrainingTest {
 
     @Test
     public void testANDWithDelta() {
-
         Training training = new Training();
-
         List<Sample> lista = new ArrayList<>();
         Sample sampleAND = new Sample();
         sampleAND.addIn(-1);
