@@ -31,7 +31,7 @@ public class Execute {
             samples.open(file);
             samples.setTruePositive("8");
             Training training=new Training();
-            Perceptron perceptronZero = training.withDelta(samples,  0.00001, 5);
+            Perceptron perceptronZero = training.withDelta(samples,  0.00001, 5,Perceptron.AlgorithmSimoid.TANGEN);
             
             
             samples.close();
