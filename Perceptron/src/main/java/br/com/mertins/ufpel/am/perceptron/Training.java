@@ -85,7 +85,7 @@ public class Training {
                         perceptron.updateIn(pos++, value);
                     }
                     double err = sample.getValue() - perceptron.sum();
-                    System.out.printf("Epoca [%d]   Erro [%f]\n", epoca, err);
+                    System.out.printf("Epoca [%d]   Erro [%f]\n", epocaTemp, err);
                     // recalcular o peso do bias 
                     pesoBias += learningRate * err * perceptron.getBias();
                     // recalcular pesos das entradas

@@ -29,9 +29,9 @@ public class Execute {
             List<Integer> remove = new ArrayList<>();
             samples.removeAttributesPos(remove);
             samples.open(file);
-            
+            samples.setTruePositive("8");
             Training training=new Training();
-            Perceptron perceptron = training.withDelta(samples,  0.1, 5);
+            Perceptron perceptronZero = training.withDelta(samples,  0.00001, 5);
             
             
             samples.close();
