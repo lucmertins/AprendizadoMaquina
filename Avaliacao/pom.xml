@@ -56,6 +56,11 @@
         </dependency>
         <dependency>
             <groupId>br.com.mertins.ufpel</groupId>
+            <artifactId>Perceptron</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>br.com.mertins.ufpel</groupId>
             <artifactId>ID3</artifactId>
             <version>1.0</version>
         </dependency>

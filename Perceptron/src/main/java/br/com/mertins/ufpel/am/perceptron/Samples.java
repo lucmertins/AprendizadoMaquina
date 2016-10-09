@@ -1,10 +1,8 @@
-package br.com.mertins.ufpel.avaliacao.avaliacao;
+package br.com.mertins.ufpel.am.perceptron;
 
 import br.com.mertins.ufpel.am.preparacao.Attribute;
-import br.com.mertins.ufpel.am.preparacao.AttributeInstance;
 import br.com.mertins.ufpel.am.preparacao.ElementValue;
 import br.com.mertins.ufpel.am.preparacao.Label;
-import br.com.mertins.ufpel.am.preparacao.Register;
 import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
@@ -19,8 +17,8 @@ import java.util.Set;
  *
  * @author mertins
  */
-public class SamplePerceptron implements Serializable {
-
+public class Samples implements Serializable {
+    
     private String delimiter = ",";
     private List<Attribute> attributesOrigin = new ArrayList<>();
     private final List<ElementValue> attributes = new ArrayList<>();
@@ -28,32 +26,36 @@ public class SamplePerceptron implements Serializable {
     private final Set<Label> labels = new HashSet<>();
     private int columnLabel;
     private Attribute labelColumn;
-
+    
+    private CSVReader csvReader;
+    private boolean csvFirstLine = true;
+    private String fileName;
+    
     private boolean firstLineAttribute = true;
-
-    public SamplePerceptron() {
+    
+    public Samples() {
     }
-
+    
     public List<ElementValue> getAttributes() {
         return attributes;
     }
-
+    
     public String getDelimiter() {
         return delimiter;
     }
-
+    
     public Set<Label> getLabels() {
         return labels;
     }
-
+    
     public List<Attribute> getAttributesOrigin() {
         return attributesOrigin;
     }
-
+    
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
     }
-
+    
     public void defineColumnLabel(int columnLabel) {
         this.columnLabel = columnLabel;
         this.getAttributesOrigin().forEach(atributo -> {
@@ -63,23 +65,15 @@ public class SamplePerceptron implements Serializable {
             }
         });
     }
-
+    
     public boolean isFirstLineAttribute() {
         return firstLineAttribute;
     }
-
+    
     public void setFirstLineAttribute(boolean firstLineAttribute) {
         this.firstLineAttribute = firstLineAttribute;
     }
-
-    private void addLineAttributeOrigin(String line) {
-        String[] split = line.split(this.delimiter);
-        int pos = 0;
-        for (String valor : split) {
-            attributesOrigin.add(new Attribute(pos++, this.firstLineAttribute ? valor : String.format("Attrib %d", pos)));
-        }
-    }
-
+    
     public void removeAttributesPos(List<Integer> posAttribRemove) {
         List<Attribute> attributesRemove = new ArrayList<>();
         posAttribRemove.forEach(value -> {
@@ -87,7 +81,7 @@ public class SamplePerceptron implements Serializable {
         });
         this.removeAttributes(attributesRemove);
     }
-
+    
     public void removeAttributes(List<Attribute> attributesRemove) {
         this.attributes.clear();
         this.discardedColumns.clear();
@@ -99,11 +93,11 @@ public class SamplePerceptron implements Serializable {
             }
         });
     }
-
+    
     public void avaliaFirstLine(String filename) throws IOException {
         this.avaliaFirstLine(new File(filename));
     }
-
+    
     public void avaliaFirstLine(File file) throws IOException {
         try (CSVReader reader = new CSVReader(new FileReader(file), this.delimiter.charAt(0))) {
             String[] colunas;
@@ -116,53 +110,52 @@ public class SamplePerceptron implements Serializable {
             }
         }
     }
-
-    public void process(String filename) throws IOException {
-        this.process(new File(filename));
+    
+    public void open(String filename) throws IOException {
+        this.open(new File(filename));
     }
-
-    public void process(File file) throws IOException {
-        try (CSVReader reader = new CSVReader(new FileReader(file), this.delimiter.charAt(0))) {
-            String[] colunas;
-            boolean firstLine = true;
-            long pos = 0;
-            while ((colunas = reader.readNext()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                } else if (colunas != null && colunas.length == this.attributesOrigin.size()) {
-                    this.addLineAttributeInstance(pos, colunas);
+    
+    public void open(File file) throws IOException {
+        this.fileName = file.getAbsolutePath();
+        csvReader = new CSVReader(new FileReader(file), this.delimiter.charAt(0));
+        csvFirstLine = true;
+    }
+    
+    public Sample next() throws IOException {
+        String[] colunas = csvReader.readNext();
+        if (this.firstLineAttribute && this.csvFirstLine) {
+            colunas = csvReader.readNext();
+        }
+        this.csvFirstLine = false;
+        if (colunas != null && colunas.length == this.attributesOrigin.size()) {
+            Sample sample = new Sample();
+            int pos = 0;
+            for (String value : colunas) {
+                if (pos == this.columnLabel) {
+                    sample.setValue(Integer.valueOf(value));
+                } else {
+                    // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns
+                    sample.addIn(Integer.valueOf(value));
                 }
                 pos++;
             }
+            return sample;
         }
+        return null;
     }
-
-    private void addLineAttributeInstance(long pos, String[] colunas) {
-        if (colunas != null && colunas.length > 0) {
-            int posCol = 0;
-            int posColReal = 0;
-            Register register = new Register(pos);
-            for (String valor : colunas) {
-                if (!this.discardedColumns.contains(posColReal)) {
-                    if (this.columnLabel == posColReal) {
-                        Label labelTemp = new Label(valor);
-                        if (labels.contains(labelTemp)) {
-                            labels.stream().filter((label) -> (label.equals(labelTemp))).forEach((label) -> {
-                                register.setLabel(label);
-                            });
-                        } else {
-                            labels.add(labelTemp);
-                            register.setLabel(labelTemp);
-                        }
-                    } else {
-                        Attribute attribute = (Attribute) attributes.get(posCol++);
-                        AttributeInstance addAttributeInstance = attribute.addAttributeInstance(valor);
-
-                        register.addAttributesInstance(addAttributeInstance);
-                    }
-                }
-                posColReal++;
+    
+    public void close() throws IOException {
+        csvReader.close();
+    }
+    
+    public void reset() throws IOException {
+        if (csvReader != null) {
+            try {
+                csvReader.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
+        this.open(fileName);
     }
 }

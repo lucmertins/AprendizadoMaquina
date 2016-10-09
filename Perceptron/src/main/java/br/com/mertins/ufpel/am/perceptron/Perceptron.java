@@ -16,18 +16,31 @@ import java.util.Random;
  */
 public class Perceptron implements Serializable {
 
+    public enum AlgorithmSimoid {
+        HARD, LOGISTIC, TANGEN
+    }
     private static final Random RANDOM = new Random();
     private final List<Sinaps> sinapsList = new ArrayList<>();
     private int bias;
     private double biasWeight;
+    private AlgorithmSimoid algorithm;
 
     public Perceptron() {
         this(1, Perceptron.random());
     }
 
+    public Perceptron(AlgorithmSimoid algorithm) {
+        this(1, Perceptron.random(), algorithm);
+    }
+
     public Perceptron(int bias, double biasWeight) {
+        this(bias, biasWeight, AlgorithmSimoid.HARD);
+    }
+
+    public Perceptron(int bias, double biasWeight, AlgorithmSimoid algorithm) {
         this.bias = bias;
         this.biasWeight = biasWeight;
+        this.algorithm = algorithm;
     }
 
     public double getBias() {
@@ -44,6 +57,14 @@ public class Perceptron implements Serializable {
 
     public void setBiasWeight(double biasWeight) {
         this.biasWeight = biasWeight;
+    }
+
+    public AlgorithmSimoid getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(AlgorithmSimoid algorithm) {
+        this.algorithm = algorithm;
     }
 
     /**
@@ -120,8 +141,17 @@ public class Perceptron implements Serializable {
      *
      * @return
      */
-    public int out() {
-        return 0.0 < sum() ? 1 : -1;
+    public double out() {
+        switch (algorithm) {
+            case HARD:
+                return funcHard();
+            case LOGISTIC:
+                return funcLogistic();
+            case TANGEN:
+                return funcTangentHiper();
+            default:
+                return funcHard();
+        }
     }
 
     private static double random() {
@@ -144,4 +174,20 @@ public class Perceptron implements Serializable {
             return (Perceptron) ois.readObject();
         }
     }
+
+    private double funcHard() {
+        return 0.0 < sum() ? 1 : -1;
+    }
+
+    private double funcLogistic() {
+        return 1 / (1 + Math.exp(-sum()));
+    }
+
+    private double funcTangentHiper() {
+        double sum = sum();
+        double positiveE = Math.exp(sum);
+        double negativeE = Math.exp(-sum);
+        return (positiveE - negativeE) / (positiveE + negativeE);
+    }
+
 }
