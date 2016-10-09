@@ -1,5 +1,11 @@
 package br.com.mertins.ufpel.am.perceptron;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,7 +14,7 @@ import java.util.Random;
  *
  * @author mertins
  */
-public class Perceptron {
+public class Perceptron implements Serializable {
 
     private static final Random RANDOM = new Random();
     private final List<Sinaps> sinapsList = new ArrayList<>();
@@ -127,4 +133,15 @@ public class Perceptron {
         return shifted;
     }
 
+    public static void serialize(Perceptron perceptron, String fileName) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(perceptron);
+        }
+    }
+
+    public static Perceptron deserialize(String fileName) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (Perceptron) ois.readObject();
+        }
+    }
 }

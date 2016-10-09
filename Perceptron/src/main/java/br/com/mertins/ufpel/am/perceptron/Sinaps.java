@@ -1,10 +1,12 @@
 package br.com.mertins.ufpel.am.perceptron;
 
+import java.io.Serializable;
+
 /**
  *
  * @author mertins
  */
-class Sinaps {
+class Sinaps implements Serializable {
 
     private double in;
     private double weight;
