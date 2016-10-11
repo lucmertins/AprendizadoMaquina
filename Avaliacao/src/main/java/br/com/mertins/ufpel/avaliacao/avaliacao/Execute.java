@@ -31,10 +31,17 @@ public class Execute {
             List<Integer> remove = new ArrayList<>();
             samples.removeAttributesPos(remove);
             samples.open(file);
-            samples.setTruePositive("5");
+            samples.setTruePositive("0");
             Training training=new Training();
-            Perceptron perceptronZero = training.withDelta(samples,  0.005, 10,Perceptron.AlgorithmSimoid.LOGISTIC);
+            Perceptron perceptronZero = training.withDelta(samples,  0.005, 2,Perceptron.AlgorithmSimoid.LOGISTIC);
+
+            samples.reset();
+            samples.setTruePositive("1");
+            Perceptron perceptronOne = training.withDelta(samples,  0.005, 2,Perceptron.AlgorithmSimoid.LOGISTIC);
             
+            samples.reset();
+            samples.setTruePositive("2");
+            Perceptron perceptronTwo = training.withDelta(samples,  0.005, 2,Perceptron.AlgorithmSimoid.LOGISTIC);
             
             samples.close();
         } catch (IOException e) {
