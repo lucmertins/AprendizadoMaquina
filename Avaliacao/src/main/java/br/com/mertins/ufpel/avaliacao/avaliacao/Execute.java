@@ -4,11 +4,12 @@ import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.Training;
-import br.com.mertins.ufpel.am.preparacao.Attribute;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,73 +17,82 @@ import java.util.List;
  */
 public class Execute {
 
-    
-    
+    public void treinamento() throws IOException {
+        File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
+        System.out.printf("Arquivo %s\n", file.getAbsolutePath());
+        Samples samples = new Samples();
+        samples.setNormalize(true);
+        samples.setNegativeValue(0);
+        samples.setPositiveValue(1);
+        samples.setFirstLineAttribute(false);
+        samples.avaliaFirstLine(file);
+        samples.defineColumnLabel(0);
+        List<Integer> remove = new ArrayList<>();
+        samples.removeAttributesPos(remove);
+        samples.open(file);
+        samples.setTruePositive("0");
+        Training training = new Training();
+        Perceptron perceptronZero = training.withDelta(samples, 0.005, 10, Perceptron.AlgorithmSimoid.LOGISTIC);
+        Perceptron.serialize(perceptronZero, "/home/mertins/Documentos/tmp/perceptronZero.obj");
+//        samples.reset();
+//        samples.setTruePositive("1");
+//        Perceptron perceptronOne = training.withPerceptron(samples, 0.005, 4, Perceptron.AlgorithmSimoid.LOGISTIC);
+//        Perceptron.serialize(perceptronOne, "/home/mertins/Documentos/tmp/perceptronOne.obj");
+//        samples.reset();
+//        samples.setTruePositive("2");
+//        Perceptron perceptronTwo = training.withPerceptron(samples, 0.005, 4, Perceptron.AlgorithmSimoid.LOGISTIC);
+//        Perceptron.serialize(perceptronTwo, "/home/mertins/Documentos/tmp/perceptronTwo.obj");
+        samples.close();
+    }
+
+    public void testar() throws IOException, ClassNotFoundException {
+        File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+        System.out.printf("Arquivo %s\n", file.getAbsolutePath());
+        Samples samples = new Samples();
+        samples.setNegativeValue(0);
+        samples.setPositiveValue(1);
+        samples.setFirstLineAttribute(false);
+        samples.avaliaFirstLine(file);
+        samples.defineColumnLabel(0);
+        samples.open(file);
+        Sample sample;
+
+        Perceptron perceptron = Perceptron.deserialize("/home/mertins/Documentos/tmp/perceptronZero.obj");
+        int truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
+        while ((sample = samples.next()) != null) {
+            perceptron.fill(sample);
+            perceptron.setAlgorithm(Perceptron.AlgorithmSimoid.LOGISTIC);
+            double out = perceptron.out();
+            System.out.printf("Sample [%f]   out [%f]\n", sample.getValue(), out);
+            if (sample.getValue() == 0) {
+                if (out == 1) {
+                    truePositive++;
+                } else {
+                    trueNegative++;
+                }
+            } else if (out == 1) {
+                falsePositive++;
+            } else {
+                falseNegative++;
+            }
+        }
+        samples.close();
+        System.out.printf("truePositive [%d] trueNegative [%d] falsePositive [%d] falseNegative [%d]\n", truePositive, trueNegative, falsePositive, falseNegative);
+
+    }
+
     public static void main(String[] args) {
         try {
-            File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            System.out.printf("Arquivo %s\n", file.getAbsolutePath());
-            Samples samples = new Samples();
-            samples.setNegativeValue(0);
-            samples.setPositiveValue(1);
-            samples.setFirstLineAttribute(false);
-            samples.avaliaFirstLine(file);
-            samples.defineColumnLabel(0);
-            List<Integer> remove = new ArrayList<>();
-            samples.removeAttributesPos(remove);
-            samples.open(file);
-            samples.setTruePositive("0");
-            Training training=new Training();
-            Perceptron perceptronZero = training.withDelta(samples,  0.005, 2,Perceptron.AlgorithmSimoid.LOGISTIC);
-
-            samples.reset();
-            samples.setTruePositive("1");
-            Perceptron perceptronOne = training.withDelta(samples,  0.005, 2,Perceptron.AlgorithmSimoid.LOGISTIC);
-            
-            samples.reset();
-            samples.setTruePositive("2");
-            Perceptron perceptronTwo = training.withDelta(samples,  0.005, 2,Perceptron.AlgorithmSimoid.LOGISTIC);
-            
-            samples.close();
-        } catch (IOException e) {
-            System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
+            new Execute().treinamento();
+        } catch (IOException ex) {
+            Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
+        }
+        System.out.println();
+        try {
+            new Execute().testar();
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }
     }
 
-    
-//    public static void main(String[] args) {
-//        try {
-//            File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-//            System.out.printf("Arquivo %s\n", file.getAbsolutePath());
-//            Samples samples = new Samples();
-//            samples.setFirstLineAttribute(false);
-//            samples.avaliaFirstLine(file);
-//            samples.defineColumnLabel(0);
-//            List<Integer> remove = new ArrayList<>();
-//            samples.removeAttributesPos(remove);
-//            samples.open(file);
-//            Sample sample;
-//            int linha=0;
-//            while ((sample = samples.next()) != null && linha++<3) {
-//                System.out.printf("%s %d %d\n", sample.getValue(), sample.amountIn(), sample.getIn(1));
-//                sample.getIns().forEach(value -> {
-//                    System.out.printf("%d ", value);
-//                });
-//                System.out.println();
-//            }
-//            System.out.println("Reset");
-//            samples.reset();
-//            linha=0;
-//            while ((sample = samples.next()) != null && linha++<3) {
-//                System.out.printf("%s %d %d\n", sample.getValue(), sample.amountIn(), sample.getIn(1));
-//                sample.getIns().forEach(value -> {
-//                    System.out.printf("%d ", value);
-//                });
-//                System.out.println();
-//            }
-//            samples.close();
-//        } catch (IOException e) {
-//            System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
-//        }
-//    }
 }

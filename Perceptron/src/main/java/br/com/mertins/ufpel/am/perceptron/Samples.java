@@ -18,7 +18,7 @@ import java.util.Set;
  * @author mertins
  */
 public class Samples implements Serializable {
-    
+
     private String delimiter = ",";
     private List<Attribute> attributesOrigin = new ArrayList<>();
     private final List<ElementValue> attributes = new ArrayList<>();
@@ -26,31 +26,31 @@ public class Samples implements Serializable {
     private final Set<Label> labels = new HashSet<>();
     private int columnLabel;
     private Attribute labelColumn;
-    
+    private boolean normalize = false;
+
     private CSVReader csvReader;
     private boolean csvFirstLine = true;
     private String fileName;
     private boolean firstLineAttribute = true;
     private String truePositive = null;
-    private double negativeValue=-1.0;
-    private double positiveValue=1.0;
-    
-   
+    private double negativeValue = -1.0;
+    private double positiveValue = 1.0;
+
     public Samples() {
     }
-    
+
     public List<ElementValue> getAttributes() {
         return attributes;
     }
-    
+
     public String getDelimiter() {
         return delimiter;
     }
-    
+
     public Set<Label> getLabels() {
         return labels;
     }
-    
+
     public List<Attribute> getAttributesOrigin() {
         return attributesOrigin;
     }
@@ -78,11 +78,11 @@ public class Samples implements Serializable {
     public void setPositiveValue(double positiveValue) {
         this.positiveValue = positiveValue;
     }
-    
+
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
     }
-    
+
     public void defineColumnLabel(int columnLabel) {
         this.columnLabel = columnLabel;
         this.getAttributesOrigin().forEach(atributo -> {
@@ -92,15 +92,23 @@ public class Samples implements Serializable {
             }
         });
     }
-    
+
     public boolean isFirstLineAttribute() {
         return firstLineAttribute;
     }
-    
+
     public void setFirstLineAttribute(boolean firstLineAttribute) {
         this.firstLineAttribute = firstLineAttribute;
     }
-    
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
+    }
+
     public void removeAttributesPos(List<Integer> posAttribRemove) {
         List<Attribute> attributesRemove = new ArrayList<>();
         posAttribRemove.forEach(value -> {
@@ -108,7 +116,7 @@ public class Samples implements Serializable {
         });
         this.removeAttributes(attributesRemove);
     }
-    
+
     public void removeAttributes(List<Attribute> attributesRemove) {
         this.attributes.clear();
         this.discardedColumns.clear();
@@ -120,11 +128,11 @@ public class Samples implements Serializable {
             }
         });
     }
-    
+
     public void avaliaFirstLine(String filename) throws IOException {
         this.avaliaFirstLine(new File(filename));
     }
-    
+
     public void avaliaFirstLine(File file) throws IOException {
         try (CSVReader reader = new CSVReader(new FileReader(file), this.delimiter.charAt(0))) {
             String[] colunas;
@@ -137,17 +145,17 @@ public class Samples implements Serializable {
             }
         }
     }
-    
+
     public void open(String filename) throws IOException {
         this.open(new File(filename));
     }
-    
+
     public void open(File file) throws IOException {
         this.fileName = file.getAbsolutePath();
         csvReader = new CSVReader(new FileReader(file), this.delimiter.charAt(0));
         csvFirstLine = true;
     }
-    
+
     public Sample next() throws IOException {
         String[] colunas = csvReader.readNext();
         if (this.firstLineAttribute && this.csvFirstLine) {
@@ -155,7 +163,7 @@ public class Samples implements Serializable {
         }
         this.csvFirstLine = false;
         if (colunas != null && colunas.length == this.attributesOrigin.size()) {
-            Sample sample = new Sample();
+            Sample sample = new Sample(this.normalize);
             int pos = 0;
             for (String value : colunas) {
                 if (pos == this.columnLabel) {
@@ -176,11 +184,11 @@ public class Samples implements Serializable {
         }
         return null;
     }
-    
+
     public void close() throws IOException {
         csvReader.close();
     }
-    
+
     public void reset() throws IOException {
         if (csvReader != null) {
             try {
