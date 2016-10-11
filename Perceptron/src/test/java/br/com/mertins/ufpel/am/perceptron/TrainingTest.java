@@ -39,7 +39,7 @@ public class TrainingTest {
         sampleOR.setValue(1);
         lista.add(sampleOR);
 
-        Perceptron neuronioOr = training.withDelta(lista, 0.1, 5);
+        Perceptron neuronioOr = training.withDelta(lista, 0.001, 15);
         System.out.printf("OR Bias [%f] PesoBias [%f]\n", neuronioOr.getBias(), neuronioOr.getBiasWeight());
         for (int i = 1; i <= neuronioOr.amountIn(); i++) {
             System.out.printf("OR Peso [%d] = [%f] \n", i, neuronioOr.weigth(i));
@@ -81,7 +81,7 @@ public class TrainingTest {
         sampleAND.setValue(1);
         lista.add(sampleAND);
 
-        Perceptron neuronioAnd = training.withDelta(lista, 0.1, 5);
+        Perceptron neuronioAnd = training.withDelta(lista, 0.001, 50);
         System.out.printf("AND Bias [%f] PesoBias [%f]\n", neuronioAnd.getBias(), neuronioAnd.getBiasWeight());
         for (int i = 1; i <= neuronioAnd.amountIn(); i++) {
             System.out.printf("AND Peso [%d] = [%f] \n", i, neuronioAnd.weigth(i));
@@ -98,7 +98,7 @@ public class TrainingTest {
         assertEquals("Deve ser 1", 1, Double.valueOf(neuronioAnd.out()).intValue());
     }
 
-    @Test
+//    @Test
     public void testSerialize() {
         Training training = new Training();
         List<Sample> lista = new ArrayList<>();
@@ -130,7 +130,7 @@ public class TrainingTest {
         }
     }
 
-    @Test
+//    @Test
     public void testDeserialize() {
         try {
             Perceptron neuronioAnd = Perceptron.deserialize("/home/mertins/perceptronAnd.obj");

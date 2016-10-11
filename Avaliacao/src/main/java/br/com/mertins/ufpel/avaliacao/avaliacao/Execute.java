@@ -23,15 +23,17 @@ public class Execute {
             File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             System.out.printf("Arquivo %s\n", file.getAbsolutePath());
             Samples samples = new Samples();
+            samples.setNegativeValue(0);
+            samples.setPositiveValue(1);
             samples.setFirstLineAttribute(false);
             samples.avaliaFirstLine(file);
             samples.defineColumnLabel(0);
             List<Integer> remove = new ArrayList<>();
             samples.removeAttributesPos(remove);
             samples.open(file);
-            samples.setTruePositive("8");
+            samples.setTruePositive("5");
             Training training=new Training();
-            Perceptron perceptronZero = training.withDelta(samples,  0.00001, 5,Perceptron.AlgorithmSimoid.TANGEN);
+            Perceptron perceptronZero = training.withDelta(samples,  0.005, 10,Perceptron.AlgorithmSimoid.LOGISTIC);
             
             
             samples.close();

@@ -17,7 +17,7 @@ import java.util.Random;
 public class Perceptron implements Serializable {
 
     public enum AlgorithmSimoid {
-        HARD, LOGISTIC, TANGEN
+        HARD_0, HARD_1, LOGISTIC, TANGEN
     }
     private static final Random RANDOM = new Random();
     private final List<Sinaps> sinapsList = new ArrayList<>();
@@ -34,7 +34,7 @@ public class Perceptron implements Serializable {
     }
 
     public Perceptron(int bias, double biasWeight) {
-        this(bias, biasWeight, AlgorithmSimoid.HARD);
+        this(bias, biasWeight, AlgorithmSimoid.HARD_1);
     }
 
     public Perceptron(int bias, double biasWeight, AlgorithmSimoid algorithm) {
@@ -133,6 +133,9 @@ public class Perceptron implements Serializable {
     double sum() {
         double result = bias * biasWeight;
         result = sinapsList.stream().map((sin) -> sin.getIn() * sin.getWeight()).reduce(result, (accumulator, _item) -> accumulator + _item);
+        if (result == Double.NaN) {
+            System.out.println("E agora?");
+        }
         return result;
     }
 
@@ -143,20 +146,22 @@ public class Perceptron implements Serializable {
      */
     public double out() {
         switch (algorithm) {
-            case HARD:
-                return funcHard();
+            case HARD_0:
+                return funcHard0();
+            case HARD_1:
+                return funcHard1();
             case LOGISTIC:
                 return funcLogistic();
             case TANGEN:
                 return funcTangentHiper();
             default:
-                return funcHard();
+                return funcHard1();
         }
     }
 
     private static double random() {
-        double min = 0.001;
-        double max = 0.999;
+        double min = 0.0001;
+        double max = 0.0999;
         double range = max - min;
         double scaled = RANDOM.nextDouble() * range;
         double shifted = scaled - min;
@@ -175,19 +180,21 @@ public class Perceptron implements Serializable {
         }
     }
 
-    private double funcHard() {
+    private double funcHard0() {
+        return 0.0 < sum() ? 1 : 0;
+    }
+
+    private double funcHard1() {
         return 0.0 < sum() ? 1 : -1;
     }
 
     private double funcLogistic() {
-        return 1 / (1 + Math.exp(-sum()));
+        return 1.0 / (1.0 + Math.exp(-sum()));
     }
 
     private double funcTangentHiper() {
-        double sum = sum();
-        double positiveE = Math.exp(sum);
-        double negativeE = Math.exp(-sum);
-        return (positiveE - negativeE) / (positiveE + negativeE);
+        double negativeE = Math.exp(-sum());
+        return (1.0 - negativeE) / (1.0 + negativeE);
     }
 
 }

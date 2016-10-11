@@ -32,7 +32,10 @@ public class Samples implements Serializable {
     private String fileName;
     private boolean firstLineAttribute = true;
     private String truePositive = null;
+    private double negativeValue=-1.0;
+    private double positiveValue=1.0;
     
+   
     public Samples() {
     }
     
@@ -58,6 +61,22 @@ public class Samples implements Serializable {
 
     public void setTruePositive(String truePositive) {
         this.truePositive = truePositive;
+    }
+
+    public double getNegativeValue() {
+        return negativeValue;
+    }
+
+    public void setNegativeValue(double negativeValue) {
+        this.negativeValue = negativeValue;
+    }
+
+    public double getPositiveValue() {
+        return positiveValue;
+    }
+
+    public void setPositiveValue(double positiveValue) {
+        this.positiveValue = positiveValue;
     }
     
     public void setDelimiter(String delimiter) {
@@ -143,9 +162,9 @@ public class Samples implements Serializable {
                     if (truePositive == null) {
                         sample.setValue(Integer.valueOf(value));
                     } else if (truePositive.equalsIgnoreCase(value)) {
-                        sample.setValue(1);
+                        sample.setValue(this.positiveValue);
                     } else {
-                        sample.setValue(-1);
+                        sample.setValue(this.negativeValue);
                     }
                 } else {
                     // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns
