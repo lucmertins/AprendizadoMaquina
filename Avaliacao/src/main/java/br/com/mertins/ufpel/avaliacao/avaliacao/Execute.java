@@ -53,7 +53,7 @@ public class Execute {
         Duration duration = Duration.between(inicioTreinamento, Instant.now());
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
         String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
-        System.out.printf("Tempo de treinamento [%s]  %s\n", format);
+        System.out.printf("Tempo de treinamento [%s]\n", format);
     }
 
     public void testar() throws IOException, ClassNotFoundException {
