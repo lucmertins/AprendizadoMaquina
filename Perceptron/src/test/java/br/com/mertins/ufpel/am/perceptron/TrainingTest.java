@@ -14,7 +14,7 @@ public class TrainingTest {
     public TrainingTest() {
     }
 
-//    @Test
+    @Test
     public void testORWithDelta() {
         Training training = new Training();
         List<Sample> lista = new ArrayList<>();
@@ -39,7 +39,7 @@ public class TrainingTest {
         sampleOR.setValue(1);
         lista.add(sampleOR);
 
-        Perceptron neuronioOr = training.withDelta(lista, 0.001, 115);
+        Perceptron neuronioOr = training.withDelta(lista, 0.0001, 100);
         System.out.printf("OR Bias [%f] PesoBias [%f]\n", neuronioOr.getBias(), neuronioOr.getBiasWeight());
         for (int i = 1; i <= neuronioOr.amountIn(); i++) {
             System.out.printf("OR Peso [%d] = [%f] \n", i, neuronioOr.weigth(i));
@@ -81,7 +81,7 @@ public class TrainingTest {
         sampleAND.setValue(1);
         lista.add(sampleAND);
 
-        Perceptron neuronioAnd = training.withDelta(lista, 0.001, 2150);
+        Perceptron neuronioAnd = training.withDelta(lista, 0.00001, 10);
         System.out.printf("AND Bias [%f] PesoBias [%f]\n", neuronioAnd.getBias(), neuronioAnd.getBiasWeight());
         for (int i = 1; i <= neuronioAnd.amountIn(); i++) {
             System.out.printf("AND Peso [%d] = [%f] \n", i, neuronioAnd.weigth(i));

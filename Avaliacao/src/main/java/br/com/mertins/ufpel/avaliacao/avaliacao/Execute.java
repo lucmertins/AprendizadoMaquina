@@ -1,11 +1,16 @@
 package br.com.mertins.ufpel.avaliacao.avaliacao;
 
+import br.com.mertins.ufpel.am.perceptron.ObservatorTraining;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.Training;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,11 +22,12 @@ import java.util.logging.Logger;
  */
 public class Execute {
 
-    public void treinamento() throws IOException {
+    public void treinamento(ObservatorTraining observator) throws IOException {
+        Instant inicioTreinamento = Instant.now();
         File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
         System.out.printf("Arquivo %s\n", file.getAbsolutePath());
         Samples samples = new Samples();
-        samples.setNormalize(true);
+//        samples.setNormalize(true);
         samples.setNegativeValue(0);
         samples.setPositiveValue(1);
         samples.setFirstLineAttribute(false);
@@ -32,7 +38,8 @@ public class Execute {
         samples.open(file);
         samples.setTruePositive("0");
         Training training = new Training();
-        Perceptron perceptronZero = training.withDelta(samples, 0.000005, 10, Perceptron.AlgorithmSimoid.HARD_0);
+        training.addListenerObservatorTraining(observator);
+        Perceptron perceptronZero = training.withDelta(samples, 0.00000000000005, 1000, Perceptron.AlgorithmSimoid.LOGISTIC);
         Perceptron.serialize(perceptronZero, "/home/mertins/Documentos/tmp/perceptronZero.obj");
 //        samples.reset();
 //        samples.setTruePositive("1");
@@ -43,6 +50,10 @@ public class Execute {
 //        Perceptron perceptronTwo = training.withPerceptron(samples, 0.005, 4, Perceptron.AlgorithmSimoid.LOGISTIC);
 //        Perceptron.serialize(perceptronTwo, "/home/mertins/Documentos/tmp/perceptronTwo.obj");
         samples.close();
+        Duration duration = Duration.between(inicioTreinamento, Instant.now());
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
+        System.out.printf("Tempo de treinamento [%s]  %s\n", format);
     }
 
     public void testar() throws IOException, ClassNotFoundException {
@@ -58,12 +69,12 @@ public class Execute {
         Sample sample;
 
         Perceptron perceptron = Perceptron.deserialize("/home/mertins/Documentos/tmp/perceptronZero.obj");
-        int truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
+        double truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
         while ((sample = samples.next()) != null) {
             perceptron.fill(sample);
             perceptron.setAlgorithm(Perceptron.AlgorithmSimoid.LOGISTIC);
             double out = perceptron.out();
-            System.out.printf("Sample [%f]   out [%f]\n", sample.getValue(), out);
+//            System.out.printf("Sample [%f]   out [%f]\n", sample.getValue(), out);
             if (sample.getValue() == 0) {
                 if (out == 1) {
                     truePositive++;
@@ -77,13 +88,23 @@ public class Execute {
             }
         }
         samples.close();
-        System.out.printf("truePositive [%d] trueNegative [%d] falsePositive [%d] falseNegative [%d]\n", truePositive, trueNegative, falsePositive, falseNegative);
+        double accuracia = (truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
+        System.out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", truePositive, trueNegative, falsePositive, falseNegative);
+        System.out.printf("Acuracia [%f]\n", accuracia);
 
     }
 
     public static void main(String[] args) {
+        ObservatorTraining observator = new ObservatorTraining() {
+            @Override
+            public void register(Duration duration, int epoca, double errEpoca) {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+                String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
+                System.out.printf("Epoca [%d] errEpoca [%f]  %s\n", epoca, errEpoca, format);
+            }
+        };
         try {
-            new Execute().treinamento();
+            new Execute().treinamento(observator);
         } catch (IOException ex) {
             Logger.getLogger(Execute.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
