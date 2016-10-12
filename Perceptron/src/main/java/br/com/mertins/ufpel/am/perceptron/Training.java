@@ -70,9 +70,9 @@ public class Training {
         for (int epocaTemp = 0; epocaTemp < epoca; epocaTemp++) {
             Instant inicioEpoca = Instant.now();
             List<Double> pesosTemp = new ArrayList<>();
-            double pesoBias = 0.0;
+            double pesoBias = perceptron.getBiasWeight();
             for (int i = 1; i <= entradas; i++) {
-                pesosTemp.add(0.0);
+                pesosTemp.add(perceptron.weigth(i));
             }
             for (Sample sample : samples) {
                perceptron.fill(sample);
@@ -109,9 +109,9 @@ public class Training {
             for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
                 Instant inicioEpoca = Instant.now();
                 List<Double> pesosTemp = new ArrayList<>();
-                double pesoBias = 0.0;
+                double pesoBias = perceptron.getBiasWeight();
                 for (int i = 1; i <= entradas; i++) {
-                    pesosTemp.add(0.0);
+                    pesosTemp.add(perceptron.weigth(i));
                 }
                 Sample sample;
                 int exemplo = 1;
@@ -132,11 +132,11 @@ public class Training {
                 errEpoca = errEpoca / (entradas + 1);
 
                 // atualizar pesos no perceptron baseado no peso anterior
-                perceptron.setBiasWeight(perceptron.getBiasWeight() + pesoBias);
+                perceptron.setBiasWeight(pesoBias);
 //                System.out.printf("Novo Peso bias [%f]\n", perceptron.getBiasWeight());
                 int pos = 1;
                 for (Double value : pesosTemp) {
-                    perceptron.updateWeight(pos, perceptron.in(pos) + value);
+                    perceptron.updateWeight(pos, value);
                     pos++;
                 }
                 samples.reset();

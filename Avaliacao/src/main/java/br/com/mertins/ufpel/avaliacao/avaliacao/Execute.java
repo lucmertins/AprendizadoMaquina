@@ -32,7 +32,7 @@ public class Execute {
         samples.open(file);
         samples.setTruePositive("0");
         Training training = new Training();
-        Perceptron perceptronZero = training.withDelta(samples, 0.005, 10, Perceptron.AlgorithmSimoid.LOGISTIC);
+        Perceptron perceptronZero = training.withDelta(samples, 0.000005, 10, Perceptron.AlgorithmSimoid.HARD_0);
         Perceptron.serialize(perceptronZero, "/home/mertins/Documentos/tmp/perceptronZero.obj");
 //        samples.reset();
 //        samples.setTruePositive("1");

@@ -15,7 +15,7 @@ import java.util.Random;
  * @author mertins
  */
 public class Perceptron implements Serializable {
-    
+
     public enum AlgorithmSimoid {
         HARD_0, HARD_1, LOGISTIC, TANGEN
     }
@@ -24,45 +24,45 @@ public class Perceptron implements Serializable {
     private int bias;
     private double biasWeight;
     private AlgorithmSimoid algorithm;
-    
+
     public Perceptron() {
         this(1, Perceptron.random());
     }
-    
+
     public Perceptron(AlgorithmSimoid algorithm) {
         this(1, Perceptron.random(), algorithm);
     }
-    
+
     public Perceptron(int bias, double biasWeight) {
         this(bias, biasWeight, AlgorithmSimoid.HARD_1);
     }
-    
+
     public Perceptron(int bias, double biasWeight, AlgorithmSimoid algorithm) {
         this.bias = bias;
         this.biasWeight = biasWeight;
         this.algorithm = algorithm;
     }
-    
+
     public double getBias() {
         return bias;
     }
-    
+
     public void setBias(int bias) {
         this.bias = bias;
     }
-    
+
     public double getBiasWeight() {
         return biasWeight;
     }
-    
+
     public void setBiasWeight(double biasWeight) {
         this.biasWeight = biasWeight;
     }
-    
+
     public AlgorithmSimoid getAlgorithm() {
         return algorithm;
     }
-    
+
     public void setAlgorithm(AlgorithmSimoid algorithm) {
         this.algorithm = algorithm;
     }
@@ -88,7 +88,7 @@ public class Perceptron implements Serializable {
         sinapsList.add(new Sinaps(in, weight));
         return sinapsList.size();
     }
-    
+
     public int amountIn() {
         return this.sinapsList.size();
     }
@@ -106,14 +106,14 @@ public class Perceptron implements Serializable {
             get.setIn(in);
         }
     }
-    
+
     public void updateWeight(int pos, double in) {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
             get.setWeight(in);
         }
     }
-    
+
     public double in(int pos) {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
@@ -121,7 +121,7 @@ public class Perceptron implements Serializable {
         }
         return 0;
     }
-    
+
     public double weigth(int pos) {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
@@ -129,10 +129,12 @@ public class Perceptron implements Serializable {
         }
         return 0;
     }
-    
+
     double sum() {
         double result = bias * biasWeight;
-        result = sinapsList.stream().map((sin) -> sin.getIn() * sin.getWeight()).reduce(result, (accumulator, _item) -> accumulator + _item);
+        for (Sinaps sinaps : sinapsList) {
+            result += sinaps.getIn()*sinaps.getWeight();
+        }
         return result;
     }
 
@@ -155,60 +157,60 @@ public class Perceptron implements Serializable {
                 return funcHard1();
         }
     }
-    
+
     public void fill(Sample sample) {
         int pos = 1;
         for (Double value : sample.getIns()) {
             this.updateIn(pos++, value);
         }
     }
-    
+
     public void createIn(int size) {
         this.createIn(size, 0);
     }
-    
+
     public void createIn(int size, double value) {
         for (int i = 1; i <= size; i++) {
             this.addIn(value);
         }
     }
-    
+
     private static double random() {
-        double min = 0.0001;
-        double max = 0.0999;
+        double min = 0.00009;
+        double max = 0.09;
         double range = max - min;
         double scaled = RANDOM.nextDouble() * range;
         double shifted = scaled - min;
         return shifted;
     }
-    
+
     public static void serialize(Perceptron perceptron, String fileName) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(perceptron);
         }
     }
-    
+
     public static Perceptron deserialize(String fileName) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
             return (Perceptron) ois.readObject();
         }
     }
-    
+
     private double funcHard0() {
         return 0.0 < sum() ? 1 : 0;
     }
-    
+
     private double funcHard1() {
         return 0.0 < sum() ? 1 : -1;
     }
-    
+
     private double funcLogistic() {
         return 1.0 / (1.0 + Math.exp(-sum()));
     }
-    
+
     private double funcTangentHiper() {
         double negativeE = Math.exp(-sum());
         return (1.0 - negativeE) / (1.0 + negativeE);
     }
-    
+
 }
