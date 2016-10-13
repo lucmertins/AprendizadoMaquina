@@ -26,7 +26,7 @@ public class ExecuteAvaliacao {
         samples.open(file);
         Sample sample;
 
-        Perceptron perceptron = Perceptron.deserialize("/home/mertins/Documentos/tmp/perceptronZero_3.obj");
+        Perceptron perceptron = Perceptron.deserialize("/home/mertins/IAPerceptron/20161012_215247/perceptron_0_4");
         double truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
         while ((sample = samples.next()) != null) {
             perceptron.fill(sample);
