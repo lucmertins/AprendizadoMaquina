@@ -24,7 +24,7 @@ public class Execute {
             File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
             ExecTreinamento treinamento = new ExecTreinamento();
             treinamento.open(samples, file, "0");
-            treinamento.run(0.00000005, 200, 5, Perceptron.AlgorithmSimoid.LOGISTIC);
+            treinamento.run(0.00000005, 500, 5, Perceptron.AlgorithmSimoid.LOGISTIC);
             treinamento.close();
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
