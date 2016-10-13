@@ -15,26 +15,24 @@ import java.util.logging.Logger;
  */
 public class ExecuteAvaliacao {
 
-    public void testar() throws IOException, ClassNotFoundException {
-        File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-        System.out.printf("Arquivo %s\n", file.getAbsolutePath());
-        SamplesParameters samplesParameters = new SamplesParameters();
-        samplesParameters.setNormalize(true);   // transforme atributos em 0 ou 1
-        samplesParameters.setNegativeValue(0);
-        samplesParameters.setPositiveValue(1);
-        samplesParameters.setFirstLineAttribute(false);
-        samplesParameters.setColumnLabel(0);
+    public void run(String fileTest, SamplesParameters samplesParameters, String filePerceptron) throws IOException, ClassNotFoundException {
+        this.run(fileTest, samplesParameters, filePerceptron, null);
+    }
+
+    public void run(String fileTest, SamplesParameters samplesParameters, String filePerceptron, Perceptron.AlgorithmSimoid algorithm) throws IOException, ClassNotFoundException {
+        File file = new File(fileTest);
         Samples samples = new Samples(samplesParameters);
         samples.avaliaFirstLine(file);
         samples.open(file);
         Sample sample;
-        Perceptron perceptron = Perceptron.deserialize("/home/mertins/IAPerceptron/20161013_095928/perceptron_1_5");
+        Perceptron perceptron = Perceptron.deserialize(filePerceptron);
         double truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
         while ((sample = samples.next()) != null) {
             perceptron.fill(sample);
-            perceptron.setAlgorithm(Perceptron.AlgorithmSimoid.HARD_0);
+            if (algorithm != null) {
+                perceptron.setAlgorithm(algorithm);
+            }
             double out = perceptron.out();
-
             if (sample.getValue() == 0) {
                 if (out == 1) {
                     System.out.printf("True Positive Sample [%f]   out [%f]\n", sample.getValue(), out);

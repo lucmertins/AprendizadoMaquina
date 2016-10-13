@@ -125,6 +125,11 @@ public class ExecTreinamento {
                     Perceptron.serialize(perceptronZero, name);
                 }
                 samples.close();
+                
+                
+                // disparar avaliação
+                
+                
             } catch (IOException ex) {
                 Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, "Falha na thread de treinamento", ex);
 
