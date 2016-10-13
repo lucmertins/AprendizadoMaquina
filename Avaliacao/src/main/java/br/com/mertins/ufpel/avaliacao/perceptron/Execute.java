@@ -17,8 +17,8 @@ public class Execute {
         try {
             File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
             ExecTreinamento treinamento = new ExecTreinamento();
-            treinamento.open(parameters, file, new String[]{"0", "1", "2", "3"});
-            treinamento.run(true, 0.0000000005, 500, 10, Perceptron.AlgorithmSimoid.LOGISTIC);
+            treinamento.open(parameters, file, new String[]{"0","1","2"});
+            treinamento.run(true, 0.0000000005, 5, 10, Perceptron.AlgorithmSimoid.LOGISTIC);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
@@ -50,8 +50,8 @@ public class Execute {
 //                    break;
 //            }
 //        }
-//        Execute.treinamento(parameters);
-        Execute.avaliacao(parameters);
+        Execute.treinamento(parameters);
+//        Execute.avaliacao(parameters);
     }
 
 }

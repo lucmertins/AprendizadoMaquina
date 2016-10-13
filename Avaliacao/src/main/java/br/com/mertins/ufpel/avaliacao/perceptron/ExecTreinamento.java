@@ -50,7 +50,9 @@ public class ExecTreinamento {
     public void run(boolean blocbkIfBadErr, double rateTraining, int epocas, int tentativas, Perceptron.AlgorithmSimoid algorithm) throws IOException {
         int elem = 0;
         for (String label : this.labelList) {
-            new Thread(new Process(label, elem++, blocbkIfBadErr, rateTraining, epocas, tentativas, algorithm)).start();
+            Thread thread = new Thread(new Process(label, elem++, blocbkIfBadErr, rateTraining, epocas, tentativas, algorithm));
+            thread.setDaemon(false);
+            thread.start();
         }
     }
 
@@ -125,11 +127,14 @@ public class ExecTreinamento {
                     Perceptron.serialize(perceptronZero, name);
                 }
                 samples.close();
-                
-                
+                tempTentativas = 1;
+                while (tempTentativas <= tentativas) {
+                    name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
+                    out.write(String.format("Avaliando Perceptron [%s]\n", name));
+                    tempTentativas++;
+                }
+
                 // disparar avaliação
-                
-                
             } catch (IOException ex) {
                 Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, "Falha na thread de treinamento", ex);
 
