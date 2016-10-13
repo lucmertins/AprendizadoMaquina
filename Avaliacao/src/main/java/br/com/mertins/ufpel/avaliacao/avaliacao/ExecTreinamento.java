@@ -91,7 +91,7 @@ public class ExecTreinamento {
             folder.mkdirs();
         }
         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String nome = String.format("%s%sLog.txt", folder.getAbsolutePath(), File.separator);
+        String nome = String.format("%s%slog_%s.txt", folder.getAbsolutePath(), File.separator, this.label);
         this.out = new FileWriter(nome);
         out.write(String.format("%s\n", sdf.format(data)));
         out.write(String.format("Label: %s\n", this.label));
