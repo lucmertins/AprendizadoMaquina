@@ -28,21 +28,22 @@ public class ExecTreinamento {
 
     private SamplesParameters samplesParameters;
     private File fileTraining;
+    private File fileTest;
     private File folder;
     private List<String> labelList;
     private List<FileWriter> outList;
 
-    public void open(SamplesParameters samplesParameters, File file, String label) throws IOException {
-        this.open(samplesParameters, file, new ArrayList<>(Arrays.asList(new String[]{label})));
+    public void open(SamplesParameters samplesParameters, File fileTraining, File fileTest, String label) throws IOException {
+        this.open(samplesParameters, fileTraining, fileTest, new ArrayList<>(Arrays.asList(new String[]{label})));
     }
 
-    public void open(SamplesParameters samplesParameters, File file, String[] label) throws IOException {
-        this.open(samplesParameters, file, new ArrayList<>(Arrays.asList(label)));
+    public void open(SamplesParameters samplesParameters, File fileTraining, File fileTest, String[] label) throws IOException {
+        this.open(samplesParameters, fileTraining, fileTest, new ArrayList<>(Arrays.asList(label)));
     }
 
-    public void open(SamplesParameters samplesParameters, File file, List<String> labelList) throws IOException {
+    public void open(SamplesParameters samplesParameters, File fileTraining, File fileTest, List<String> labelList) throws IOException {
         this.samplesParameters = samplesParameters;
-        this.fileTraining = file;
+        this.fileTraining = fileTraining;
         this.labelList = labelList;
         this.preparaArmazenamento();
     }
@@ -131,13 +132,12 @@ public class ExecTreinamento {
                 while (tempTentativas <= tentativas) {
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Avaliando Perceptron [%s]\n", name));
+                    ExecuteAvaliacao aval = new ExecuteAvaliacao(out);
+                    aval.run(fileTest, samplesParameters, name);
                     tempTentativas++;
                 }
-
-                // disparar avaliação
-            } catch (IOException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, "Falha na thread de treinamento", ex);
-
             } finally {
                 try {
                     Duration duration = Duration.between(inicioTreinamento, Instant.now());
