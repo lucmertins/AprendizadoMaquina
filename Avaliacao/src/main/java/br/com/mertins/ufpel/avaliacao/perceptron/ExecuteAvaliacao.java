@@ -1,8 +1,9 @@
-package br.com.mertins.ufpel.avaliacao.avaliacao;
+package br.com.mertins.ufpel.avaliacao.perceptron;
 
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
+import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,16 +18,17 @@ public class ExecuteAvaliacao {
     public void testar() throws IOException, ClassNotFoundException {
         File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
         System.out.printf("Arquivo %s\n", file.getAbsolutePath());
-        Samples samples = new Samples();
-        samples.setNegativeValue(0);
-        samples.setPositiveValue(1);
-        samples.setFirstLineAttribute(false);
+        SamplesParameters samplesParameters = new SamplesParameters();
+        samplesParameters.setNormalize(true);   // transforme atributos em 0 ou 1
+        samplesParameters.setNegativeValue(0);
+        samplesParameters.setPositiveValue(1);
+        samplesParameters.setFirstLineAttribute(false);
+        samplesParameters.setColumnLabel(0);
+        Samples samples = new Samples(samplesParameters);
         samples.avaliaFirstLine(file);
-        samples.defineColumnLabel(0);
         samples.open(file);
         Sample sample;
-
-        Perceptron perceptron = Perceptron.deserialize("/home/mertins/IAPerceptron/20161012_215247/perceptron_0_4");
+        Perceptron perceptron = Perceptron.deserialize("/home/mertins/IAPerceptron/20161013_095928/perceptron_1_5");
         double truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
         while ((sample = samples.next()) != null) {
             perceptron.fill(sample);
@@ -55,20 +57,4 @@ public class ExecuteAvaliacao {
         System.out.printf("Acuracia [%f]\n", accuracia);
 
     }
-
-//     private FileWriter arquivo(Conexao jog1, Conexao jog2) {
-//        String property = System.getProperty("user.home");
-//        File folder = new File(String.format("%s%sIAJungleWork", property, File.separator));
-//        if (!folder.exists()) {
-//            folder.mkdir();
-//        }
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//        String nome = String.format("%s%s%s%d%d.log", folder.getAbsolutePath(), File.separator, sdf.format(new Date()), jog1.getPort(), jog2.getPort());
-//        try {
-//            return new FileWriter(nome);
-//        } catch (IOException ex) {
-//            Logger.getLogger(ExecuteServer.class.getName()).log(Level.SEVERE, "Não criou o arquivo", ex);
-//            return null;
-//        }
-//    }
 }

@@ -34,7 +34,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>br.com.mertins.ufpel.am.avaliacao.Execute</mainClass>
+                            <mainClass>br.com.mertins.ufpel.avaliacao.perceptron.Execute</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

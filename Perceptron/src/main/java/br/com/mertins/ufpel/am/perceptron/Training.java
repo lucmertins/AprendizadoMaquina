@@ -12,7 +12,11 @@ import java.util.List;
  */
 public class Training {
 
-    private boolean blockIfBadErr = true;
+    private boolean blocbkIfBadErr = true;
+
+    public Training(boolean blocbkIfBadErr) {
+        this.blocbkIfBadErr = blocbkIfBadErr;
+    }
     private ObservatorTraining observator = new ObservatorTraining() {
         @Override
         public void register(Duration duration, int epoca, double errEpoca) {
@@ -129,7 +133,7 @@ public class Training {
                     }
                 }
                 errEpoca = errEpoca / (entradas + 1);
-                if (Math.abs(errEpoca) <= Math.abs(lastErr)) {
+                if (!this.blocbkIfBadErr || Math.abs(errEpoca) <= Math.abs(lastErr)) {
                     lastErr = errEpoca;
                     perceptron.setBiasWeight(pesoBias);
                     int pos = 1;

@@ -26,17 +26,15 @@ public class Samples implements Serializable {
     private final Set<Label> labels = new HashSet<>();
     private int columnLabel;
     private Attribute labelColumn;
-    private boolean normalize = false;
-
     private CSVReader csvReader;
     private boolean csvFirstLine = true;
     private String fileName;
-    private boolean firstLineAttribute = true;
     private String truePositive = null;
-    private double negativeValue = -1.0;
-    private double positiveValue = 1.0;
 
-    public Samples() {
+    private SamplesParameters parameters;
+
+    public Samples(SamplesParameters parameters) {
+        this.parameters = parameters;
     }
 
     public List<ElementValue> getAttributes() {
@@ -63,22 +61,6 @@ public class Samples implements Serializable {
         this.truePositive = truePositive;
     }
 
-    public double getNegativeValue() {
-        return negativeValue;
-    }
-
-    public void setNegativeValue(double negativeValue) {
-        this.negativeValue = negativeValue;
-    }
-
-    public double getPositiveValue() {
-        return positiveValue;
-    }
-
-    public void setPositiveValue(double positiveValue) {
-        this.positiveValue = positiveValue;
-    }
-
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
     }
@@ -91,22 +73,6 @@ public class Samples implements Serializable {
                 this.attributes.remove(labelColumn);
             }
         });
-    }
-
-    public boolean isFirstLineAttribute() {
-        return firstLineAttribute;
-    }
-
-    public void setFirstLineAttribute(boolean firstLineAttribute) {
-        this.firstLineAttribute = firstLineAttribute;
-    }
-
-    public boolean isNormalize() {
-        return normalize;
-    }
-
-    public void setNormalize(boolean normalize) {
-        this.normalize = normalize;
     }
 
     public void removeAttributesPos(List<Integer> posAttribRemove) {
@@ -140,10 +106,11 @@ public class Samples implements Serializable {
                 this.attributesOrigin = new ArrayList<>();
                 int pos = 0;
                 for (String valor : colunas) {
-                    attributesOrigin.add(new Attribute(pos++, this.firstLineAttribute ? valor : String.format("Attrib %d", pos)));
+                    attributesOrigin.add(new Attribute(pos++, this.parameters.isFirstLineAttribute() ? valor : String.format("Attrib %d", pos)));
                 }
             }
         }
+        this.defineColumnLabel(parameters.getColumnLabel());
     }
 
     public void open(String filename) throws IOException {
@@ -158,21 +125,21 @@ public class Samples implements Serializable {
 
     public Sample next() throws IOException {
         String[] colunas = csvReader.readNext();
-        if (this.firstLineAttribute && this.csvFirstLine) {
+        if (this.parameters.isFirstLineAttribute() && this.csvFirstLine) {
             colunas = csvReader.readNext();
         }
         this.csvFirstLine = false;
         if (colunas != null && colunas.length == this.attributesOrigin.size()) {
-            Sample sample = new Sample(this.normalize);
+            Sample sample = new Sample(this.parameters.isNormalize());
             int pos = 0;
             for (String value : colunas) {
                 if (pos == this.columnLabel) {
                     if (truePositive == null) {
                         sample.setValue(Integer.valueOf(value));
                     } else if (truePositive.equalsIgnoreCase(value)) {
-                        sample.setValue(this.positiveValue);
+                        sample.setValue(this.parameters.getPositiveValue());
                     } else {
-                        sample.setValue(this.negativeValue);
+                        sample.setValue(this.parameters.getNegativeValue());
                     }
                 } else {
                     // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns

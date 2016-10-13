@@ -1,7 +1,7 @@
-package br.com.mertins.ufpel.avaliacao.avaliacao;
+package br.com.mertins.ufpel.avaliacao.perceptron;
 
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
-import br.com.mertins.ufpel.am.perceptron.Samples;
+import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -15,17 +15,16 @@ public class Execute {
 
     public static void treinamento() {
         try {
-            Samples samples = new Samples();
-            samples.setNormalize(true);   // transforme atributos em 0 ou 1
+            SamplesParameters samples = new SamplesParameters();
+            samples.setNormalize(false);   // transforme atributos em 0 ou 1
             samples.setNegativeValue(0);
             samples.setPositiveValue(1);
             samples.setFirstLineAttribute(false);
-            samples.defineColumnLabel(0);
+            samples.setColumnLabel(0);
             File file = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
             ExecTreinamento treinamento = new ExecTreinamento();
-            treinamento.open(samples, file, "0");
-            treinamento.run(0.00000005, 500, 5, Perceptron.AlgorithmSimoid.LOGISTIC);
-            treinamento.close();
+            treinamento.open(samples, file, new String[]{"0", "1","2", "3"});
+            treinamento.run(true,0.00000005, 500, 10, Perceptron.AlgorithmSimoid.LOGISTIC);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
