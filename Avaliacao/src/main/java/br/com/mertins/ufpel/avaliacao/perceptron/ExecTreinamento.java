@@ -44,6 +44,7 @@ public class ExecTreinamento {
     public void open(SamplesParameters samplesParameters, File fileTraining, File fileTest, List<String> labelList) throws IOException {
         this.samplesParameters = samplesParameters;
         this.fileTraining = fileTraining;
+        this.fileTest=fileTest;
         this.labelList = labelList;
         this.preparaArmazenamento();
     }

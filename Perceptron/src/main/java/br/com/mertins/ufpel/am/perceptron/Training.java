@@ -146,6 +146,7 @@ public class Training {
                     epocaTemp++;
 
                 } else {
+                    System.out.printf("Não melhorou: ErrEpoca [%.12f  %.12f]      lastErr [%.12f  %.12f]\n",errEpoca,Math.abs(errEpoca), lastErr,Math.abs(lastErr));
                     segue = false;
                 }
             }
