@@ -21,7 +21,7 @@ public class Sample {
     }
 
     public void addIn(double value) {
-        ins.add(value);
+        ins.add(this.normalize ? value > 0 ? 1.0 : 0 : value);
     }
 
     public double getValue() {
@@ -46,7 +46,7 @@ public class Sample {
 
     public Double getIn(int pos) {
         if (this.ins.size() <= pos) {
-            return normalize ? this.ins.get(pos - 1) > 0 ? 1.0 : 0 : this.ins.get(pos - 1);
+            return this.ins.get(pos - 1);
         }
         return 0.0;
     }

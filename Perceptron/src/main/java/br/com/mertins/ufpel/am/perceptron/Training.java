@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Training {
 
+    private boolean blockIfBadErr = true;
     private ObservatorTraining observator = new ObservatorTraining() {
         @Override
         public void register(Duration duration, int epoca, double errEpoca) {
@@ -97,12 +98,19 @@ public class Training {
     }
 
     public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm) throws IOException {
-        Perceptron perceptron = new Perceptron(algorithm);
+        return this.withDelta(samples, learningRate, epoca, new Perceptron(algorithm));
+    }
+
+    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron perceptron) throws IOException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.getAttributes().isEmpty()) {
             int entradas = samples.getAttributes().size();
             perceptron.createIn(entradas);
-            for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
+            int epocaTemp = 1;
+            double lastErr = Double.POSITIVE_INFINITY;
+            boolean segue = true;
+            while (segue && epocaTemp <= epoca) {
+                double errEpoca = 0.0;
                 Instant inicioEpoca = Instant.now();
                 List<Double> pesosTemp = new ArrayList<>();
                 double pesoBias = perceptron.getBiasWeight();
@@ -110,7 +118,6 @@ public class Training {
                     pesosTemp.add(perceptron.weigth(i));
                 }
                 Sample sample;
-                double errEpoca = 0.0;
                 while ((sample = samples.next()) != null) {
                     perceptron.fill(sample);
                     double err = sample.getValue() - perceptron.sum();
@@ -122,14 +129,21 @@ public class Training {
                     }
                 }
                 errEpoca = errEpoca / (entradas + 1);
-                perceptron.setBiasWeight(pesoBias);
-                int pos = 1;
-                for (Double value : pesosTemp) {
-                    perceptron.updateWeight(pos, value);
-                    pos++;
+                if (Math.abs(errEpoca) <= Math.abs(lastErr)) {
+                    lastErr = errEpoca;
+                    perceptron.setBiasWeight(pesoBias);
+                    int pos = 1;
+                    for (Double value : pesosTemp) {
+                        perceptron.updateWeight(pos, value);
+                        pos++;
+                    }
+                    samples.reset();
+                    register(inicioEpoca, epocaTemp, errEpoca);
+                    epocaTemp++;
+
+                } else {
+                    segue = false;
                 }
-                samples.reset();
-                register(inicioEpoca, epocaTemp, errEpoca);
             }
         }
         return perceptron;
@@ -141,7 +155,8 @@ public class Training {
         if (!samples.getAttributes().isEmpty()) {
             int entradas = samples.getAttributes().size();
             perceptron.createIn(entradas);
-            for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
+            int epocaTemp = 1;
+            while (epocaTemp <= epoca) {
                 Instant inicioEpoca = Instant.now();
                 List<Double> pesosTemp = new ArrayList<>();
                 double pesoBias = perceptron.getBiasWeight();
@@ -166,6 +181,7 @@ public class Training {
                 }
                 samples.reset();
                 register(inicioEpoca, epocaTemp, Double.NaN);
+                epocaTemp++;
             }
         }
         return perceptron;
