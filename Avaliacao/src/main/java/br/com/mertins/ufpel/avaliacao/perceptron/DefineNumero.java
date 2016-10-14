@@ -4,6 +4,7 @@ import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -13,13 +14,19 @@ import java.io.IOException;
 public class DefineNumero {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        String[] arquivos = {
-            "/home/mertins/IAPerceptron/20161013_203249/perceptron_0_13", "/home/mertins/IAPerceptron/20161013_203249/perceptron_1_13",
-            "/home/mertins/IAPerceptron/20161013_203249/perceptron_2_13", "/home/mertins/IAPerceptron/20161013_203249/perceptron_3_13",
-            "/home/mertins/IAPerceptron/20161013_203249/perceptron_4_13", "/home/mertins/IAPerceptron/20161013_203249/perceptron_5_13",
-            "/home/mertins/IAPerceptron/20161013_203249/perceptron_6_13", "/home/mertins/IAPerceptron/20161013_203249/perceptron_7_13",
-            "/home/mertins/IAPerceptron/20161013_203249/perceptron_7_13", "/home/mertins/IAPerceptron/20161013_203249/perceptron_8_13"
-        };
+        String path = "/Users/mertins/IAPerceptron/20161014_085630";
+        String versao = "10";
+//         File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+        File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+
+        Perceptron[] perceptrons = new Perceptron[10];
+
+        for (int i = 0; i < 10; i++) {
+            String arquivo = String.format("%s%sperceptron_%d_%s", path, File.separator, i, versao);
+            Perceptron perceptron = Perceptron.deserialize(arquivo);
+            perceptron.setAlgorithm(Perceptron.AlgorithmSimoid.LOGISTIC);
+            perceptrons[i] = perceptron;
+        }
 
         SamplesParameters parameters = new SamplesParameters();
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
@@ -29,25 +36,32 @@ public class DefineNumero {
         parameters.setColumnLabel(0);
         Samples samples = new Samples(parameters);
         Sample sample;
-
+        samples.avaliaFirstLine(fileTest);
+        samples.open(fileTest);
+        double acertou = 0, errou = 0;
         while ((sample = samples.next()) != null) {
             double melhorValor = -1;
             int percEscolhido = -1;
             int perc = 0;
-            for (String arquivo : arquivos) {
-                Perceptron perceptron = Perceptron.deserialize(arquivo);
-                perceptron.setAlgorithm(Perceptron.AlgorithmSimoid.LOGISTIC);
-                perceptron.fill(sample);
-                double out = perceptron.out();
+            for (int i = 0; i < 10; i++) {
+                perceptrons[i].fill(sample);
+                double out = perceptrons[i].out();
                 if (out > melhorValor) {
                     percEscolhido = perc;
                     melhorValor = out;
                 }
                 perc++;
             }
-            System.out.printf("Sample [%f]   out [%d]\n", sample.getValue(), percEscolhido);
+
+//            System.out.printf("Sample [%f]   out [%d]\n", sample.getValue(), percEscolhido);
+            if (sample.getValue() == percEscolhido) {
+                acertou++;
+            } else {
+                errou++;
+            }
 
         }
+        System.out.printf("Acertou [%.0f %.3f%%]   Errou [%.0f %.3f%%] \n", acertou,acertou/(acertou+errou)*100, errou,errou/(acertou+errou)*100);
 
     }
 }
