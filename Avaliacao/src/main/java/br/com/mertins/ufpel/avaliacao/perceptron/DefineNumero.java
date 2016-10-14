@@ -14,10 +14,11 @@ import java.io.IOException;
 public class DefineNumero {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        String path = "/Users/mertins/IAPerceptron/20161014_085630";
+        String path = "/home/mertins/IAPerceptron/20161014_074950";
+//        String path = "/Users/mertins/IAPerceptron/20161014_085630";
         String versao = "10";
-//         File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-        File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+         File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+//        File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 
         Perceptron[] perceptrons = new Perceptron[10];
 
