@@ -19,7 +19,7 @@ public class Execute {
             File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento treinamento = new ExecTreinamento();
             treinamento.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
-            treinamento.run(blocbkIfBadErr, 0.00000005, 500, 20, Perceptron.AlgorithmSimoid.HARD_0);
+            treinamento.run(blocbkIfBadErr, 0.000000000000001, 1000, 1, Perceptron.AlgorithmSimoid.HARD_0);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
@@ -42,7 +42,7 @@ public class Execute {
         parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Execute.treinamento(parameters,true);
+        Execute.treinamento(parameters,false);
 //        Execute.avaliacao(parameters);
     }
 
