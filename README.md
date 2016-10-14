@@ -14,3 +14,7 @@ A última coluna esta sendo interpretada como a coluna do rótulo.
 Modo visual usando JavaFx. Rodar na pasta Viewer:
 
 java -Xms6144m -Xmx6144m -jar target/Viewer-1.0.jar 
+
+
+
+A execução do treinamento de perceptrons e sua avaliação ainda é necessário mexer diretamente no código, nas classes do projeto Avaliacao
