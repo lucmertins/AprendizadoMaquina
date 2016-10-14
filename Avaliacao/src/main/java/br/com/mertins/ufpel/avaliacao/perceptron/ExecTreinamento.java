@@ -106,6 +106,9 @@ public class ExecTreinamento {
             Instant inicioTreinamento = Instant.now();
             Samples samples = new Samples(samplesParameters);
             try {
+                out.write(String.format("Tentativas: %d\n", this.tentativas));
+                out.write(String.format("Epocas: %d\n", this.epocas));
+                out.write(String.format("Taxa de treinamento inicial: %.30f\n", this.rateTraining));
                 out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", this.blocbkIfBadErr));
                 samples.avaliaFirstLine(fileTraining);
                 List<Integer> remove = new ArrayList<>();
