@@ -45,7 +45,7 @@ public class Execute {
         parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Execute.treinamento(parameters,false);
+        Execute.treinamento(parameters, true);
 //        Execute.avaliacao(parameters);
     }
 
