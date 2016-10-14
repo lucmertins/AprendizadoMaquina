@@ -14,10 +14,12 @@ import java.io.IOException;
  */
 public class ExecuteAvaliacao {
 
-    private FileWriter outFile;
+    private final FileWriter outFile;
+    private final double label;
 
-    public ExecuteAvaliacao(FileWriter outFile) {
+    public ExecuteAvaliacao(FileWriter outFile, double label) {
         this.outFile = outFile;
+        this.label = label;
     }
 
     public void run(File fileTest, SamplesParameters samplesParameters, String filePerceptron) throws IOException, ClassNotFoundException {
@@ -37,15 +39,15 @@ public class ExecuteAvaliacao {
                 perceptron.setAlgorithm(algorithm);
             }
             double out = perceptron.out();
-            if (sample.getValue() == 0) {
-                if (out == 1) {
+            if (sample.getValue() == label) {
+                if (out > 0.9) {
 //                    System.out.printf("True Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                     truePositive++;
                 } else {
 //                    System.out.printf("False Negative Sample [%f]   out [%f]\n", sample.getValue(), out);
                     falseNegative++;
                 }
-            } else if (out == 1) {
+            } else if (out > 0.9) {
 //                System.out.printf("False Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                 falsePositive++;
             } else {

@@ -44,7 +44,7 @@ public class ExecTreinamento {
     public void open(SamplesParameters samplesParameters, File fileTraining, File fileTest, List<String> labelList) throws IOException {
         this.samplesParameters = samplesParameters;
         this.fileTraining = fileTraining;
-        this.fileTest=fileTest;
+        this.fileTest = fileTest;
         this.labelList = labelList;
         this.preparaArmazenamento();
     }
@@ -115,15 +115,15 @@ public class ExecTreinamento {
                 int tempTentativas = 1;
                 Training training = new Training(blocbkIfBadErr);
                 training.addListenerObservatorTraining(new Observator(out));
-                Perceptron perceptronZero = training.withDelta(samples, rateTraining, epocas, algorithm);
+                Perceptron perceptronZero = training.withDelta(samples, rateTraining, epocas, algorithm, out);
                 String name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                 out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                 Perceptron.serialize(perceptronZero, name);
                 while (tempTentativas < tentativas) {
                     tempTentativas++;
                     samples.reset();
-                    rateTraining = rateTraining / 10;
-                    perceptronZero = training.withDelta(samples, rateTraining, epocas, perceptronZero);
+                    rateTraining = rateTraining / 2;
+                    perceptronZero = training.withDelta(samples, rateTraining, epocas, perceptronZero, out);
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                     Perceptron.serialize(perceptronZero, name);
@@ -132,10 +132,14 @@ public class ExecTreinamento {
                 tempTentativas = 1;
                 while (tempTentativas <= tentativas) {
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
-                    out.write(String.format("Avaliando Perceptron [%s]\n", name));
-                    ExecuteAvaliacao aval = new ExecuteAvaliacao(out);
-                    aval.run(fileTest, samplesParameters, name);
+                    out.write("\n");
+                    for (Perceptron.AlgorithmSimoid algorit : Perceptron.AlgorithmSimoid.values()) {
+                        out.write(String.format("Avaliando Perceptron [%s] [%s]\n", name, algorit));
+                        ExecuteAvaliacao aval = new ExecuteAvaliacao(out, Double.valueOf(label));
+                        aval.run(fileTest, samplesParameters, name, algorit);
+                    }
                     tempTentativas++;
+
                 }
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, "Falha na thread de treinamento", ex);
@@ -169,7 +173,7 @@ public class ExecTreinamento {
             try {
                 DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
                 String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
-                out.write(String.format("Epoca [%d] errEpoca [%f]  %s\n", epoca, errEpoca, format));
+                out.write(String.format("Epoca [%d] errEpoca [%.30f]  %s\n", epoca, errEpoca, format));
                 out.flush();
             } catch (IOException ex) {
                 Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,5 +1,6 @@
 package br.com.mertins.ufpel.am.perceptron;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -101,11 +102,11 @@ public class Training {
         return perceptron;
     }
 
-    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm) throws IOException {
-        return this.withDelta(samples, learningRate, epoca, new Perceptron(algorithm));
+    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException {
+        return this.withDelta(samples, learningRate, epoca, new Perceptron(algorithm), out);
     }
 
-    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron perceptron) throws IOException {
+    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron perceptron, FileWriter out) throws IOException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.getAttributes().isEmpty()) {
             int entradas = samples.getAttributes().size();
@@ -146,7 +147,7 @@ public class Training {
                     epocaTemp++;
 
                 } else {
-                    System.out.printf("Não melhorou: ErrEpoca [%.12f  %.12f]      lastErr [%.12f  %.12f]\n",errEpoca,Math.abs(errEpoca), lastErr,Math.abs(lastErr));
+                    out.write(String.format("Não melhorou: ErrEpoca [%.30f]      lastErr [%.30f]\n", errEpoca, lastErr));
                     segue = false;
                 }
             }

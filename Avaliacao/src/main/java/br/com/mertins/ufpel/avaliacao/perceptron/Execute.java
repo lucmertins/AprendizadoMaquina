@@ -18,24 +18,26 @@ public class Execute {
             File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
             File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento treinamento = new ExecTreinamento();
-            treinamento.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2"});
-            treinamento.run(true, 0.0000000005, 5, 10, Perceptron.AlgorithmSimoid.LOGISTIC);
+            treinamento.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
+            treinamento.run(false, 0.00000005, 500, 20, Perceptron.AlgorithmSimoid.HARD_0);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
     }
 
-//    public static void avaliacao(SamplesParameters parameters) {
-//        try {
-//            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-//            new ExecuteAvaliacao().run(fileTest, parameters, "/home/mertins/IAPerceptron/20161013_095928/perceptron_1_5");
-//        } catch (IOException | ClassNotFoundException ex) {
-//            Logger.getLogger(ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
-//        }
-//    }
+    public static void avaliacao(SamplesParameters parameters) {
+        try {
+            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+            ExecuteAvaliacao aval = new ExecuteAvaliacao(null, 3);
+            aval.run(fileTest, parameters, "/home/mertins/IAPerceptron/20161013_195442/perceptron_3_10", Perceptron.AlgorithmSimoid.HARD_0);
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
+        }
+    }
+
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
-        parameters.setNormalize(true);   // transforme atributos em 0 ou 1
+        parameters.setNormalize(false);   // transforme atributos em 0 ou 1
         parameters.setNegativeValue(0);
         parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
