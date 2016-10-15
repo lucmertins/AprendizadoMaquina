@@ -118,7 +118,7 @@ public class ExecTreinamento {
                 int tempTentativas = 1;
                 Training training = new Training(blocbkIfBadErr);
                 training.addListenerObservatorTraining(new Observator(out));
-                Perceptron perceptronZero = training.withDelta(samples, rateTraining, epocas, algorithm, out);
+                Perceptron perceptronZero = training.withStochastic(samples, rateTraining, epocas, algorithm, out);
                 String name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                 out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                 Perceptron.serialize(perceptronZero, name);
@@ -126,7 +126,7 @@ public class ExecTreinamento {
                     tempTentativas++;
                     samples.reset();
                     rateTraining = rateTraining / 2;
-                    perceptronZero = training.withDelta(samples, rateTraining, epocas, perceptronZero, out);
+                    perceptronZero = training.withStochastic(samples, rateTraining, epocas, perceptronZero, out);
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                     Perceptron.serialize(perceptronZero, name);
