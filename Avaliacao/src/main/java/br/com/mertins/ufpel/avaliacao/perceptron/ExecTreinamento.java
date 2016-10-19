@@ -26,6 +26,9 @@ import java.util.logging.Logger;
  */
 public class ExecTreinamento {
 
+    public enum Treinamento {
+        DELTA, ESTOCASTICO
+    }
     private SamplesParameters samplesParameters;
     private File fileTraining;
     private File fileTest;
@@ -49,10 +52,10 @@ public class ExecTreinamento {
         this.preparaArmazenamento();
     }
 
-    public void run(boolean blocbkIfBadErr, double rateTraining, int epocas, int tentativas, Perceptron.AlgorithmSimoid algorithm) throws IOException {
+    public void run(boolean blocbkIfBadErr, double rateTraining, int epocas, int tentativas, Treinamento treinamento, Perceptron.AlgorithmSimoid algorithm) throws IOException {
         int elem = 0;
         for (String label : this.labelList) {
-            Thread thread = new Thread(new Process(label, elem++, blocbkIfBadErr, rateTraining, epocas, tentativas, algorithm));
+            Thread thread = new Thread(new Process(label, elem++, blocbkIfBadErr, rateTraining, epocas, tentativas, treinamento, algorithm));
             thread.setDaemon(false);
             thread.start();
         }
@@ -89,8 +92,9 @@ public class ExecTreinamento {
         private final Perceptron.AlgorithmSimoid algorithm;
         private final int posFileLabel;
         private final boolean blocbkIfBadErr;
+        private final Treinamento treinamento;
 
-        public Process(String label, int pos, boolean blocbkIfBadErr, double rateTraining, int epocas, int tentativas, Perceptron.AlgorithmSimoid algorithm) {
+        public Process(String label, int pos, boolean blocbkIfBadErr, double rateTraining, int epocas, int tentativas, Treinamento treinamento, Perceptron.AlgorithmSimoid algorithm) {
             this.label = label;
             this.rateTraining = rateTraining;
             this.epocas = epocas;
@@ -98,6 +102,7 @@ public class ExecTreinamento {
             this.algorithm = algorithm;
             this.posFileLabel = pos;
             this.blocbkIfBadErr = blocbkIfBadErr;
+            this.treinamento = treinamento;
         }
 
         @Override
@@ -109,6 +114,7 @@ public class ExecTreinamento {
                 out.write(String.format("Tentativas: %d\n", this.tentativas));
                 out.write(String.format("Epocas: %d\n", this.epocas));
                 out.write(String.format("Taxa de treinamento inicial: %.30f\n", this.rateTraining));
+                out.write(String.format("Tipo treinamento: %s\n", this.treinamento));
                 out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", this.blocbkIfBadErr));
                 samples.avaliaFirstLine(fileTraining);
                 List<Integer> remove = new ArrayList<>();
@@ -118,18 +124,18 @@ public class ExecTreinamento {
                 int tempTentativas = 1;
                 Training training = new Training(blocbkIfBadErr);
                 training.addListenerObservatorTraining(new Observator(out));
-                Perceptron perceptronZero = training.withStochastic(samples, rateTraining, epocas, algorithm, out);
+                Perceptron perceptron = treinamento == Treinamento.DELTA ? training.withDelta(samples, rateTraining, epocas, algorithm, out) : training.withStochastic(samples, rateTraining, epocas, algorithm, out);
                 String name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                 out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
-                Perceptron.serialize(perceptronZero, name);
+                Perceptron.serialize(perceptron, name);
                 while (tempTentativas < tentativas) {
                     tempTentativas++;
                     samples.reset();
                     rateTraining = rateTraining / 2;
-                    perceptronZero = training.withStochastic(samples, rateTraining, epocas, perceptronZero, out);
+                    perceptron = treinamento == Treinamento.DELTA ? training.withDelta(samples, rateTraining, epocas, perceptron, out):training.withStochastic(samples, rateTraining, epocas, perceptron, out);
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
-                    Perceptron.serialize(perceptronZero, name);
+                    Perceptron.serialize(perceptron, name);
                 }
                 samples.close();
                 tempTentativas = 1;

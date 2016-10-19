@@ -1,5 +1,7 @@
 package br.com.mertins.ufpel.am.perceptron;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -133,7 +135,7 @@ public class Perceptron implements Serializable {
     double sum() {
         double result = bias * biasWeight;
         for (Sinaps sinaps : sinapsList) {
-            result += sinaps.getIn()*sinaps.getWeight();
+            result += sinaps.getIn() * sinaps.getWeight();
         }
         return result;
     }
@@ -192,6 +194,17 @@ public class Perceptron implements Serializable {
 
     public static Perceptron deserialize(String fileName) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (Perceptron) ois.readObject();
+        }
+    }
+
+    public Perceptron copy() throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(this);
+        }
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        try (ObjectInputStream ois = new ObjectInputStream(bais)) {
             return (Perceptron) ois.readObject();
         }
     }
