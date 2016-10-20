@@ -131,7 +131,7 @@ public class ExecTreinamento {
                 while (tempTentativas < tentativas) {
                     tempTentativas++;
                     samples.reset();
-                    rateTraining = rateTraining / 2;
+                    rateTraining = rateTraining / 5;
                     perceptron = treinamento == Treinamento.DELTA ? training.withDelta(samples, rateTraining, epocas, perceptron, out):training.withStochastic(samples, rateTraining, epocas, perceptron, out);
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));

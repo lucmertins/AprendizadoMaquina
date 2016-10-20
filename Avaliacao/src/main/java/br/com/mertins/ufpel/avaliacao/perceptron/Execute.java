@@ -23,7 +23,7 @@ public class Execute {
             ExecTreinamento exeTreino = new ExecTreinamento();
 //            treinamento.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
             exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0"});
-            exeTreino.run(blocbkIfBadErr, 0.0000001, 400, 20, treinamento, Perceptron.AlgorithmSimoid.HARD_0);
+            exeTreino.run(blocbkIfBadErr, 0.0000005, 500, 20, treinamento, Perceptron.AlgorithmSimoid.HARD_0);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
@@ -33,8 +33,8 @@ public class Execute {
         try {
             File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 //            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            ExecuteAvaliacao aval = new ExecuteAvaliacao(null, 3);
-            aval.run(fileTest, parameters, "/home/mertins/IAPerceptron/20161013_195442/perceptron_3_10", Perceptron.AlgorithmSimoid.HARD_0);
+            ExecuteAvaliacao aval = new ExecuteAvaliacao(null, 0);
+            aval.run(fileTest, parameters, "/home/mertins/IAPerceptron/20161020_080924/perceptron_0_4", Perceptron.AlgorithmSimoid.HARD_0);
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }
@@ -42,7 +42,7 @@ public class Execute {
 
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
-        parameters.setNormalize(false);   // transforme atributos em 0 ou 1
+        parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setNegativeValue(0);
         parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
