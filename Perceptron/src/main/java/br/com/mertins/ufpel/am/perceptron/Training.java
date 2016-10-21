@@ -99,11 +99,11 @@ public class Training {
         return perceptron;
     }
 
-    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException {
-        return this.withDelta(samples, learningRate, epoca, new Perceptron(algorithm), out);
+    public Perceptron withDelta(Samples samples, double learningRate, double moment, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException {
+        return this.withDelta(samples, learningRate, moment, epoca, new Perceptron(algorithm), out);
     }
 
-    public Perceptron withDelta(Samples samples, double learningRate, int epoca, Perceptron perceptron, FileWriter out) throws IOException {
+    public Perceptron withDelta(Samples samples, double learningRate, double moment, int epoca, Perceptron perceptron, FileWriter out) throws IOException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.getAttributes().isEmpty()) {
             int entradas = samples.getAttributes().size();
@@ -111,6 +111,11 @@ public class Training {
             int epocaTemp = 1;
             double lastErr = Double.POSITIVE_INFINITY;
             boolean segue = true;
+            double deltaPesoBias = 0.0;
+            List<Double> deltaPesos = new ArrayList<>();
+            for (int i = 1; i <= entradas; i++) {
+                deltaPesos.add(0.0);
+            }
             while (segue && epocaTemp <= epoca) {
                 double errEpoca = 0.0;
                 Instant inicioEpoca = Instant.now();
@@ -124,10 +129,12 @@ public class Training {
                     perceptron.fill(sample);
                     double err = sample.getValue() - perceptron.sum();
                     errEpoca += Math.pow(err, 2);
-                    pesoBias += learningRate * err * perceptron.getBias();
+                    deltaPesoBias = learningRate * err * perceptron.getBias() + moment * deltaPesoBias;
+                    pesoBias += deltaPesoBias;
                     for (int i = 0; i < entradas; i++) {
-                        double pesoTemp = pesosTemp.get(i) + learningRate * err * perceptron.in(i + 1);
-                        pesosTemp.set(i, pesoTemp);
+                        final double deltaTemp = learningRate * err * perceptron.in(i + 1) + moment * deltaPesos.get(i);
+                        deltaPesos.set(i, deltaTemp);
+                        pesosTemp.set(i, pesosTemp.get(i) + deltaTemp);
                     }
                 }
                 errEpoca = errEpoca / (entradas + 1);
@@ -152,11 +159,11 @@ public class Training {
         return perceptron;
     }
 
-    public Perceptron withStochastic(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException, ClassNotFoundException {
-        return this.withStochastic(samples, learningRate, epoca, new Perceptron(algorithm), out);
+    public Perceptron withStochastic(Samples samples, double learningRate, double moment, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException, ClassNotFoundException {
+        return this.withStochastic(samples, learningRate, moment, epoca, new Perceptron(algorithm), out);
     }
 
-    public Perceptron withStochastic(Samples samples, double learningRate, int epoca, Perceptron perceptron, FileWriter out) throws IOException, ClassNotFoundException {
+    public Perceptron withStochastic(Samples samples, double learningRate, double moment, int epoca, Perceptron perceptron, FileWriter out) throws IOException, ClassNotFoundException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.getAttributes().isEmpty()) {
             int entradas = samples.getAttributes().size();
@@ -165,6 +172,11 @@ public class Training {
             int epocaTemp = 1;
             double lastErr = Double.POSITIVE_INFINITY;
             boolean segue = true;
+            double deltaPesoBias = 0.0;
+            List<Double> deltaPesos = new ArrayList<>();
+            for (int i = 1; i <= entradas; i++) {
+                deltaPesos.add(0.0);
+            }
             while (segue && epocaTemp <= epoca) {
                 double errEpoca = 0.0;
                 Instant inicioEpoca = Instant.now();
@@ -178,10 +190,12 @@ public class Training {
                     perceptron.fill(sample);
                     double err = sample.getValue() - perceptron.sum();
                     errEpoca += Math.pow(err, 2);
-                    pesoBias += learningRate * err * perceptron.getBias();
+                    deltaPesoBias = learningRate * err * perceptron.getBias() + moment * deltaPesoBias;
+                    pesoBias += deltaPesoBias;
                     for (int i = 0; i < entradas; i++) {
-                        double pesoTemp = pesosTemp.get(i) + learningRate * err * perceptron.in(i + 1);
-                        pesosTemp.set(i, pesoTemp);
+                        final double deltaTemp = learningRate * err * perceptron.in(i + 1) + moment * deltaPesos.get(i);
+                        deltaPesos.set(i, deltaTemp);
+                        pesosTemp.set(i, pesosTemp.get(i) + deltaTemp);
                     }
                     perceptron.setBiasWeight(pesoBias);
                     int pos = 1;
