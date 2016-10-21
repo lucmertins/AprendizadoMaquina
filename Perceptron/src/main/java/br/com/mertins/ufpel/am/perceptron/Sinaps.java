@@ -6,7 +6,7 @@ import java.io.Serializable;
  *
  * @author mertins
  */
-class Sinaps implements Serializable {
+public class Sinaps implements Serializable {
 
     private double in;
     private double weight;
