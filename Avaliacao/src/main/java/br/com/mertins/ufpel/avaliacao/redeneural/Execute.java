@@ -15,21 +15,8 @@ public class Execute {
 //        try {
         File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
         File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-
         ExecTreinamento exeTreino = new ExecTreinamento();
         MLP rede = new MLP();
-        rede.createIn(8, 2.0);
-
-        for (int i = 1; i < 9; i++) {
-            rede.updateIn(i, Double.valueOf(i));
-        }
-
-        rede.addHiddenLayer(1, 4, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.addHiddenLayer(2, 3, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.addOut(8, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.connect();
-        rede.process();
-        System.out.println("Feito");
     }
 
     public static void main(String[] args) {

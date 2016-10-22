@@ -12,15 +12,16 @@ import java.util.List;
  * @author mertins
  */
 public class Training {
-
+    
     private boolean blocbkIfBadErr = true;
-
+    
     public Training(boolean blocbkIfBadErr) {
         this.blocbkIfBadErr = blocbkIfBadErr;
     }
-    private ObservatorTraining observator = (Duration duration, int epoca, double errEpoca) -> {
+    
+    private ObservatorTraining observator = new ObservatorTraining() {
     };
-
+    
     public Perceptron withPerceptron(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm) throws IOException {
         Perceptron perceptron = new Perceptron(algorithm);
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
@@ -38,7 +39,7 @@ public class Training {
                 double errEpoca = 0.0;
                 while ((sample = samples.next()) != null) {
                     perceptron.fill(sample);
-                    double err = sample.getValue() - perceptron.out();
+                    double err = sample.getOut(1) - perceptron.out();
                     errEpoca += Math.pow(err, 2);
                     pesoBias += learningRate * err * perceptron.getBias();
                     // recalcular pesos das entradas
@@ -60,7 +61,7 @@ public class Training {
         }
         return perceptron;
     }
-
+    
     public Perceptron withDelta(List<Sample> samples, double learningRate, int epoca) {
         Perceptron perceptron = new Perceptron();
         int entradas = 0;
@@ -79,7 +80,7 @@ public class Training {
             double errEpoca = 0.0;
             for (Sample sample : samples) {
                 perceptron.fill(sample);
-                double err = sample.getValue() - perceptron.sum();
+                double err = sample.getOut(1) - perceptron.sum();
                 errEpoca += Math.pow(err, 2);;
                 pesoBias += learningRate * err * perceptron.getBias();
                 for (int i = 0; i < entradas; i++) {
@@ -98,11 +99,11 @@ public class Training {
         }
         return perceptron;
     }
-
+    
     public Perceptron withDelta(Samples samples, double learningRate, double moment, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException {
         return this.withDelta(samples, learningRate, moment, epoca, new Perceptron(algorithm), out);
     }
-
+    
     public Perceptron withDelta(Samples samples, double learningRate, double moment, int epoca, Perceptron perceptron, FileWriter out) throws IOException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.getAttributes().isEmpty()) {
@@ -127,7 +128,7 @@ public class Training {
                 Sample sample;
                 while ((sample = samples.next()) != null) {
                     perceptron.fill(sample);
-                    double err = sample.getValue() - perceptron.sum();
+                    double err = sample.getOut(1) - perceptron.sum();
                     errEpoca += Math.pow(err, 2);
                     deltaPesoBias = learningRate * err * perceptron.getBias() + moment * deltaPesoBias;
                     pesoBias += deltaPesoBias;
@@ -149,7 +150,7 @@ public class Training {
                     samples.reset();
                     register(inicioEpoca, epocaTemp, errEpoca);
                     epocaTemp++;
-
+                    
                 } else {
                     out.write(String.format("Não melhorou: ErrEpoca [%.30f]      lastErr [%.30f]\n", errEpoca, lastErr));
                     segue = false;
@@ -158,11 +159,11 @@ public class Training {
         }
         return perceptron;
     }
-
+    
     public Perceptron withStochastic(Samples samples, double learningRate, double moment, int epoca, Perceptron.AlgorithmSimoid algorithm, FileWriter out) throws IOException, ClassNotFoundException {
         return this.withStochastic(samples, learningRate, moment, epoca, new Perceptron(algorithm), out);
     }
-
+    
     public Perceptron withStochastic(Samples samples, double learningRate, double moment, int epoca, Perceptron perceptron, FileWriter out) throws IOException, ClassNotFoundException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
         if (!samples.getAttributes().isEmpty()) {
@@ -188,7 +189,7 @@ public class Training {
                 Sample sample;
                 while ((sample = samples.next()) != null) {
                     perceptron.fill(sample);
-                    double err = sample.getValue() - perceptron.sum();
+                    double err = sample.getOut(1) - perceptron.sum();
                     errEpoca += Math.pow(err, 2);
                     deltaPesoBias = learningRate * err * perceptron.getBias() + moment * deltaPesoBias;
                     pesoBias += deltaPesoBias;
@@ -216,19 +217,19 @@ public class Training {
                     segue = false;
                     perceptron = perceptronAnterior;
                 }
-
+                
             }
         }
         return perceptron;
     }
-
+    
     public void addListenerObservatorTraining(ObservatorTraining observator) {
         this.observator = observator;
     }
-
+    
     private void register(Instant inicio, int epoca, double errEpoca) {
         Duration duration = Duration.between(inicio, Instant.now());
         this.observator.register(duration, epoca, errEpoca);
     }
-
+    
 }

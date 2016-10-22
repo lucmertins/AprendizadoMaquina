@@ -10,7 +10,8 @@ import java.util.List;
 public class Sample {
 
     private final List<Double> ins = new ArrayList<>();
-    private double value;
+//    private double value;
+    private final List<Double> outs = new ArrayList<>();
     private boolean normalize;
 
     public Sample() {
@@ -24,13 +25,17 @@ public class Sample {
         ins.add(this.normalize ? value > 0 ? 1.0 : 0 : value);
     }
 
-    public double getValue() {
-        return value;
+    public void addOut(double value) {
+        outs.add(value);
     }
 
-    public void setValue(double value) {
-        this.value = value;
-    }
+//    public double getValue() {
+//        return value;
+//    }
+//
+//    public void setValue(double value) {
+//        this.value = value;
+//    }
 
     public List<Double> getIns() {
         return ins;
@@ -60,6 +65,13 @@ public class Sample {
         for (Double vtemp : ins) {
             perceptron.updateIn(pos++, vtemp);
         }
+    }
+
+    public Double getOut(int pos) {
+        if (this.outs.size() <= pos) {
+            return this.outs.get(pos - 1);
+        }
+        return 0.0;
     }
 
 }

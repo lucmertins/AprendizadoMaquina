@@ -135,11 +135,11 @@ public class Samples implements Serializable {
             for (String value : colunas) {
                 if (pos == this.columnLabel) {
                     if (truePositive == null) {
-                        sample.setValue(Integer.valueOf(value));
+                        sample.addOut(Double.valueOf(value));
                     } else if (truePositive.equalsIgnoreCase(value)) {
-                        sample.setValue(this.parameters.getPositiveValue());
+                        sample.addOut(this.parameters.getPositiveValue());
                     } else {
-                        sample.setValue(this.parameters.getNegativeValue());
+                        sample.addOut(this.parameters.getNegativeValue());
                     }
                 } else {
                     // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns

@@ -93,7 +93,7 @@ public class MLP {
         ready = !this.ins.isEmpty() && !this.layers.isEmpty() && !this.outs.isEmpty();
     }
 
-    public void process() {
+    public double[] process() {
         if (ready) {
             IntStream.range(0, this.ins.size()).forEach(i -> {
                 this.layers.get(0).perceptrons.forEach(perceptron -> {
@@ -125,7 +125,12 @@ public class MLP {
                 });
             }
         });
-
+        double[] results = new double[outs.size()];
+        int[] pos = {0};
+        outs.forEach(perceptron -> {
+            results[pos[0]++] = perceptron.out();
+        });
+        return results;
     }
 
     private class Layer {

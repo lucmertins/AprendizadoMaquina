@@ -55,7 +55,7 @@ public class DefineNumero {
             }
 
 //            System.out.printf("Sample [%f]   out [%d]\n", sample.getValue(), percEscolhido);
-            if (sample.getValue() == percEscolhido) {
+            if (sample.getOut(1)== percEscolhido) {
                 acertou++;
             } else {
                 errou++;
