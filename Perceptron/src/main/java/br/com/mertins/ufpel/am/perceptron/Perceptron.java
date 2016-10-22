@@ -26,6 +26,8 @@ public class Perceptron implements Serializable {
     private int bias;
     private double biasWeight;
     private AlgorithmSimoid algorithm;
+    private boolean update = true;
+    private double valueSum = 0.0;
 
     public Perceptron() {
         this(1, Perceptron.random());
@@ -33,6 +35,14 @@ public class Perceptron implements Serializable {
 
     public Perceptron(AlgorithmSimoid algorithm) {
         this(1, Perceptron.random(), algorithm);
+    }
+
+    public Perceptron(int bias) {
+        this(bias, Perceptron.random());
+    }
+
+    public Perceptron(int bias, AlgorithmSimoid algorithm) {
+        this(bias, Perceptron.random(), algorithm);
     }
 
     public Perceptron(int bias, double biasWeight) {
@@ -51,6 +61,7 @@ public class Perceptron implements Serializable {
 
     public void setBias(int bias) {
         this.bias = bias;
+        update = true;
     }
 
     public double getBiasWeight() {
@@ -59,6 +70,7 @@ public class Perceptron implements Serializable {
 
     public void setBiasWeight(double biasWeight) {
         this.biasWeight = biasWeight;
+        update = true;
     }
 
     public AlgorithmSimoid getAlgorithm() {
@@ -88,6 +100,7 @@ public class Perceptron implements Serializable {
      */
     public int addIn(double in, double weight) {
         sinapsList.add(new Sinaps(in, weight));
+        update = true;
         return sinapsList.size();
     }
 
@@ -107,15 +120,29 @@ public class Perceptron implements Serializable {
             Sinaps get = sinapsList.get(pos - 1);
             get.setIn(in);
         }
+        update = true;
     }
 
+    /**
+     * Atualiza o peso conforme a posição especificada
+     *
+     * @param pos
+     * @param in
+     */
     public void updateWeight(int pos, double in) {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
             get.setWeight(in);
         }
+        update = true;
     }
 
+    /**
+     * Retorna o valor da entrada, conforme a posição especificada
+     *
+     * @param pos
+     * @return
+     */
     public double in(int pos) {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
@@ -124,6 +151,12 @@ public class Perceptron implements Serializable {
         return 0;
     }
 
+    /**
+     * Retorna o valor do peso da entrada, conforme a posição especificada
+     *
+     * @param pos
+     * @return
+     */
     public double weigth(int pos) {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
@@ -132,12 +165,48 @@ public class Perceptron implements Serializable {
         return 0;
     }
 
-    double sum() {
-        double result = bias * biasWeight;
-        for (Sinaps sinaps : sinapsList) {
-            result += sinaps.getIn() * sinaps.getWeight();
+    /**
+     * Preenche a entrada conforme as informações contidas no exemplo
+     *
+     * @param sample
+     */
+    public void fill(Sample sample) {
+        int pos = 1;
+        for (Double value : sample.getIns()) {
+            this.updateIn(pos++, value);
         }
-        return result;
+        update = true;
+    }
+
+    /**
+     * Cria a quantidade de entradas solicitadas, com valor zero
+     *
+     * @param size
+     */
+    public void createIn(int size) {
+        this.createIn(size, 0);
+    }
+
+    /**
+     * Cria a quantidade de entradas solicitadas, preenchendo-as com o valor
+     * informado
+     *
+     * @param size
+     * @param value
+     */
+    public void createIn(int size, double value) {
+        for (int i = 1; i <= size; i++) {
+            this.addIn(value);
+        }
+        update = true;
+    }
+
+    double sum() {
+        if (update) {
+            valueSum = sinapsList.stream().map((sinaps) -> sinaps.getIn() * sinaps.getWeight()).reduce(bias * biasWeight, (accumulator, _item) -> accumulator + _item);
+            update = false;
+        }
+        return valueSum;
     }
 
     /**
@@ -156,45 +225,7 @@ public class Perceptron implements Serializable {
             case TANGEN:
                 return funcTangentHiper();
             default:
-                return funcHard1();
-        }
-    }
-
-    public void fill(Sample sample) {
-        int pos = 1;
-        for (Double value : sample.getIns()) {
-            this.updateIn(pos++, value);
-        }
-    }
-
-    public void createIn(int size) {
-        this.createIn(size, 0);
-    }
-
-    public void createIn(int size, double value) {
-        for (int i = 1; i <= size; i++) {
-            this.addIn(value);
-        }
-    }
-
-    private static double random() {
-        double min = 0.00009;
-        double max = 0.09;
-        double range = max - min;
-        double scaled = RANDOM.nextDouble() * range;
-        double shifted = scaled - min;
-        return shifted;
-    }
-
-    public static void serialize(Perceptron perceptron, String fileName) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            oos.writeObject(perceptron);
-        }
-    }
-
-    public static Perceptron deserialize(String fileName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-            return (Perceptron) ois.readObject();
+                return funcHard0();
         }
     }
 
@@ -205,6 +236,18 @@ public class Perceptron implements Serializable {
         }
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+            return (Perceptron) ois.readObject();
+        }
+    }
+
+    public static void serialize(Perceptron perceptron, String fileName) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(perceptron);
+        }
+    }
+
+    public static Perceptron deserialize(String fileName) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
             return (Perceptron) ois.readObject();
         }
     }
@@ -226,4 +269,12 @@ public class Perceptron implements Serializable {
         return (1.0 - negativeE) / (1.0 + negativeE);
     }
 
+    private static double random() {
+        double min = 0.00009;
+        double max = 0.09;
+        double range = max - min;
+        double scaled = RANDOM.nextDouble() * range;
+        double shifted = scaled - min;
+        return shifted;
+    }
 }

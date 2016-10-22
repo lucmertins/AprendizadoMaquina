@@ -3,6 +3,8 @@ package br.com.mertins.ufpel.am.redeneural;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -13,6 +15,7 @@ public class MLP {
     private final List<Double> ins = new ArrayList<>();
     private final List<Layer> layers = new ArrayList<>();
     private final List<Perceptron> outs = new ArrayList<>();
+    private boolean ready = false;
 
     /**
      * Retorna a posição da entrada
@@ -40,6 +43,7 @@ public class MLP {
     }
 
     public void createIn(int size, double value) {
+        ready = false;
         this.ins.clear();
         for (int i = 1; i <= size; i++) {
             this.addIn(value);
@@ -47,32 +51,81 @@ public class MLP {
     }
 
     public void addHiddenLayer(int position, int amount, Perceptron.AlgorithmSimoid algorithm) {
-        if (position > 0 && position <= this.layers.size()) {
+        this.addHiddenLayer(position, amount, 1, algorithm);
+    }
+
+    public void addHiddenLayer(int position, int amount, int bias, Perceptron.AlgorithmSimoid algorithm) {
+        ready = false;
+        if (position > 0 && position <= this.layers.size() + 1) {
             Layer layer = new Layer(position);
             for (int i = 0; i < amount; i++) {
-                layer.add(new Perceptron(algorithm));
+                layer.add(new Perceptron(bias, algorithm));
             }
+            this.layers.add(layer);
         }
     }
 
     public void addOut(int amount, Perceptron.AlgorithmSimoid algorithm) {
+        this.addOut(amount, 1, algorithm);
+    }
+
+    public void addOut(int amount, int bias, Perceptron.AlgorithmSimoid algorithm) {
+        ready = false;
         this.outs.clear();
         for (int i = 0; i < amount; i++) {
-            this.outs.add(new Perceptron(algorithm));
+            this.outs.add(new Perceptron(bias, algorithm));
         }
     }
 
-    public void build() {
-        int size = this.ins.size();
-        for (Layer layer : layers) {
-            for (Perceptron perceptron : layer.perceptrons) {
-                perceptron.createIn(size);
-                size = layer.getPerceptrons().size();
+    public void connect() {
+        int[] size = {this.ins.size()};
+        layers.stream().map((layer) -> {
+            layer.perceptrons.stream().forEach((perceptron) -> {
+                perceptron.createIn(size[0]);
+            });
+            return layer;
+        }).forEach((layer) -> {
+            size[0] = layer.getPerceptrons().size();
+        });
+        outs.stream().forEach((Perceptron perceptron) -> {
+            perceptron.createIn(size[0]);
+        });
+        ready = !this.ins.isEmpty() && !this.layers.isEmpty() && !this.outs.isEmpty();
+    }
+
+    public void process() {
+        if (ready) {
+            IntStream.range(0, this.ins.size()).forEach(i -> {
+                this.layers.get(0).perceptrons.forEach(perceptron -> {
+                    perceptron.updateIn(i + 1, this.ins.get(i));
+                });
+            });
+        }
+        final AtomicInteger posLayer = new AtomicInteger();
+        int totalLayers = this.layers.size() - 1;
+        this.layers.forEach(layer -> {
+            if (posLayer.get() < totalLayers) {
+                posLayer.incrementAndGet();
+                final AtomicInteger posPerceptronOut = new AtomicInteger(1);
+                layer.perceptrons.forEach(perceptronOut -> {
+                    final double out = perceptronOut.out();
+                    layers.get(posLayer.get()).perceptrons.forEach(perceptronIn -> {
+                        perceptronIn.updateIn(posPerceptronOut.get(), out);
+                    });
+                    posPerceptronOut.incrementAndGet();
+                });
+            } else {
+                final AtomicInteger posPerceptronOut = new AtomicInteger(1);
+                layer.perceptrons.forEach(perceptronOut -> {
+                    final double out = perceptronOut.out();
+                    outs.forEach(perceptronIn -> {
+                        perceptronIn.updateIn(posPerceptronOut.get(), out);
+                    });
+                    posPerceptronOut.incrementAndGet();
+                });
             }
-        }
-        for (Perceptron perceptron : outs) {
-            perceptron.createIn(size);
-        }
+        });
+
     }
 
     private class Layer {
