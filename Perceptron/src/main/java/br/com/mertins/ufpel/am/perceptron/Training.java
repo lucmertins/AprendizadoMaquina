@@ -81,7 +81,7 @@ public class Training {
             for (Sample sample : samples) {
                 perceptron.fill(sample);
                 double err = sample.getOut(1) - perceptron.sum();
-                errEpoca += Math.pow(err, 2);;
+                errEpoca += Math.pow(err, 2);
                 pesoBias += learningRate * err * perceptron.getBias();
                 for (int i = 0; i < entradas; i++) {
                     double pesoTemp = pesosTemp.get(i) + learningRate * err * perceptron.in(i + 1);

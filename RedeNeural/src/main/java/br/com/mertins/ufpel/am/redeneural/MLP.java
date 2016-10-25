@@ -1,6 +1,7 @@
 package br.com.mertins.ufpel.am.redeneural;
 
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
+import br.com.mertins.ufpel.am.perceptron.Sample;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,7 +14,7 @@ import java.util.stream.IntStream;
 public class MLP {
 
     private final List<Double> ins = new ArrayList<>();
-    private final List<Layer> layers = new ArrayList<>();
+    private final List<LayerImplements> layers = new ArrayList<>();
     private final List<Perceptron> outs = new ArrayList<>();
     private boolean ready = false;
 
@@ -38,6 +39,12 @@ public class MLP {
         }
     }
 
+    public void updateIn(Sample sample) {
+        for (int i = 1; i <= sample.amountIn(); i++) {
+            this.updateIn(i, sample.getIn(i));
+        }
+    }
+
     public void createIn(int size) {
         this.createIn(size, 0.0);
     }
@@ -57,7 +64,7 @@ public class MLP {
     public void addHiddenLayer(int position, int amount, int bias, Perceptron.AlgorithmSimoid algorithm) {
         ready = false;
         if (position > 0 && position <= this.layers.size() + 1) {
-            Layer layer = new Layer(position);
+            LayerImplements layer = new LayerImplements(position);
             for (int i = 0; i < amount; i++) {
                 layer.add(new Perceptron(bias, algorithm));
             }
@@ -75,6 +82,14 @@ public class MLP {
         for (int i = 0; i < amount; i++) {
             this.outs.add(new Perceptron(bias, algorithm));
         }
+    }
+
+    public int amountOut() {
+        return this.outs.size();
+    }
+
+    public int amountHiddenLayer() {
+        return this.layers.size();
     }
 
     public void connect() {
@@ -133,20 +148,40 @@ public class MLP {
         return results;
     }
 
-    private class Layer {
+    Layer getLayer(int pos) {
+        if (pos > 0 && pos <= this.layers.size()) {
+            return this.layers.get(pos - 1);
+        }
+        return null;
+    }
+
+    
+    Perceptron getOut(int pos) {
+        if (pos > 0 && pos <= this.outs.size()) {
+            return this.outs.get(pos - 1);
+        }
+        return null;
+    }
+
+    List<Perceptron> getOuts() {
+        return this.outs;
+    }
+
+    private class LayerImplements implements Layer {
 
         private final int position;
         private final List<Perceptron> perceptrons;
 
-        public Layer(int position) {
+        public LayerImplements(int position) {
             this(position, new ArrayList<>());
         }
 
-        public Layer(int position, List<Perceptron> perceptrons) {
+        public LayerImplements(int position, List<Perceptron> perceptrons) {
             this.position = position;
             this.perceptrons = perceptrons;
         }
 
+        @Override
         public int getPosition() {
             return position;
         }
@@ -157,6 +192,19 @@ public class MLP {
 
         public void add(Perceptron perceptron) {
             this.perceptrons.add(perceptron);
+        }
+
+        @Override
+        public int amount() {
+            return this.perceptrons.size();
+        }
+
+        @Override
+        public Perceptron getPerceptron(int pos) {
+            if (pos > 0 && pos <= this.perceptrons.size()) {
+                return this.perceptrons.get(pos - 1);
+            }
+            return null;
         }
 
         @Override
@@ -177,7 +225,7 @@ public class MLP {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final Layer other = (Layer) obj;
+            final LayerImplements other = (LayerImplements) obj;
             if (this.position != other.position) {
                 return false;
             }
@@ -187,6 +235,16 @@ public class MLP {
         @Override
         public String toString() {
             return String.format("Layer %d", position);
+        }
+
+        @Override
+        public double[] getOuts() {
+            double[] ret = new double[this.perceptrons.size()];
+            int i = 0;
+            for (Perceptron perceptron : this.perceptrons) {
+                ret[i++] = perceptron.out();
+            }
+            return ret;
         }
 
     }

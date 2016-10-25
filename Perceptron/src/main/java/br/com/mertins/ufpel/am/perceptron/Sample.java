@@ -36,7 +36,6 @@ public class Sample {
 //    public void setValue(double value) {
 //        this.value = value;
 //    }
-
     public List<Double> getIns() {
         return ins;
     }
@@ -60,6 +59,10 @@ public class Sample {
         return ins.size();
     }
 
+    public int amountOut() {
+        return outs.size();
+    }
+
     public void fill(Perceptron perceptron) {
         int pos = 1;
         for (Double vtemp : ins) {
@@ -72,6 +75,22 @@ public class Sample {
             return this.outs.get(pos - 1);
         }
         return 0.0;
+    }
+
+    public String toStringIn() {
+        StringBuilder sb = new StringBuilder(" ");
+        this.ins.forEach(value -> {
+            sb.append(String.format("%.0f ", value));
+        });
+        return sb.toString().trim();
+    }
+
+    public String toStringOut() {
+        StringBuilder sb = new StringBuilder(" ");
+        this.outs.forEach(value -> {
+            sb.append(String.format("%.0f ", value));
+        });
+        return sb.toString().trim();
     }
 
 }
