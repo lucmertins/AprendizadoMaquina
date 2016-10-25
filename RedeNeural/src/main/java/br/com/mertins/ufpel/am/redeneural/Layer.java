@@ -1,6 +1,7 @@
 package br.com.mertins.ufpel.am.redeneural;
 
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
+import java.util.List;
 
 /**
  *
@@ -13,6 +14,8 @@ public interface Layer {
     int amount();
 
     Perceptron getPerceptron(int pos);
+    
+    List<Perceptron> getPerceptrons();
     
     double[] getOuts();
 }

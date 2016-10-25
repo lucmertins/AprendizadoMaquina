@@ -155,6 +155,13 @@ public class MLP {
         return null;
     }
 
+    int  maxElemLayersHiddenOut(){
+        int result=outs.size();
+        for (Layer layer:layers){
+            result=result>layer.amount()?result:layer.amount();
+        }
+        return result;
+    }
     
     Perceptron getOut(int pos) {
         if (pos > 0 && pos <= this.outs.size()) {
@@ -186,6 +193,7 @@ public class MLP {
             return position;
         }
 
+        @Override
         public List<Perceptron> getPerceptrons() {
             return perceptrons;
         }
