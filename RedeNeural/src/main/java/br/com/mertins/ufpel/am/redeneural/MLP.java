@@ -148,6 +148,10 @@ public class MLP {
         return results;
     }
 
+    List<Layer> layers() {
+        return this.layers();
+    }
+
     Layer getLayer(int pos) {
         if (pos > 0 && pos <= this.layers.size()) {
             return this.layers.get(pos - 1);
@@ -155,14 +159,14 @@ public class MLP {
         return null;
     }
 
-    int  maxElemLayersHiddenOut(){
-        int result=outs.size();
-        for (Layer layer:layers){
-            result=result>layer.amount()?result:layer.amount();
+    int maxElemLayersHiddenOut() {
+        int result = outs.size();
+        for (Layer layer : layers) {
+            result = result > layer.amount() ? result : layer.amount();
         }
         return result;
     }
-    
+
     Perceptron getOut(int pos) {
         if (pos > 0 && pos <= this.outs.size()) {
             return this.outs.get(pos - 1);
