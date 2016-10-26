@@ -37,14 +37,12 @@ public class Training {
                 double[] outs = rede.process();
                 List<double[]> sigmas = new ArrayList<>();
                 sigmas.add(computeSigmasOut(rede, sample, outs));
-
                 List<Perceptron> perceptrons = rede.getOuts();
                 for (int i = rede.amountHiddenLayer(); i > 0; i--) {
                     sigmas.add(computeSigmasHidden(rede, i, sigmas.get(sigmas.size() - 1), perceptrons));
                     perceptrons = rede.getLayer(i).getPerceptrons();
                 }
                 double[] sigmasOut = sigmas.get(0);
-
                 AtomicInteger ai = new AtomicInteger(0);
                 rede.getOuts().forEach(perceptron -> {
                     double deltaWeightBias = learningRate * sigmasOut[ai.get()] * perceptron.getBias();
@@ -56,10 +54,11 @@ public class Training {
                     ai.incrementAndGet();
                 });
                 ai.set(0);
+                AtomicInteger layerSigma = new AtomicInteger(1);
                 int posLayer = rede.amountHiddenLayer();
-                for (int j = 1; j <= sigmas.size(); j++) {
+//                for (int j = 1; j <= sigmas.size(); j++) {
 //                    rede.getLayer(posLayer).getPerceptrons().forEach(perceptron -> {
-//                     double[] sigmasHidden = sigmas.get(1);
+//                        double[] sigmasHidden = sigmas.get(layerSigma.get());
 //                        double deltaWeightBias = learningRate * sigmasHidden[ai.get()] * perceptron.getBias();
 //                        perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
 //                        for (int i = 1; i <= perceptron.amountIn(); i++) {
@@ -69,8 +68,9 @@ public class Training {
 //                        ai.incrementAndGet();
 //
 //                    });
-
-                }
+//                    posLayer--;
+//                    layerSigma.incrementAndGet();
+//                }
 
 //                ai = new AtomicInteger(0);
 //
