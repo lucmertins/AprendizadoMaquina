@@ -11,7 +11,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -74,8 +73,57 @@ public class Training {
         }
     }
 
-    public MLP withBackPropagation(Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException, ClassNotFoundException {
-        return null;
+    public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException, ClassNotFoundException {
+        if (!samples.getAttributes().isEmpty()) {
+            for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
+                Instant inicioEpoca = Instant.now();
+                double errEpoca = 0.0;
+                Sample sample;
+                long totalExemplos = 0;
+                while ((sample = samples.next()) != null) {
+//                System.out.printf("\nExemplo in[%s] out[%s] \n", sample.toStringIn(), sample.toStringOut());
+                    totalExemplos++;
+                    rede.updateIn(sample);
+                    OutPerceptron[] outs = rede.process();
+                    List<double[]> sigmas = new ArrayList<>();
+                    double[] vSigmasOut = new double[rede.amountOut()];
+                    double[] errUnitOut = new double[rede.amountOut()];
+                    for (int i = 0; i < vSigmasOut.length; i++) {
+                        double err = sample.getOut(i + 1) - outs[i].getOut();
+                        errUnitOut[i] += Math.pow(err, 2);
+                        vSigmasOut[i] = outs[i].getOut() * (1 - outs[i].getOut()) * err;
+                    }
+                    for (double value : errUnitOut) {
+                        errEpoca += value;
+                    }
+                    sigmas.add(vSigmasOut);
+                    List<Perceptron> perceptrons = rede.getOuts();
+                    for (int i = rede.amountHiddenLayer(); i > 0; i--) {
+                        sigmas.add(computeSigmasHidden(rede, i, sigmas.get(sigmas.size() - 1), perceptrons));
+                        perceptrons = rede.getLayer(i).getPerceptrons();
+                    }
+
+                    int posLayer = rede.amountHiddenLayer();
+                    for (int j = 0; j < sigmas.size(); j++) {
+                        int pos = 0;
+                        perceptrons = j == 0 ? rede.getOuts() : rede.getLayer(posLayer--).getPerceptrons();
+                        for (Perceptron perceptron : perceptrons) {
+                            double[] sigmasOk = sigmas.get(j);
+                            double deltaWeightBias = learningRate * sigmasOk[pos] * perceptron.getBias() + moment * perceptron.getDeltaBiasWeight();
+                            perceptron.updateBiasWeightDelta(deltaWeightBias);
+                            for (int i = 1; i <= perceptron.amountIn(); i++) {
+                                double deltaWeight = learningRate * sigmasOk[pos] * perceptron.in(i) + moment * perceptron.getWeigthDelta(i);
+                                perceptron.updateWeightDelta(i, deltaWeight);
+                            }
+                            pos++;
+                        }
+                    }
+                }
+                errEpoca = errEpoca / totalExemplos;
+                register(inicioEpoca, epocaTemp, errEpoca);
+//            System.out.printf("Epoca [%d] Erro [%.30f]\n", epocaTemp, errEpoca);
+            }
+        }
     }
 
     private double[] computeSigmasHidden(MLP rede, int layerPosition, double[] sigmas, List<Perceptron> perceptrons) {
