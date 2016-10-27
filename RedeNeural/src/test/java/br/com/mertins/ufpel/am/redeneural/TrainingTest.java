@@ -41,7 +41,7 @@ public class TrainingTest {
         });
     }
 
-//    @Test
+    @Test
     public void testWithBackPropagationXOR() {
         List<Sample> lista = new ArrayList<>();
         Sample sampleXOR = new Sample();
@@ -63,14 +63,15 @@ public class TrainingTest {
         sampleXOR.addIn(1);
         sampleXOR.addIn(1);
         sampleXOR.addOut(0);
-        lista.add(sampleXOR);MLP rede = new MLP();
+        lista.add(sampleXOR);
+        MLP rede = new MLP();
         rede.createIn(2);
         rede.addHiddenLayer(1, 3, Perceptron.AlgorithmSimoid.TANGEN);
         rede.addOut(1, 1, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, lista, 0.5, 10000);
-        
+        treino.withBackPropagation(rede, lista, 0.5, 0.8, 1000);
+
         lista.forEach(sample -> {
             rede.updateIn(sample);
             OutPerceptron[] ret = rede.process();
@@ -81,7 +82,7 @@ public class TrainingTest {
 
             System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
         });
-        
+
     }
 
     @Test
@@ -98,18 +99,18 @@ public class TrainingTest {
         int pos = 0;
         for (Sample sample : samples) {
             for (int i = 0; i < NUMEX; i++) {
-                sample.addOut(i == pos ? 1 :0);
+                sample.addOut(i == pos ? 1 : 0);
             }
             pos++;
         }
 
         MLP rede = new MLP();
         rede.createIn(NUMEX);
-        rede.addHiddenLayer(1, NUMEX/2, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addHiddenLayer(1, NUMEX / 2, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.addOut(NUMEX, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, samples, 0.005, 600000);
+        treino.withBackPropagation(rede, samples, 0.05, 0.8, 1000);
 
         samples.forEach(sample -> {
             rede.updateIn(sample);

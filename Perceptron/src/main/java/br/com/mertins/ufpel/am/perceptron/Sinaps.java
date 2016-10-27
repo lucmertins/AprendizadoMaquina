@@ -10,10 +10,12 @@ public class Sinaps implements Serializable {
 
     private double in;
     private double weight;
+    private double delta;
 
     public Sinaps(double in, double weight) {
         this.in = in;
         this.weight = weight;
+        this.delta = 0;
     }
 
     public double getIn() {
@@ -28,8 +30,18 @@ public class Sinaps implements Serializable {
         return weight;
     }
 
+    public double getDelta() {
+        return delta;
+    }
+
     public void setWeight(double weight) {
         this.weight = weight;
+        this.delta = 0;
+    }
+
+    public void updateWeight(double delta) {
+        this.delta = delta;
+        this.weight += delta;
     }
 
 }

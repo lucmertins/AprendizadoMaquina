@@ -28,7 +28,7 @@ public class Training {
     private ObservatorTraining observator = new ObservatorTraining() {
     };
 
-    public void withBackPropagation(MLP rede, List<Sample> samples, double learningRate, int epoca) {
+    public void withBackPropagation(MLP rede, List<Sample> samples, double learningRate, double moment, int epoca) {
         for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
             double errEpoca = 0.0;
             for (Sample sample : samples) {
@@ -37,14 +37,14 @@ public class Training {
                 OutPerceptron[] outs = rede.process();
                 List<double[]> sigmas = new ArrayList<>();
                 double[] vSigmasOut = new double[rede.amountOut()];
-                double[] errUnitOut=new double[rede.amountOut()];
+                double[] errUnitOut = new double[rede.amountOut()];
                 for (int i = 0; i < vSigmasOut.length; i++) {
                     double err = sample.getOut(i + 1) - outs[i].getOut();
-                    errUnitOut[i]+=Math.pow(err, 2);
+                    errUnitOut[i] += Math.pow(err, 2);
                     vSigmasOut[i] = outs[i].getOut() * (1 - outs[i].getOut()) * err;
                 }
-                for (double value:errUnitOut){
-                    errEpoca+=value;
+                for (double value : errUnitOut) {
+                    errEpoca += value;
                 }
                 sigmas.add(vSigmasOut);
                 List<Perceptron> perceptrons = rede.getOuts();
@@ -55,11 +55,11 @@ public class Training {
                 double[] sigmasOut = sigmas.get(0);
                 int ai = 0;
                 for (Perceptron perceptron : rede.getOuts()) {
-                    double deltaWeightBias = learningRate * sigmasOut[ai] * perceptron.getBias();
-                    perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
+                    double deltaWeightBias = learningRate * sigmasOut[ai] * perceptron.getBias() + moment * perceptron.getDeltaBiasWeight();
+                    perceptron.updateBiasWeightDelta(deltaWeightBias);
                     for (int i = 1; i <= perceptron.amountIn(); i++) {
-                        double deltaWeight = learningRate * sigmasOut[ai] * perceptron.in(i);
-                        perceptron.updateWeight(i, perceptron.weigth(i) + deltaWeight);
+                        double deltaWeight = learningRate * sigmasOut[ai] * perceptron.in(i) + moment * perceptron.getWeigthDelta(i);
+                        perceptron.updateWeightDelta(i, deltaWeight);
                     }
                     ai++;
                 }
@@ -70,11 +70,11 @@ public class Training {
                     perceptrons = rede.getLayer(posLayer).getPerceptrons();
                     for (Perceptron perceptron : perceptrons) {
                         double[] sigmasHidden = sigmas.get(layerSigma);
-                        double deltaWeightBias = learningRate * sigmasHidden[ai] * perceptron.getBias();
-                        perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
+                        double deltaWeightBias = learningRate * sigmasHidden[ai] * perceptron.getBias() + moment * perceptron.getDeltaBiasWeight();
+                        perceptron.updateBiasWeightDelta(deltaWeightBias);
                         for (int i = 1; i <= perceptron.amountIn(); i++) {
-                            double deltaWeight = learningRate * sigmasHidden[ai] * perceptron.in(i);
-                            perceptron.updateWeight(i, perceptron.weigth(i) + deltaWeight);
+                            double deltaWeight = learningRate * sigmasHidden[ai] * perceptron.in(i) + moment * perceptron.getWeigthDelta(i);
+                            perceptron.updateWeightDelta(i, deltaWeight);
                         }
                         ai++;
                     }

@@ -25,6 +25,7 @@ public class Perceptron implements Serializable {
     private final List<Sinaps> sinapsList = new ArrayList<>();
     private int bias;
     private double biasWeight;
+    private double deltaBiasWeight;
     private AlgorithmSimoid algorithm;
     private boolean update = true;
     private double valueSum = 0.0;
@@ -70,6 +71,23 @@ public class Perceptron implements Serializable {
 
     public void setBiasWeight(double biasWeight) {
         this.biasWeight = biasWeight;
+        this.deltaBiasWeight = 0;
+        update = true;
+    }
+
+    public double getDeltaBiasWeight() {
+        return deltaBiasWeight;
+    }
+
+    /**
+     * Atualiza o peso do bias adicionando o delta
+     *
+     * @param pos
+     * @param in
+     */
+    public void updateBiasWeightDelta(double delta) {
+        this.deltaBiasWeight = delta;
+        this.biasWeight += delta;
         update = true;
     }
 
@@ -138,6 +156,20 @@ public class Perceptron implements Serializable {
     }
 
     /**
+     * Atualiza o peso adicionando o delta a posição especificada
+     *
+     * @param pos
+     * @param in
+     */
+    public void updateWeightDelta(int pos, double delta) {
+        if (pos > 0 && pos <= sinapsList.size()) {
+            Sinaps get = sinapsList.get(pos - 1);
+            get.updateWeight(delta);
+        }
+        update = true;
+    }
+
+    /**
      * Retorna o valor da entrada, conforme a posição especificada
      *
      * @param pos
@@ -161,6 +193,21 @@ public class Perceptron implements Serializable {
         if (pos > 0 && pos <= sinapsList.size()) {
             Sinaps get = sinapsList.get(pos - 1);
             return get.getWeight();
+        }
+        return 0;
+    }
+
+    /**
+     * Retorna o valor do delta usado para atualizar o peso da entrada, conforme
+     * a posição especificada
+     *
+     * @param pos
+     * @return
+     */
+    public double getWeigthDelta(int pos) {
+        if (pos > 0 && pos <= sinapsList.size()) {
+            Sinaps get = sinapsList.get(pos - 1);
+            return get.getDelta();
         }
         return 0;
     }
