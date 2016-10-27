@@ -1,13 +1,14 @@
 package br.com.mertins.ufpel.am.redeneural;
 
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author mertins
  */
-public interface Layer {
+public interface Layer extends Serializable{
 
     int getPosition();
 

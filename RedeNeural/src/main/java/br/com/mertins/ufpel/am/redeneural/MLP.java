@@ -3,6 +3,12 @@ package br.com.mertins.ufpel.am.redeneural;
 import br.com.mertins.ufpel.am.perceptron.OutPerceptron;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,7 +18,7 @@ import java.util.stream.IntStream;
  *
  * @author mertins
  */
-public class MLP {
+public class MLP implements Serializable {
 
     private final List<Double> ins = new ArrayList<>();
     private final List<LayerImplements> layers = new ArrayList<>();
@@ -125,7 +131,7 @@ public class MLP {
                 final AtomicInteger posPerceptronOut = new AtomicInteger(1);
                 for (Perceptron perceptronOut : layer.getPerceptrons()) {
                     final double out = perceptronOut.out();
-                    for (Perceptron perceptronIn:this.layers.get(posLayer.get()).getPerceptrons()){
+                    for (Perceptron perceptronIn : this.layers.get(posLayer.get()).getPerceptrons()) {
                         perceptronIn.updateIn(posPerceptronOut.get(), out);
                     }
                     posPerceptronOut.incrementAndGet();
@@ -135,7 +141,7 @@ public class MLP {
                 int posPerceptronOut = 1;
                 for (Perceptron perceptronOut : layer.getPerceptrons()) {
                     final double out = perceptronOut.out();
-                    for (Perceptron perceptronIn:this.outs){
+                    for (Perceptron perceptronIn : this.outs) {
                         perceptronIn.updateIn(posPerceptronOut, out);
                     }
                     posPerceptronOut++;
@@ -181,7 +187,19 @@ public class MLP {
         return this.outs;
     }
 
-    private class LayerImplements implements Layer {
+    public static void serialize(MLP network, String fileName) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(network);
+        }
+    }
+
+    public static MLP deserialize(String fileName) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (MLP) ois.readObject();
+        }
+    }
+
+    private class LayerImplements implements Layer, Serializable {
 
         private final int position;
         private final List<Perceptron> perceptrons;

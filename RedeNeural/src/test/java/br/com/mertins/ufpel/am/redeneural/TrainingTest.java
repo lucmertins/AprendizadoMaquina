@@ -41,7 +41,7 @@ public class TrainingTest {
         });
     }
 
-    @Test
+//    @Test
     public void testWithBackPropagationXOR() {
         List<Sample> lista = new ArrayList<>();
         Sample sampleXOR = new Sample();
@@ -85,24 +85,10 @@ public class TrainingTest {
 
     }
 
-    @Test
+//    @Test
     public void testWithBackPropagationDecoder() {
         final int NUMEX = 8;
-        List<Sample> samples = new ArrayList<>();
-        for (int j = 0; j < NUMEX; j++) {
-            Sample sample = new Sample();
-            for (int i = 0; i < NUMEX; i++) {
-                sample.addIn(i == j ? 1 : 0);
-            }
-            samples.add(sample);
-        }
-        int pos = 0;
-        for (Sample sample : samples) {
-            for (int i = 0; i < NUMEX; i++) {
-                sample.addOut(i == pos ? 1 : 0);
-            }
-            pos++;
-        }
+        List<Sample> samples = exemplos(NUMEX);
 
         MLP rede = new MLP();
         rede.createIn(NUMEX);
@@ -111,7 +97,11 @@ public class TrainingTest {
         rede.connect();
         Training treino = new Training(false);
         treino.withBackPropagation(rede, samples, 0.05, 0.8, 1000);
-
+        try {
+            MLP.serialize(rede, "/home/mertins/Documentos/tmp/redemlp.obj");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         samples.forEach(sample -> {
             rede.updateIn(sample);
             OutPerceptron[] ret = rede.process();
@@ -125,4 +115,44 @@ public class TrainingTest {
 
     }
 
+    @Test
+    public void testDeserialize() {
+        final int NUMEX = 8;
+        List<Sample> samples = exemplos(NUMEX);
+        try {
+            MLP rede = MLP.deserialize("/home/mertins/Documentos/tmp/redemlp.obj");
+            samples.forEach(sample -> {
+                rede.updateIn(sample);
+                OutPerceptron[] ret = rede.process();
+                StringBuilder sb = new StringBuilder(" ");
+                for (OutPerceptron value : ret) {
+                    sb.append(String.format("%.30f ", value.getOut()));
+                }
+
+                System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    private List<Sample> exemplos(int numeroExemplos) {
+        List<Sample> samples = new ArrayList<>();
+        for (int j = 0; j < numeroExemplos; j++) {
+            Sample sample = new Sample();
+            for (int i = 0; i < numeroExemplos; i++) {
+                sample.addIn(i == j ? 1 : 0);
+            }
+            samples.add(sample);
+        }
+        int pos = 0;
+        for (Sample sample : samples) {
+            for (int i = 0; i < numeroExemplos; i++) {
+                sample.addOut(i == pos ? 1 : 0);
+            }
+            pos++;
+        }
+        return samples;
+    }
 }
