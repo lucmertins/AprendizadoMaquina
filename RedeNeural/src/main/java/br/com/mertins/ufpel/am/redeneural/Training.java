@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,14 +28,21 @@ public class Training {
     };
 
     public void withBackPropagation(MLP rede, List<Sample> samples, double learningRate, int epoca) {
-
         for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
+            double errEpoca = 0.0;
             for (Sample sample : samples) {
-                System.out.printf("\nExemplo in[%s] out[%s] \n", sample.toStringIn(), sample.toStringOut());
+//                System.out.printf("\nExemplo in[%s] out[%s] \n", sample.toStringIn(), sample.toStringOut());
                 rede.updateIn(sample);
                 double[] outs = rede.process();
                 List<double[]> sigmas = new ArrayList<>();
-                sigmas.add(computeSigmasOut(rede, sample, outs));
+                double[] vSigmasOut = new double[rede.amountOut()];
+                for (int i = 0; i < vSigmasOut.length; i++) {
+                    double err = sample.getOut(i + 1) - outs[i];
+                    errEpoca += Math.pow(err, 2);
+                    vSigmasOut[i] = outs[i] * (1 - outs[i]) * err;
+                }
+                sigmas.add(vSigmasOut);
+//                sigmas.add(computeSigmasOut(rede, sample, outs));
                 List<Perceptron> perceptrons = rede.getOuts();
                 for (int i = rede.amountHiddenLayer(); i > 0; i--) {
                     sigmas.add(computeSigmasHidden(rede, i, sigmas.get(sigmas.size() - 1), perceptrons));
@@ -53,54 +59,32 @@ public class Training {
                     }
                     ai.incrementAndGet();
                 });
-                ai.set(0);
                 AtomicInteger layerSigma = new AtomicInteger(1);
                 int posLayer = rede.amountHiddenLayer();
-//                for (int j = 1; j <= sigmas.size(); j++) {
-//                    rede.getLayer(posLayer).getPerceptrons().forEach(perceptron -> {
-//                        double[] sigmasHidden = sigmas.get(layerSigma.get());
-//                        double deltaWeightBias = learningRate * sigmasHidden[ai.get()] * perceptron.getBias();
-//                        perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
-//                        for (int i = 1; i <= perceptron.amountIn(); i++) {
-//                            double deltaWeight = learningRate * sigmasHidden[ai.get()] * perceptron.in(i);
-//                            perceptron.updateWeight(i, perceptron.weigth(i) + deltaWeight);
-//                        }
-//                        ai.incrementAndGet();
-//
-//                    });
-//                    posLayer--;
-//                    layerSigma.incrementAndGet();
-//                }
-
-//                ai = new AtomicInteger(0);
-//
-//                rede.getOuts().forEach(perceptron -> {
-//                    double deltaWeight = learningRate * sigmasOut[ai.get()] * perceptron.in(ai.get() + 1);
-//                    ai.incrementAndGet();
-//                });
-                for (double[] sigmaLayers : sigmas) {
-                    for (double sigma : sigmaLayers) {
-                        System.out.printf("%.30f ", sigma);
+                for (int j = 1; j < sigmas.size(); j++) {
+                    ai.set(0);
+                    perceptrons = rede.getLayer(posLayer).getPerceptrons();
+                    for (Perceptron perceptron : perceptrons) {
+                        double[] sigmasHidden = sigmas.get(layerSigma.get());
+                        double deltaWeightBias = learningRate * sigmasHidden[ai.get()] * perceptron.getBias();
+                        perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
+                        for (int i = 1; i <= perceptron.amountIn(); i++) {
+                            double deltaWeight = learningRate * sigmasHidden[ai.get()] * perceptron.in(i);
+                            perceptron.updateWeight(i, perceptron.weigth(i) + deltaWeight);
+                        }
+                        ai.incrementAndGet();
                     }
-                    System.out.println();
+                    posLayer--;
+                    layerSigma.incrementAndGet();
                 }
-                System.out.println("\nSigmashidden");
             }
-            System.out.printf("\nEpoca Out [%d]\n", epocaTemp);
+            errEpoca = errEpoca / samples.size();
+            System.out.printf("Epoca [%d] Erro [%.30f]\n", epocaTemp, errEpoca);
         }
     }
 
     public MLP withBackPropagation(Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException, ClassNotFoundException {
         return null;
-    }
-
-    private double[] computeSigmasOut(MLP rede, Sample sample, double[] outs) {
-        double[] sigmasOut = new double[rede.amountOut()];
-        for (int i = 0; i < sigmasOut.length; i++) {
-            double err = sample.getOut(i + 1) - outs[i];
-            sigmasOut[i] = outs[i] * (1 - outs[i]) * err;
-        }
-        return sigmasOut;
     }
 
     private double[] computeSigmasHidden(MLP rede, int layerPosition, double[] sigmas, List<Perceptron> perceptrons) {

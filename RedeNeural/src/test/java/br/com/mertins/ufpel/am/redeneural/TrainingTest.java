@@ -61,11 +61,23 @@ public class TrainingTest {
         MLP rede = new MLP();
         rede.createIn(8);
         rede.addHiddenLayer(1, 3, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.addHiddenLayer(2, 2, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.addOut(6, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addOut(8, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, samples, 0.5, 1);
+        treino.withBackPropagation(rede, samples, 0.5, 100000);
+
+        samples.forEach(sample -> {
+            rede.updateIn(sample);
+            double[] ret = rede.process();
+            StringBuilder sb = new StringBuilder(" ");
+            for (double value : ret) {
+                sb.append(String.format("%.30f ", value));
+            }
+            
+            
+            System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(),sb.toString().trim());
+        });
+
     }
 
 }
