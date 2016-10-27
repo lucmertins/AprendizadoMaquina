@@ -41,7 +41,7 @@ public class TrainingTest {
         });
     }
 
-//    @Test
+    @Test
     public void testWithBackPropagationXOR() {
         List<Sample> lista = new ArrayList<>();
         Sample sampleXOR = new Sample();
@@ -70,7 +70,7 @@ public class TrainingTest {
         rede.addOut(1, 1, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, lista, 0.5, 0.8, 1000);
+        treino.withBackPropagation(rede, lista, 0.5, 0.8, 2000);
 
         lista.forEach(sample -> {
             rede.updateIn(sample);
@@ -78,14 +78,14 @@ public class TrainingTest {
             StringBuilder sb = new StringBuilder(" ");
             for (OutPerceptron value : ret) {
                 sb.append(String.format("%.30f ", value.getOut()));
+                Assert.assertTrue(sample.toStringOut().equals("0") ? value.getOut() < 0.5 : value.getOut() > 0.5);
             }
-
-            System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
+//            System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
         });
 
     }
 
-//    @Test
+    @Test
     public void testWithBackPropagationDecoder() {
         final int NUMEX = 8;
         List<Sample> samples = exemplos(NUMEX);
@@ -96,26 +96,37 @@ public class TrainingTest {
         rede.addOut(NUMEX, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, samples, 0.05, 0.8, 1000);
-        try {
-            MLP.serialize(rede, "/home/mertins/Documentos/tmp/redemlp.obj");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        treino.withBackPropagation(rede, samples, 0.05, 0.8, 5000);
+//        try {
+//            MLP.serialize(rede, "/home/mertins/Documentos/tmp/redemlp.obj");
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
         samples.forEach(sample -> {
             rede.updateIn(sample);
             OutPerceptron[] ret = rede.process();
-            StringBuilder sb = new StringBuilder(" ");
-            for (OutPerceptron value : ret) {
-                sb.append(String.format("%.30f ", value.getOut()));
+            StringBuilder sbReal = new StringBuilder(" ");
+            int pos = 0;
+            double maxValue = Double.MIN_VALUE;
+            for (int i = 0; i < ret.length; i++) {
+                if (maxValue < ret[i].getOut()) {
+                    maxValue = ret[i].getOut();
+                    pos = i;
+                }
             }
 
-            System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
+            StringBuilder sb = new StringBuilder(" ");
+            for (OutPerceptron value : ret) {
+                sb.append(String.format("%d ", value.getOut() > 0.5 ? 1 : 0));
+                sbReal.append(String.format("%.30f ", value.getOut()));
+            }
+//            System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
+            Assert.assertEquals(sample.toStringOut(), sb.toString().trim());
         });
 
     }
 
-    @Test
+//    @Test
     public void testDeserialize() {
         final int NUMEX = 8;
         List<Sample> samples = exemplos(NUMEX);
