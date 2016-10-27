@@ -64,7 +64,7 @@ public class TrainingTest {
         rede.addOut(8, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, samples, 0.5, 100000);
+        treino.withBackPropagation(rede, samples, 0.5, 1000000);
 
         samples.forEach(sample -> {
             rede.updateIn(sample);
