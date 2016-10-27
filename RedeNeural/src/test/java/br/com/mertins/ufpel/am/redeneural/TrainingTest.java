@@ -98,7 +98,7 @@ public class TrainingTest {
         int pos = 0;
         for (Sample sample : samples) {
             for (int i = 0; i < NUMEX; i++) {
-                sample.addOut(i == pos ? 1 : 0);
+                sample.addOut(i == pos ? 1 :0);
             }
             pos++;
         }
