@@ -96,7 +96,7 @@ public class TrainingTest {
         rede.addOut(NUMEX, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
-        treino.withBackPropagation(rede, samples, 0.05, 0.8, 1000);
+        treino.withBackPropagation(rede, samples, 0.05, 0.8, 10000);
 //        try {
 //            MLP.serialize(rede, "/home/mertins/Documentos/tmp/redemlp.obj");
 //        } catch (Exception ex) {
