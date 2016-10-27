@@ -1,5 +1,6 @@
 package br.com.mertins.ufpel.am.redeneural;
 
+import br.com.mertins.ufpel.am.perceptron.OutPerceptron;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class MLP {
         ready = !this.ins.isEmpty() && !this.layers.isEmpty() && !this.outs.isEmpty();
     }
 
-    public double[] process() {
+    public OutPerceptron[] process() {
         if (ready) {
             IntStream.range(0, this.ins.size()).forEach(i -> {
                 this.layers.get(0).perceptrons.forEach(perceptron -> {
@@ -118,32 +119,34 @@ public class MLP {
         }
         final AtomicInteger posLayer = new AtomicInteger();
         int totalLayers = this.layers.size() - 1;
-        this.layers.forEach(layer -> {
+        for (Layer layer : this.layers) {
             if (posLayer.get() < totalLayers) {
                 posLayer.incrementAndGet();
                 final AtomicInteger posPerceptronOut = new AtomicInteger(1);
-                layer.perceptrons.forEach(perceptronOut -> {
+                for (Perceptron perceptronOut : layer.getPerceptrons()) {
                     final double out = perceptronOut.out();
-                    layers.get(posLayer.get()).perceptrons.forEach(perceptronIn -> {
+                    for (Perceptron perceptronIn:this.layers.get(posLayer.get()).getPerceptrons()){
                         perceptronIn.updateIn(posPerceptronOut.get(), out);
-                    });
+                    }
                     posPerceptronOut.incrementAndGet();
-                });
+                }
+
             } else {
-                final AtomicInteger posPerceptronOut = new AtomicInteger(1);
-                layer.perceptrons.forEach(perceptronOut -> {
+                int posPerceptronOut = 1;
+                for (Perceptron perceptronOut : layer.getPerceptrons()) {
                     final double out = perceptronOut.out();
-                    outs.forEach(perceptronIn -> {
-                        perceptronIn.updateIn(posPerceptronOut.get(), out);
-                    });
-                    posPerceptronOut.incrementAndGet();
-                });
+                    for (Perceptron perceptronIn:this.outs){
+                        perceptronIn.updateIn(posPerceptronOut, out);
+                    }
+                    posPerceptronOut++;
+                }
             }
-        });
-        double[] results = new double[outs.size()];
+        }
+
+        OutPerceptron[] results = new OutPerceptron[outs.size()];
         int[] pos = {0};
         outs.forEach(perceptron -> {
-            results[pos[0]++] = perceptron.out();
+            results[pos[0]++] = perceptron.outs();
         });
         return results;
     }

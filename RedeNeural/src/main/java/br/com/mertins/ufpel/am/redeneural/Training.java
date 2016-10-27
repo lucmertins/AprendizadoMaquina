@@ -1,6 +1,7 @@
 package br.com.mertins.ufpel.am.redeneural;
 
 import br.com.mertins.ufpel.am.perceptron.ObservatorTraining;
+import br.com.mertins.ufpel.am.perceptron.OutPerceptron;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
@@ -33,49 +34,52 @@ public class Training {
             for (Sample sample : samples) {
 //                System.out.printf("\nExemplo in[%s] out[%s] \n", sample.toStringIn(), sample.toStringOut());
                 rede.updateIn(sample);
-                double[] outs = rede.process();
+                OutPerceptron[] outs = rede.process();
                 List<double[]> sigmas = new ArrayList<>();
                 double[] vSigmasOut = new double[rede.amountOut()];
+                double[] errUnitOut=new double[rede.amountOut()];
                 for (int i = 0; i < vSigmasOut.length; i++) {
-                    double err = sample.getOut(i + 1) - outs[i];
-                    errEpoca += Math.pow(err, 2);
-                    vSigmasOut[i] = outs[i] * (1 - outs[i]) * err;
+                    double err = sample.getOut(i + 1) - outs[i].getOut();
+                    errUnitOut[i]+=Math.pow(err, 2);
+                    vSigmasOut[i] = outs[i].getOut() * (1 - outs[i].getOut()) * err;
+                }
+                for (double value:errUnitOut){
+                    errEpoca+=value;
                 }
                 sigmas.add(vSigmasOut);
-//                sigmas.add(computeSigmasOut(rede, sample, outs));
                 List<Perceptron> perceptrons = rede.getOuts();
                 for (int i = rede.amountHiddenLayer(); i > 0; i--) {
                     sigmas.add(computeSigmasHidden(rede, i, sigmas.get(sigmas.size() - 1), perceptrons));
                     perceptrons = rede.getLayer(i).getPerceptrons();
                 }
                 double[] sigmasOut = sigmas.get(0);
-                AtomicInteger ai = new AtomicInteger(0);
-                rede.getOuts().forEach(perceptron -> {
-                    double deltaWeightBias = learningRate * sigmasOut[ai.get()] * perceptron.getBias();
+                int ai = 0;
+                for (Perceptron perceptron : rede.getOuts()) {
+                    double deltaWeightBias = learningRate * sigmasOut[ai] * perceptron.getBias();
                     perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
                     for (int i = 1; i <= perceptron.amountIn(); i++) {
-                        double deltaWeight = learningRate * sigmasOut[ai.get()] * perceptron.in(i);
+                        double deltaWeight = learningRate * sigmasOut[ai] * perceptron.in(i);
                         perceptron.updateWeight(i, perceptron.weigth(i) + deltaWeight);
                     }
-                    ai.incrementAndGet();
-                });
-                AtomicInteger layerSigma = new AtomicInteger(1);
+                    ai++;
+                }
+                int layerSigma = 1;
                 int posLayer = rede.amountHiddenLayer();
                 for (int j = 1; j < sigmas.size(); j++) {
-                    ai.set(0);
+                    ai = 0;
                     perceptrons = rede.getLayer(posLayer).getPerceptrons();
                     for (Perceptron perceptron : perceptrons) {
-                        double[] sigmasHidden = sigmas.get(layerSigma.get());
-                        double deltaWeightBias = learningRate * sigmasHidden[ai.get()] * perceptron.getBias();
+                        double[] sigmasHidden = sigmas.get(layerSigma);
+                        double deltaWeightBias = learningRate * sigmasHidden[ai] * perceptron.getBias();
                         perceptron.setBiasWeight(perceptron.getBiasWeight() + deltaWeightBias);
                         for (int i = 1; i <= perceptron.amountIn(); i++) {
-                            double deltaWeight = learningRate * sigmasHidden[ai.get()] * perceptron.in(i);
+                            double deltaWeight = learningRate * sigmasHidden[ai] * perceptron.in(i);
                             perceptron.updateWeight(i, perceptron.weigth(i) + deltaWeight);
                         }
-                        ai.incrementAndGet();
+                        ai++;
                     }
                     posLayer--;
-                    layerSigma.incrementAndGet();
+                    layerSigma++;
                 }
             }
             errEpoca = errEpoca / samples.size();

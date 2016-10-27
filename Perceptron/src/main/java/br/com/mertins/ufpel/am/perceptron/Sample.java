@@ -49,7 +49,7 @@ public class Sample {
     }
 
     public Double getIn(int pos) {
-        if (this.ins.size() <= pos) {
+        if (pos > 0 && pos <= this.ins.size()) {
             return this.ins.get(pos - 1);
         }
         return 0.0;
@@ -71,7 +71,7 @@ public class Sample {
     }
 
     public Double getOut(int pos) {
-        if (this.outs.size() <= pos) {
+        if (pos > 0 && pos <= this.outs.size()) {
             return this.outs.get(pos - 1);
         }
         return 0.0;

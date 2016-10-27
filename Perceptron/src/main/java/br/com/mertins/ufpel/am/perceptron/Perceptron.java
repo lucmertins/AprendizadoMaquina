@@ -229,6 +229,23 @@ public class Perceptron implements Serializable {
         }
     }
 
+    public OutPerceptron outs() {
+        return new OutPerceptron() {
+            private final double out = Perceptron.this.out();
+            private final double before = Perceptron.this.sum();
+
+            @Override
+            public double getOut() {
+                return this.out;
+            }
+
+            @Override
+            public double getBeforeOut() {
+                return before;
+            }
+        };
+    }
+
     public Perceptron copy() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {

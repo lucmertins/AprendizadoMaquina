@@ -1,8 +1,8 @@
 package br.com.mertins.ufpel.am.redeneural;
 
+import br.com.mertins.ufpel.am.perceptron.OutPerceptron;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,7 +24,7 @@ public class MLPTest {
         rede.addHiddenLayer(2, 3, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.addOut(8, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
-        double[] process = rede.process();
+        OutPerceptron[] process = rede.process();
     }
 
 }
