@@ -73,7 +73,7 @@ public class Training {
         }
     }
 
-    public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException, ClassNotFoundException {
+    public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException {
         if (samples.amountAttibutes()>0) {
             for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
                 Instant inicioEpoca = Instant.now();
@@ -121,7 +121,6 @@ public class Training {
                 }
                 errEpoca = errEpoca / totalExemplos;
                 register(inicioEpoca, epocaTemp, errEpoca);
-//            System.out.printf("Epoca [%d] Erro [%.30f]\n", epocaTemp, errEpoca);
             }
         }
     }

@@ -20,8 +20,8 @@ public class MLPTest {
         for (int i = 1; i < 9; i++) {
             rede.updateIn(i, Double.valueOf(i));
         }
-        rede.addHiddenLayer(1, 4, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.addHiddenLayer(2, 3, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addHiddenLayer(4, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addHiddenLayer(3, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.addOut(8, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         OutPerceptron[] process = rede.process();

@@ -119,14 +119,15 @@ public class ExecTreinamento {
                 out.write(String.format("Taxa de Moment: %.30f\n", this.moment));
                 out.write(String.format("Tipo treinamento: %s\n", this.treinamento));
                 out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", this.blocbkIfBadErr));
+                out.flush();
                 samples.avaliaFirstLine(fileTraining);
                 samples.notRemoveAttributes();
                 samples.open(fileTraining);
                 samples.setTruePositive(label);
                 int tempTentativas = 1;
-                Training training = new Training(blocbkIfBadErr);
-                training.addListenerObservatorTraining(new Observator(out));
-                Perceptron perceptron = treinamento == Treinamento.DELTA ? training.withDelta(samples, rateTraining, moment, epocas, algorithm, out) : training.withStochastic(samples, rateTraining, moment, epocas, algorithm, out);
+                Training treino = new Training(blocbkIfBadErr);
+                treino.addListenerObservatorTraining(new Observator(out));
+                Perceptron perceptron = treinamento == Treinamento.DELTA ? treino.withDelta(samples, rateTraining, moment, epocas, algorithm, out) : treino.withStochastic(samples, rateTraining, moment, epocas, algorithm, out);
                 String name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                 out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                 Perceptron.serialize(perceptron, name);
@@ -134,7 +135,7 @@ public class ExecTreinamento {
                     tempTentativas++;
                     samples.reset();
                     rateTraining = rateTraining / 5;
-                    perceptron = treinamento == Treinamento.DELTA ? training.withDelta(samples, rateTraining, moment, epocas, perceptron, out) : training.withStochastic(samples, rateTraining, moment, epocas, perceptron, out);
+                    perceptron = treinamento == Treinamento.DELTA ? treino.withDelta(samples, rateTraining, moment, epocas, perceptron, out) : treino.withStochastic(samples, rateTraining, moment, epocas, perceptron, out);
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                     Perceptron.serialize(perceptron, name);
