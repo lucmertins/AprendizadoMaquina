@@ -25,8 +25,8 @@ public class Training {
     public Perceptron withPerceptron(Samples samples, double learningRate, int epoca, Perceptron.AlgorithmSimoid algorithm) throws IOException {
         Perceptron perceptron = new Perceptron(algorithm);
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
-        if (!samples.getAttributes().isEmpty()) {
-            int entradas = samples.getAttributes().size();
+        int entradas = samples.amountAttibutes();
+        if (entradas > 0) {
             perceptron.createIn(entradas);
             for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
                 Instant inicioEpoca = Instant.now();
@@ -110,8 +110,8 @@ public class Training {
 
     public Perceptron withDelta(Samples samples, double learningRate, double moment, int epoca, Perceptron perceptron, FileWriter out) throws IOException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
-        if (!samples.getAttributes().isEmpty()) {
-            int entradas = samples.getAttributes().size();
+        int entradas = samples.amountAttibutes();
+        if (entradas > 0) {
             perceptron.createIn(entradas);
             int epocaTemp = 1;
             double lastErr = Double.POSITIVE_INFINITY;
@@ -172,8 +172,8 @@ public class Training {
 
     public Perceptron withStochastic(Samples samples, double learningRate, double moment, int epoca, Perceptron perceptron, FileWriter out) throws IOException, ClassNotFoundException {
         //preparar o percetpron com o numero de entradas adequados. Colocando pesos randomicos
-        if (!samples.getAttributes().isEmpty()) {
-            int entradas = samples.getAttributes().size();
+        int entradas = samples.amountAttibutes();
+        if (entradas > 0) {
             perceptron.createIn(entradas);
             Perceptron perceptronAnterior = perceptron.copy();
             int epocaTemp = 1;

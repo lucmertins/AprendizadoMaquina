@@ -22,7 +22,7 @@ public class Execute {
 //            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento exeTreino = new ExecTreinamento();
 //            exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
-            exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0","4", "5", "8"});
+            exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0"});
             exeTreino.run(blocbkIfBadErr, 0.000000000005, 0.6, 1000, 6, treinamento, Perceptron.AlgorithmSimoid.HARD_0);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);

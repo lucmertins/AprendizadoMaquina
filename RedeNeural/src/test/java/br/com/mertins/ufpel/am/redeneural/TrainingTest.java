@@ -92,8 +92,8 @@ public class TrainingTest {
 
         MLP rede = new MLP();
         rede.createIn(NUMEX);
-        rede.addHiddenLayer(1, NUMEX / 2, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
-        rede.addOut(NUMEX, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addHiddenLayer(1, NUMEX / 2, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addOut(NUMEX, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
         treino.withBackPropagation(rede, samples, 0.05, 0.8, 10000);

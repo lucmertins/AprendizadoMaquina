@@ -74,7 +74,7 @@ public class Training {
     }
 
     public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException, ClassNotFoundException {
-        if (!samples.getAttributes().isEmpty()) {
+        if (samples.amountAttibutes()>0) {
             for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
                 Instant inicioEpoca = Instant.now();
                 double errEpoca = 0.0;
