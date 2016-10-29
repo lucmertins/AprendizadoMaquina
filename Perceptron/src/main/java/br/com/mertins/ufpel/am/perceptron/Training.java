@@ -237,7 +237,7 @@ public class Training {
 
     private void register(Instant inicio, int epoca, double errEpoca) {
         Duration duration = Duration.between(inicio, Instant.now());
-        this.observator.register(duration, epoca, errEpoca);
+        this.observator.register(duration, epoca, new double[]{errEpoca});
     }
 
 }

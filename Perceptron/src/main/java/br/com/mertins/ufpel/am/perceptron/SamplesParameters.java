@@ -10,8 +10,8 @@ public class SamplesParameters {
     }
     
     private boolean normalize = false;
-    private double negativeValue = -1.0;
-    private double positiveValue = 1.0;
+//    private double negativeValue = -1.0;
+//    private double positiveValue = 1.0;
     private boolean firstLineAttribute = true;
     private int columnLabel;
     
@@ -31,21 +31,21 @@ public class SamplesParameters {
         this.normalize = normalize;
     }
 
-    public double getNegativeValue() {
-        return negativeValue;
-    }
-
-    public void setNegativeValue(double negativeValue) {
-        this.negativeValue = negativeValue;
-    }
-
-    public double getPositiveValue() {
-        return positiveValue;
-    }
-
-    public void setPositiveValue(double positiveValue) {
-        this.positiveValue = positiveValue;
-    }
+//    public double getNegativeValue() {
+//        return negativeValue;
+//    }
+//
+//    public void setNegativeValue(double negativeValue) {
+//        this.negativeValue = negativeValue;
+//    }
+//
+//    public double getPositiveValue() {
+//        return positiveValue;
+//    }
+//
+//    public void setPositiveValue(double positiveValue) {
+//        this.positiveValue = positiveValue;
+//    }
 
     public boolean isFirstLineAttribute() {
         return firstLineAttribute;

@@ -29,12 +29,17 @@ public class Samples implements Serializable {
     private CSVReader csvReader;
     private boolean csvFirstLine = true;
     private String fileName;
-    private String truePositive = null;
+    private FunctionSampleOut function;
 
     private SamplesParameters parameters;
 
-    public Samples(SamplesParameters parameters) {
+    public Samples(SamplesParameters parameters,FunctionSampleOut function) {
         this.parameters = parameters;
+        this.function=function;
+    }
+
+    public void setFunction(FunctionSampleOut function) {
+        this.function = function;
     }
 
     public String getDelimiter() {
@@ -47,14 +52,6 @@ public class Samples implements Serializable {
 
     public List<Attribute> getAttributesOrigin() {
         return attributesOrigin;
-    }
-
-    public String getTruePositive() {
-        return truePositive;
-    }
-
-    public void setTruePositive(String truePositive) {
-        this.truePositive = truePositive;
     }
 
     public void setDelimiter(String delimiter) {
@@ -134,13 +131,7 @@ public class Samples implements Serializable {
             int pos = 0;
             for (String value : colunas) {
                 if (pos == this.columnLabel) {
-                    if (truePositive == null) {
-                        sample.addOut(Double.valueOf(value));
-                    } else if (truePositive.equalsIgnoreCase(value)) {
-                        sample.addOut(this.parameters.getPositiveValue());
-                    } else {
-                        sample.addOut(this.parameters.getNegativeValue());
-                    }
+                    this.function.prepare(value, sample);
                 } else {
                     // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns
                     sample.addIn(Integer.valueOf(value));

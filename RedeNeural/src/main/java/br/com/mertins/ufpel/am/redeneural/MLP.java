@@ -64,19 +64,18 @@ public class MLP implements Serializable {
         }
     }
 
-    public void addHiddenLayer(int position, int amount, Perceptron.AlgorithmSimoid algorithm) {
-        this.addHiddenLayer(position, amount, 1, algorithm);
+    public int addHiddenLayer(int amount, Perceptron.AlgorithmSimoid algorithm) {
+        return this.addHiddenLayer(amount, 1, algorithm);
     }
 
-    public void addHiddenLayer(int position, int amount, int bias, Perceptron.AlgorithmSimoid algorithm) {
+    public int addHiddenLayer(int amount, int bias, Perceptron.AlgorithmSimoid algorithm) {
         ready = false;
-        if (position > 0 && position <= this.layers.size() + 1) {
-            LayerImplements layer = new LayerImplements(position);
-            for (int i = 0; i < amount; i++) {
-                layer.add(new Perceptron(bias, algorithm));
-            }
-            this.layers.add(layer);
+        LayerImplements layer = new LayerImplements(this.layers.size());
+        for (int i = 0; i < amount; i++) {
+            layer.add(new Perceptron(bias, algorithm));
         }
+        this.layers.add(layer);
+        return this.layers.size();
     }
 
     public void addOut(int amount, Perceptron.AlgorithmSimoid algorithm) {
@@ -97,6 +96,13 @@ public class MLP implements Serializable {
 
     public int amountHiddenLayer() {
         return this.layers.size();
+    }
+
+    public int amountPerceptronsHiddenLayer(int pos) {
+        if (pos > 0 && pos <= this.layers.size()) {
+            return this.layers.get(pos - 1).amount();
+        }
+        return 0;
     }
 
     public void connect() {
@@ -123,15 +129,14 @@ public class MLP implements Serializable {
                 });
             });
         }
-        final AtomicInteger posLayer = new AtomicInteger();
+        int posLayer = 0;
         int totalLayers = this.layers.size() - 1;
         for (Layer layer : this.layers) {
-            if (posLayer.get() < totalLayers) {
-                posLayer.incrementAndGet();
+            if (posLayer++ < totalLayers) {
                 final AtomicInteger posPerceptronOut = new AtomicInteger(1);
                 for (Perceptron perceptronOut : layer.getPerceptrons()) {
                     final double out = perceptronOut.out();
-                    for (Perceptron perceptronIn : this.layers.get(posLayer.get()).getPerceptrons()) {
+                    for (Perceptron perceptronIn : this.layers.get(posLayer).getPerceptrons()) {
                         perceptronIn.updateIn(posPerceptronOut.get(), out);
                     }
                     posPerceptronOut.incrementAndGet();
@@ -155,10 +160,6 @@ public class MLP implements Serializable {
             results[pos[0]++] = perceptron.outs();
         });
         return results;
-    }
-
-    List<Layer> layers() {
-        return this.layers();
     }
 
     Layer getLayer(int pos) {

@@ -1,5 +1,6 @@
 package br.com.mertins.ufpel.avaliacao.perceptron;
 
+import br.com.mertins.ufpel.am.perceptron.FunctionSampleOut;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
@@ -31,11 +32,16 @@ public class DefineNumero {
 
         SamplesParameters parameters = new SamplesParameters();
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
-        parameters.setNegativeValue(0);
-        parameters.setPositiveValue(1);
+//        parameters.setNegativeValue(0);
+//        parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Samples samples = new Samples(parameters);
+        Samples samples = new Samples(parameters,new FunctionSampleOut() {
+            @Override
+            public void prepare(String value, Sample sample) {
+              sample.addOut(value.equals("0")?0:1);                     // rever o código pois esta inadequado para testar perceptrons individualmente
+            }
+        });
         Sample sample;
         samples.avaliaFirstLine(fileTest);
         samples.open(fileTest);

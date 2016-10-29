@@ -66,7 +66,7 @@ public class TrainingTest {
         lista.add(sampleXOR);
         MLP rede = new MLP();
         rede.createIn(2);
-        rede.addHiddenLayer(1, 3, Perceptron.AlgorithmSimoid.TANGEN);
+        rede.addHiddenLayer(3, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.addOut(1, 1, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);
@@ -92,7 +92,7 @@ public class TrainingTest {
 
         MLP rede = new MLP();
         rede.createIn(NUMEX);
-        rede.addHiddenLayer(1, NUMEX / 2, Perceptron.AlgorithmSimoid.LOGISTIC);
+        rede.addHiddenLayer(NUMEX / 2, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.addOut(NUMEX, Perceptron.AlgorithmSimoid.LOGISTIC);
         rede.connect();
         Training treino = new Training(false);

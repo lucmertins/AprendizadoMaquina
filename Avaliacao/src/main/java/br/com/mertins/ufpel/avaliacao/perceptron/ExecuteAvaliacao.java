@@ -1,5 +1,6 @@
 package br.com.mertins.ufpel.avaliacao.perceptron;
 
+import br.com.mertins.ufpel.am.perceptron.FunctionSampleOut;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
@@ -15,27 +16,32 @@ import java.util.Map;
  * @author mertins
  */
 public class ExecuteAvaliacao {
-    
+
     private final FileWriter outFile;
     private final double label;
-    
+
     public ExecuteAvaliacao(FileWriter outFile, double label) {
         this.outFile = outFile;
         this.label = label;
     }
-    
+
     public void run(File fileTest, SamplesParameters samplesParameters, String filePerceptron) throws IOException, ClassNotFoundException {
         this.run(fileTest, samplesParameters, filePerceptron, null);
     }
-    
+
     public void run(File fileTest, SamplesParameters samplesParameters, String filePerceptron, Perceptron.AlgorithmSimoid algorithm) throws IOException, ClassNotFoundException {
-        Samples samples = new Samples(samplesParameters);
+        Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
+            @Override
+            public void prepare(String value, Sample sample) {
+                sample.addOut(value.equals("0") ? 0 : 1);                     // rever o código pois esta inadequado para testar perceptrons individualmente
+            }
+        });
         samples.avaliaFirstLine(fileTest);
         samples.open(fileTest);
         Sample sample;
         Perceptron perceptron = Perceptron.deserialize(filePerceptron);
         Acumulador acumulador = new Acumulador();
-        
+
         while ((sample = samples.next()) != null) {
             perceptron.fill(sample);
             if (algorithm != null) {
@@ -74,37 +80,37 @@ public class ExecuteAvaliacao {
             System.out.printf("Acuracia [%f]\n", accuracia);
         }
     }
-    
+
     private class Acumulador {
-        
+
         private double truePositive;
         private double trueNegative;
         private final Map<String, Double> falsePositive = new HashMap<>();
         private double falseNegative;
-        
+
         public Acumulador() {
         }
-        
+
         public double getTruePositive() {
             return truePositive;
         }
-        
+
         public Map<String, Double> getFalsePositive() {
             return falsePositive;
         }
-        
+
         public double getTrueNegative() {
             return trueNegative;
         }
-        
+
         public double getFalseNegative() {
             return falseNegative;
         }
-        
+
         public void addTruePositive() {
             this.truePositive++;
         }
-        
+
         public void addFalsePositive(String label) {
             if (falsePositive.containsKey(label)) {
                 falsePositive.put(label, falsePositive.get(label) + 1);
@@ -112,21 +118,21 @@ public class ExecuteAvaliacao {
                 falsePositive.put(label, 1.0);
             }
         }
-        
+
         public void addTrueNegative() {
             this.trueNegative++;
         }
-        
+
         public void addFalseNegative() {
             falseNegative++;
         }
-        
+
         public double totalFalsePositive() {
             double ret = 0;
             ret = this.falsePositive.keySet().stream().map((key) -> this.falsePositive.get(key)).reduce(ret, (accumulator, _item) -> accumulator + _item);
             return ret;
         }
-        
+
         public double totalAcumulado() {
             return truePositive + trueNegative + falseNegative + totalFalsePositive();
         }

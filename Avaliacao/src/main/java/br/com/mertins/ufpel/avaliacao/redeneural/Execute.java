@@ -20,16 +20,13 @@ public class Execute {
             File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento exeTreino = new ExecTreinamento();
             int numParametros = exeTreino.open(parameters, fileTreinamento, fileTest);
-
             MLP rede = new MLP();
             rede.createIn(numParametros);
-            rede.addHiddenLayer(1, 5, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.addHiddenLayer(1, 3, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.addOut(10, 0, Perceptron.AlgorithmSimoid.LOGISTIC);
+            rede.addHiddenLayer(200, Perceptron.AlgorithmSimoid.LOGISTIC);
+            rede.addHiddenLayer(30, Perceptron.AlgorithmSimoid.LOGISTIC);
+            rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.connect();
-            System.out.println("Feito");
-            
-            
+            exeTreino.run(blocbkIfBadErr, 0.1, 0.8, 10, rede);
         } catch (IOException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
@@ -37,9 +34,7 @@ public class Execute {
 
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
-        parameters.setNormalize(false);   // transforme atributos em 0 ou 1
-        parameters.setNegativeValue(0);
-        parameters.setPositiveValue(1);
+        parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
         Execute.treinamento(parameters, false);
