@@ -120,8 +120,7 @@ public class ExecTreinamento {
                 out.write(String.format("Tipo treinamento: %s\n", this.treinamento));
                 out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", this.blocbkIfBadErr));
                 samples.avaliaFirstLine(fileTraining);
-                List<Integer> remove = new ArrayList<>();
-                samples.removeAttributesPos(remove);
+                samples.notRemoveAttributes();
                 samples.open(fileTraining);
                 samples.setTruePositive(label);
                 int tempTentativas = 1;

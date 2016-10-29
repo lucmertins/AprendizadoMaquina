@@ -37,10 +37,6 @@ public class Samples implements Serializable {
         this.parameters = parameters;
     }
 
-    public List<ElementValue> getAttributes() {
-        return attributes;
-    }
-
     public String getDelimiter() {
         return delimiter;
     }
@@ -73,6 +69,10 @@ public class Samples implements Serializable {
                 this.attributes.remove(labelColumn);
             }
         });
+    }
+
+    public void notRemoveAttributes() {
+        this.removeAttributes(new ArrayList<>());
     }
 
     public void removeAttributesPos(List<Integer> posAttribRemove) {
@@ -165,5 +165,9 @@ public class Samples implements Serializable {
             }
         }
         this.open(fileName);
+    }
+    
+    public int amountAttibutes(){
+        return this.attributes.size()-1;
     }
 }

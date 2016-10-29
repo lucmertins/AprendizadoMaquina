@@ -42,13 +42,13 @@ public class Execute {
 
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
-        parameters.setNormalize(false);   // transforme atributos em 0 ou 1
+        parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setNegativeValue(0);
         parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-//        Execute.treinamento(parameters, true, Treinamento.ESTOCASTICO);
-        Execute.avaliacao(parameters);
+        Execute.treinamento(parameters, true, Treinamento.ESTOCASTICO);
+//        Execute.avaliacao(parameters);
     }
 
 }
