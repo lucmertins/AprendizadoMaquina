@@ -33,8 +33,8 @@ public class Execute {
         try {
 //            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            ExecuteAvaliacao aval = new ExecuteAvaliacao(null, 3);
-            aval.run(fileTest, parameters, "/Users/mertins/IAPerceptron/20161027_204650/perceptron_3_5", Perceptron.AlgorithmSimoid.HARD_0);
+            ExecuteAvaliacao aval = new ExecuteAvaliacao(null, 8);
+            aval.run(fileTest, parameters, "/Users/mertins/IAPerceptron/20161028_195844/perceptron_8_6", Perceptron.AlgorithmSimoid.LOGISTIC);
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }
@@ -42,13 +42,11 @@ public class Execute {
 
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
-        parameters.setNormalize(false);   // transforme atributos em 0 ou 1
-//        parameters.setNegativeValue(0);
-//        parameters.setPositiveValue(1);
+        parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Execute.treinamento(parameters, true, Treinamento.ESTOCASTICO);
-//        Execute.avaliacao(parameters);
+//        Execute.treinamento(parameters, true, Treinamento.ESTOCASTICO);
+        Execute.avaliacao(parameters);
     }
 
 }

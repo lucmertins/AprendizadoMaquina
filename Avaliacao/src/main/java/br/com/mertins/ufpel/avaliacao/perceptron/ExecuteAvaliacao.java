@@ -33,7 +33,7 @@ public class ExecuteAvaliacao {
         Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
             @Override
             public void prepare(String value, Sample sample) {
-                sample.addOut(value.equals("0") ? 0 : 1);                     // rever o código pois esta inadequado para testar perceptrons individualmente
+                sample.addOut(Integer.parseInt(value) == ExecuteAvaliacao.this.label ? 1 : 0);                     // rever o código pois esta inadequado para testar perceptrons individualmente
             }
         });
         samples.avaliaFirstLine(fileTest);
@@ -49,14 +49,14 @@ public class ExecuteAvaliacao {
             }
             double out = perceptron.out();
             if (sample.getOut(1) == label) {
-                if (out > 0.9) {
+                if (out > 0.5) {
 //                    System.out.printf("True Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                     acumulador.addTruePositive();
                 } else {
 //                    System.out.printf("False Negative Sample [%f]   out [%f]\n", sample.getValue(), out);
                     acumulador.addFalseNegative();
                 }
-            } else if (out > 0.9) {
+            } else if (out > 0.5) {
 //                System.out.printf("False Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                 acumulador.addFalsePositive(String.format("%f", sample.getOut(1)));
             } else {

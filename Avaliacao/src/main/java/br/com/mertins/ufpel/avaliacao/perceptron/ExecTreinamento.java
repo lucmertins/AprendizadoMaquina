@@ -116,7 +116,7 @@ public class ExecTreinamento {
             Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
                 @Override
                 public void prepare(String value, Sample sample) {
-                    sample.addOut(value.equals("0") ? 0 : 1);                     // rever o código pois esta inadequado para testar perceptrons individualmente
+                    sample.addOut(Integer.parseInt(value) == Integer.parseInt(Process.this.label) ? 1 : 0);                     // rever o código pois esta inadequado para testar perceptrons individualmente
                 }
             });
             try {
