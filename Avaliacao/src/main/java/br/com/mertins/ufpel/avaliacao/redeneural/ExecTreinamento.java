@@ -6,6 +6,7 @@ import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.redeneural.MLP;
+import br.com.mertins.ufpel.am.redeneural.PersistNet;
 import br.com.mertins.ufpel.am.redeneural.Training;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,13 +25,13 @@ import java.util.logging.Logger;
  * @author mertins
  */
 public class ExecTreinamento {
-    
+
     private SamplesParameters samplesParameters;
     private File fileTraining;
     private File fileTest;
     private File folder;
     private FileWriter outLog;
-    
+
     public int open(SamplesParameters samplesParameters, File fileTraining, File fileTest) throws IOException {
         this.samplesParameters = samplesParameters;
         this.fileTraining = fileTraining;
@@ -48,7 +49,7 @@ public class ExecTreinamento {
         this.preparaArmazenamento();
         return samples.amountAttibutes();
     }
-    
+
     public void run(boolean blocbkIfBadErr, final double rateTraining, final double moment, int epocas, MLP rede) throws IOException {
         FileWriter out = ExecTreinamento.this.outLog;
         Instant inicioTreinamento = Instant.now();
@@ -75,17 +76,15 @@ public class ExecTreinamento {
         samples.open(fileTraining);
         Training treino = new Training(blocbkIfBadErr);
         treino.addListenerObservatorTraining(new Observator(out));
-        treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out);
+        treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out,new PersistMLP());
         Duration duration = Duration.between(inicioTreinamento, Instant.now());
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
         String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
         out.write(String.format("Tempo de treinamento [%s]\n", format));
         out.flush();
         out.close();
-        String name = String.format("%s%sMLP", ExecTreinamento.this.folder.getAbsolutePath(), File.separator);
-        MLP.serialize(rede, name);
     }
-    
+
     private void preparaArmazenamento() throws IOException {
         String property = System.getProperty("user.home");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -102,15 +101,15 @@ public class ExecTreinamento {
         this.outLog.write(String.format("Arquivo de treino %s\n", fileTraining.getAbsolutePath()));
         this.outLog.flush();
     }
-    
+
     private class Observator implements ObservatorTraining {
-        
+
         private final FileWriter out;
-        
+
         public Observator(FileWriter out) {
             this.out = out;
         }
-        
+
         @Override
         public void register(Duration duration, int epoca, double[] errEpoca) {
             try {
@@ -127,8 +126,18 @@ public class ExecTreinamento {
             } catch (IOException ex) {
                 Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
-        
+
+    }
+
+    private class PersistMLP implements PersistNet {
+
+        @Override
+        public void save(MLP net, String value) throws IOException {
+            String name = String.format("%s%sMLP_%s", ExecTreinamento.this.folder.getAbsolutePath(), File.separator,value);
+            MLP.serialize(net, name);
+        }
+
     }
 }

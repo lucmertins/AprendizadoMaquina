@@ -26,7 +26,7 @@ public class Execute {
             rede.addHiddenLayer(30, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.connect();
-            exeTreino.run(blocbkIfBadErr, 0.005, 0.6, 5, rede);
+            exeTreino.run(blocbkIfBadErr, 0.1, 0.8, 10, rede);
         } catch (IOException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }

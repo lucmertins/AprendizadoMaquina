@@ -38,6 +38,10 @@ public class Samples implements Serializable {
         this.function=function;
     }
 
+    public void setFunction(FunctionSampleOut function) {
+        this.function = function;
+    }
+
     public String getDelimiter() {
         return delimiter;
     }

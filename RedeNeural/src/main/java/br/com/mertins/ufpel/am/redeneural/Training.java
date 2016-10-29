@@ -73,7 +73,7 @@ public class Training {
         }
     }
 
-    public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException {
+    public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out,PersistNet persist) throws IOException {
         if (samples.amountAttibutes() > 0) {
             for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
                 Instant inicioEpoca = Instant.now();
@@ -119,6 +119,7 @@ public class Training {
                     errEpoca[i] /= totalExemplos;
                 }
                 register(inicioEpoca, epocaTemp, errEpoca);
+                persist.save(rede, String.valueOf(epocaTemp));
                 samples.reset();
             }
         }
