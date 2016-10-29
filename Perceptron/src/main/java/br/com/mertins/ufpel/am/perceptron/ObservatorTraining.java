@@ -8,6 +8,6 @@ import java.time.Duration;
  */
 public interface ObservatorTraining {
 
-    default void register(Duration duration, int epoca, double errEpoca) {
+    default void register(Duration duration, int epoca, double[] errEpoca) {
     }
 }

@@ -25,9 +25,8 @@ public class Execute {
             rede.addHiddenLayer(200, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.addHiddenLayer(30, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
-
             rede.connect();
-            exeTreino.run(blocbkIfBadErr, 0.00000000000000000000000000000000000005, 0, 5, rede);
+            exeTreino.run(blocbkIfBadErr, 0.005, 0.6, 5, rede);
         } catch (IOException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
@@ -36,8 +35,6 @@ public class Execute {
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
-        parameters.setNegativeValue(0);
-        parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
         Execute.treinamento(parameters, false);

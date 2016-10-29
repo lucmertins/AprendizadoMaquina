@@ -74,12 +74,12 @@ public class Training {
     }
 
     public void withBackPropagation(MLP rede, Samples samples, double learningRate, double moment, int epoca, FileWriter out) throws IOException {
-        if (samples.amountAttibutes()>0) {
+        if (samples.amountAttibutes() > 0) {
             for (int epocaTemp = 1; epocaTemp <= epoca; epocaTemp++) {
                 Instant inicioEpoca = Instant.now();
-                double errEpoca = 0.0;
+                double[] errEpoca = new double[rede.amountOut()];
                 Sample sample;
-                long totalExemplos = 0;
+                double totalExemplos = 0;
                 while ((sample = samples.next()) != null) {
 //                System.out.printf("\nExemplo in[%s] out[%s] \n", sample.toStringIn(), sample.toStringOut());
                     totalExemplos++;
@@ -87,14 +87,10 @@ public class Training {
                     OutPerceptron[] outs = rede.process();
                     List<double[]> sigmas = new ArrayList<>();
                     double[] vSigmasOut = new double[rede.amountOut()];
-                    double[] errUnitOut = new double[rede.amountOut()];
                     for (int i = 0; i < vSigmasOut.length; i++) {
                         double err = sample.getOut(i + 1) - outs[i].getOut();
-                        errUnitOut[i] += Math.pow(err, 2);
+                        errEpoca[i] += Math.pow(err, 2);
                         vSigmasOut[i] = outs[i].getOut() * (1 - outs[i].getOut()) * err;
-                    }
-                    for (double value : errUnitOut) {
-                        errEpoca += value;
                     }
                     sigmas.add(vSigmasOut);
                     List<Perceptron> perceptrons = rede.getOuts();
@@ -119,8 +115,11 @@ public class Training {
                         }
                     }
                 }
-                errEpoca = errEpoca / totalExemplos;
+                for (int i = 0; i < errEpoca.length; i++) {
+                    errEpoca[i] /= totalExemplos;
+                }
                 register(inicioEpoca, epocaTemp, errEpoca);
+                samples.reset();
             }
         }
     }
@@ -150,7 +149,7 @@ public class Training {
         this.observator = observator;
     }
 
-    private void register(Instant inicio, int epoca, double errEpoca) {
+    private void register(Instant inicio, int epoca, double[] errEpoca) {
         Duration duration = Duration.between(inicio, Instant.now());
         this.observator.register(duration, epoca, errEpoca);
     }

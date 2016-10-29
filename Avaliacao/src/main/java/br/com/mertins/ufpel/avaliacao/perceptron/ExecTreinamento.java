@@ -1,7 +1,9 @@
 package br.com.mertins.ufpel.avaliacao.perceptron;
 
+import br.com.mertins.ufpel.am.perceptron.FunctionSampleOut;
 import br.com.mertins.ufpel.am.perceptron.ObservatorTraining;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
+import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.perceptron.Training;
@@ -111,7 +113,12 @@ public class ExecTreinamento {
         public void run() {
             FileWriter out = ExecTreinamento.this.outList.get(posFileLabel);
             Instant inicioTreinamento = Instant.now();
-            Samples samples = new Samples(samplesParameters);
+            Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
+                @Override
+                public void prepare(String value, Sample sample) {
+                    sample.addOut(value.equals("0") ? 0 : 1);                     // rever o código pois esta inadequado para testar perceptrons individualmente
+                }
+            });
             try {
                 out.write(String.format("Tentativas: %d\n", this.tentativas));
                 out.write(String.format("Epocas: %d\n", this.epocas));
@@ -123,7 +130,6 @@ public class ExecTreinamento {
                 samples.avaliaFirstLine(fileTraining);
                 samples.notRemoveAttributes();
                 samples.open(fileTraining);
-                samples.setTruePositive(label);
                 int tempTentativas = 1;
                 Training treino = new Training(blocbkIfBadErr);
                 treino.addListenerObservatorTraining(new Observator(out));
@@ -181,11 +187,11 @@ public class ExecTreinamento {
         }
 
         @Override
-        public void register(Duration duration, int epoca, double errEpoca) {
+        public void register(Duration duration, int epoca, double[] errEpoca) {
             try {
                 DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
                 String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
-                out.write(String.format("Epoca [%d] errEpoca [%.30f]  %s\n", epoca, errEpoca, format));
+                out.write(String.format("Epoca [%d] errEpoca [%.30f]  %s\n", epoca, errEpoca[0], format));
                 out.flush();
             } catch (IOException ex) {
                 Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, null, ex);

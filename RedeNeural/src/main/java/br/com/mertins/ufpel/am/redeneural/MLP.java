@@ -129,15 +129,14 @@ public class MLP implements Serializable {
                 });
             });
         }
-        final AtomicInteger posLayer = new AtomicInteger();
+        int posLayer = 0;
         int totalLayers = this.layers.size() - 1;
         for (Layer layer : this.layers) {
-            if (posLayer.get() < totalLayers) {
-                posLayer.incrementAndGet();
+            if (posLayer++ < totalLayers) {
                 final AtomicInteger posPerceptronOut = new AtomicInteger(1);
                 for (Perceptron perceptronOut : layer.getPerceptrons()) {
                     final double out = perceptronOut.out();
-                    for (Perceptron perceptronIn : this.layers.get(posLayer.get()).getPerceptrons()) {
+                    for (Perceptron perceptronIn : this.layers.get(posLayer).getPerceptrons()) {
                         perceptronIn.updateIn(posPerceptronOut.get(), out);
                     }
                     posPerceptronOut.incrementAndGet();
