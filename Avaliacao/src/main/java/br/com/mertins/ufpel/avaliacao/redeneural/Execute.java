@@ -1,6 +1,5 @@
 package br.com.mertins.ufpel.avaliacao.redeneural;
 
-import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.redeneural.MLP;
 import java.io.File;
@@ -22,14 +21,15 @@ public class Execute {
             File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento exeTreino = new ExecTreinamento();
             int numParametros = exeTreino.open(parameters, fileTreinamento, fileTest);
-            MLP rede = new MLP();
-            rede.createIn(numParametros);
-            rede.addHiddenLayer(200, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.addHiddenLayer(30, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.connect();
+//            MLP rede = new MLP();
+//            rede.createIn(numParametros);
+//            rede.addHiddenLayer(200, Perceptron.AlgorithmSimoid.LOGISTIC);
+//            rede.addHiddenLayer(30, Perceptron.AlgorithmSimoid.LOGISTIC);
+//            rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
+//            rede.connect();
+            MLP rede = MLP.deserialize("/Users/mertins/IARedeNeural/20161029_212238/MLP_100");
             exeTreino.run(blocbkIfBadErr, 0.1, 0.8, 100, rede);
-        } catch (IOException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
     }
