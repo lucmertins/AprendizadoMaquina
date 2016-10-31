@@ -15,9 +15,9 @@ import java.io.IOException;
 public class DefineNumero {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        String path = "/home/mertins/IAPerceptron/20161029_182131";
+        String path = "/home/mertins/IAPerceptron/20161014_085630";
 //        String path = "/Users/mertins/IAPerceptron/20161014_085630";
-        String versao = "10";
+        String versao = "20";
          File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 //        File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 
