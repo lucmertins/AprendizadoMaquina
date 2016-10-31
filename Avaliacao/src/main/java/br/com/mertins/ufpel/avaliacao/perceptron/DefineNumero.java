@@ -15,7 +15,7 @@ import java.io.IOException;
 public class DefineNumero {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        String path = "/home/mertins/IAPerceptron/20161014_074950";
+        String path = "/home/mertins/IAPerceptron/20161029_182131";
 //        String path = "/Users/mertins/IAPerceptron/20161014_085630";
         String versao = "10";
          File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
@@ -32,8 +32,6 @@ public class DefineNumero {
 
         SamplesParameters parameters = new SamplesParameters();
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
-//        parameters.setNegativeValue(0);
-//        parameters.setPositiveValue(1);
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
         Samples samples = new Samples(parameters,new FunctionSampleOut() {

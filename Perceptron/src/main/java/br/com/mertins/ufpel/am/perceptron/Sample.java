@@ -12,6 +12,7 @@ public class Sample {
     private final List<Double> ins = new ArrayList<>();
 //    private double value;
     private final List<Double> outs = new ArrayList<>();
+    private final List<String> outsOriginal = new ArrayList<>();
     private boolean normalize;
 
     public Sample() {
@@ -29,13 +30,10 @@ public class Sample {
         outs.add(value);
     }
 
-//    public double getValue() {
-//        return value;
-//    }
-//
-//    public void setValue(double value) {
-//        this.value = value;
-//    }
+    public void addOutOriginal(String value) {
+        outsOriginal.add(value);
+    }
+
     public List<Double> getIns() {
         return ins;
     }
@@ -63,6 +61,10 @@ public class Sample {
         return outs.size();
     }
 
+    public int amountOutOriginal() {
+        return outsOriginal.size();
+    }
+
     public void fill(Perceptron perceptron) {
         int pos = 1;
         for (Double vtemp : ins) {
@@ -75,6 +77,13 @@ public class Sample {
             return this.outs.get(pos - 1);
         }
         return 0.0;
+    }
+
+    public String getOutOriginal(int pos) {
+        if (pos > 0 && pos <= this.outsOriginal.size()) {
+            return this.outsOriginal.get(pos - 1);
+        }
+        return null;
     }
 
     public String toStringIn() {

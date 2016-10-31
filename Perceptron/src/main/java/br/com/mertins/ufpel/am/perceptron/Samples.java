@@ -29,17 +29,17 @@ public class Samples implements Serializable {
     private CSVReader csvReader;
     private boolean csvFirstLine = true;
     private String fileName;
-    private FunctionSampleOut function;
+    private FunctionSampleOut functionDefineOut;
 
     private SamplesParameters parameters;
 
     public Samples(SamplesParameters parameters,FunctionSampleOut function) {
         this.parameters = parameters;
-        this.function=function;
+        this.functionDefineOut=function;
     }
 
     public void setFunction(FunctionSampleOut function) {
-        this.function = function;
+        this.functionDefineOut = function;
     }
 
     public String getDelimiter() {
@@ -131,7 +131,7 @@ public class Samples implements Serializable {
             int pos = 0;
             for (String value : colunas) {
                 if (pos == this.columnLabel) {
-                    this.function.prepare(value, sample);
+                    this.functionDefineOut.prepare(value, sample);
                 } else {
                     // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns
                     sample.addIn(Integer.valueOf(value));

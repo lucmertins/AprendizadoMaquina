@@ -18,9 +18,9 @@ import java.util.Map;
 public class ExecuteAvaliacao {
 
     private final FileWriter outFile;
-    private final double label;
+    private final String label;
 
-    public ExecuteAvaliacao(FileWriter outFile, double label) {
+    public ExecuteAvaliacao(FileWriter outFile, String label) {
         this.outFile = outFile;
         this.label = label;
     }
@@ -33,7 +33,8 @@ public class ExecuteAvaliacao {
         Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
             @Override
             public void prepare(String value, Sample sample) {
-                sample.addOut(value.equals("0") ? 0 : 1);                     // rever o código pois esta inadequado para testar perceptrons individualmente
+                sample.addOut(value.equals(label) ? 0 : 1);
+                sample.addOutOriginal(value);
             }
         });
         samples.avaliaFirstLine(fileTest);
@@ -48,17 +49,17 @@ public class ExecuteAvaliacao {
                 perceptron.setAlgorithm(algorithm);
             }
             double out = perceptron.out();
-            if (sample.getOut(1) == label) {
+            if (label.equals(sample.getOutOriginal(1))) {
                 if (out > 0.9) {
 //                    System.out.printf("True Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                     acumulador.addTruePositive();
                 } else {
 //                    System.out.printf("False Negative Sample [%f]   out [%f]\n", sample.getValue(), out);
-                    acumulador.addFalseNegative();
+                    acumulador.addFalseNegative(sample.getOutOriginal(1));
                 }
             } else if (out > 0.9) {
 //                System.out.printf("False Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
-                acumulador.addFalsePositive(String.format("%f", sample.getOut(1)));
+                acumulador.addFalsePositive(sample.getOutOriginal(1));
             } else {
 //                System.out.printf("True Negative Sample [%f]   out [%f]\n", sample.getValue(), out);
                 acumulador.addTrueNegative();
@@ -67,15 +68,21 @@ public class ExecuteAvaliacao {
         samples.close();
         double accuracia = (acumulador.getTruePositive() + acumulador.getTrueNegative()) / acumulador.totalAcumulado();
         if (outFile != null) {
-            outFile.write(String.format("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.getFalseNegative()));
+            outFile.write(String.format("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(),acumulador.totalFalseNegative()));
             for (String key : acumulador.getFalsePositive().keySet()) {
                 outFile.write(String.format("FalsePositivo achou que %s era %.0f %f vezes \n", key, label, acumulador.getFalsePositive().get(key)));
             }
+            for (String key : acumulador.getFalseNegative().keySet()) {
+                outFile.write(String.format("FalseNegative achou que %s era %.0f %f vezes \n", key, label, acumulador.getFalseNegative().get(key)));
+            }
             outFile.write(String.format("Acuracia [%.12f]\n", accuracia));
         } else {
-            System.out.printf("truePositive [%f] trueNegative [%f] falsePositice [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.getFalseNegative());
+            System.out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f] \n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(),acumulador.totalFalseNegative());
             for (String key : acumulador.getFalsePositive().keySet()) {
-                System.out.printf("FalsePositivo achou que %s era %.0f %f vezes \n", key, label, acumulador.getFalsePositive().get(key));
+                System.out.printf("FalsePositivo achou que %s era %s %f vezes \n", key, label, acumulador.getFalsePositive().get(key));
+            }
+            for (String key : acumulador.getFalseNegative().keySet()) {
+                System.out.printf("FalseNegative não achou que %s era %s %f vezes \n", key, label, acumulador.getFalseNegative().get(key));
             }
             System.out.printf("Acuracia [%f]\n", accuracia);
         }
@@ -86,7 +93,7 @@ public class ExecuteAvaliacao {
         private double truePositive;
         private double trueNegative;
         private final Map<String, Double> falsePositive = new HashMap<>();
-        private double falseNegative;
+        private final Map<String, Double> falseNegative = new HashMap<>();
 
         public Acumulador() {
         }
@@ -103,7 +110,7 @@ public class ExecuteAvaliacao {
             return trueNegative;
         }
 
-        public double getFalseNegative() {
+        public Map<String, Double> getFalseNegative() {
             return falseNegative;
         }
 
@@ -123,8 +130,12 @@ public class ExecuteAvaliacao {
             this.trueNegative++;
         }
 
-        public void addFalseNegative() {
-            falseNegative++;
+        public void addFalseNegative(String label) {
+            if (falseNegative.containsKey(label)) {
+                falseNegative.put(label, falseNegative.get(label) + 1);
+            } else {
+                falseNegative.put(label, 1.0);
+            }
         }
 
         public double totalFalsePositive() {
@@ -133,8 +144,14 @@ public class ExecuteAvaliacao {
             return ret;
         }
 
+        public double totalFalseNegative() {
+            double ret = 0;
+            ret = this.falseNegative.keySet().stream().map((key) -> this.falseNegative.get(key)).reduce(ret, (accumulator, _item) -> accumulator + _item);
+            return ret;
+        }
+
         public double totalAcumulado() {
-            return truePositive + trueNegative + falseNegative + totalFalsePositive();
+            return truePositive + trueNegative + totalFalseNegative() + totalFalsePositive();
         }
     }
 }

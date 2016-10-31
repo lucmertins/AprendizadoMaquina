@@ -137,6 +137,7 @@ public class ExecTreinamento {
                 String name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                 out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                 Perceptron.serialize(perceptron, name);
+                out.flush();
                 while (tempTentativas < tentativas) {
                     tempTentativas++;
                     samples.reset();
@@ -145,6 +146,7 @@ public class ExecTreinamento {
                     name = String.format("%s%sperceptron_%s_%d", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, label, tempTentativas);
                     out.write(String.format("Perceptron [%s] taxa de treinamento [%.30f]\n", name, rateTraining));
                     Perceptron.serialize(perceptron, name);
+                    out.flush();
                 }
                 samples.close();
                 tempTentativas = 1;
@@ -153,7 +155,7 @@ public class ExecTreinamento {
                     out.write("\n");
                     for (Perceptron.AlgorithmSimoid algorit : Perceptron.AlgorithmSimoid.values()) {
                         out.write(String.format("Avaliando Perceptron [%s] [%s]\n", name, algorit));
-                        ExecuteAvaliacao aval = new ExecuteAvaliacao(out, Double.valueOf(label));
+                        ExecuteAvaliacao aval = new ExecuteAvaliacao(out, label);
                         aval.run(fileTest, samplesParameters, name, algorit);
                     }
                     tempTentativas++;
