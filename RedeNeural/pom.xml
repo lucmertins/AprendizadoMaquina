@@ -33,7 +33,6 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>br.com.mertins.ufpel.am.redeneural.Execute</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -57,7 +57,7 @@ public class ExecuteAvaliacao {
 //                    System.out.printf("False Negative Sample [%f]   out [%f]\n", sample.getValue(), out);
                     acumulador.addFalseNegative(sample.getOutOriginal(1));
                 }
-            } else if (out > 0.9) {
+            } else if (out > 0.5) {
 //                System.out.printf("False Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                 acumulador.addFalsePositive(sample.getOutOriginal(1));
             } else {
