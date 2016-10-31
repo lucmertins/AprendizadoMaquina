@@ -68,16 +68,16 @@ public class ExecuteAvaliacao {
         samples.close();
         double accuracia = (acumulador.getTruePositive() + acumulador.getTrueNegative()) / acumulador.totalAcumulado();
         if (outFile != null) {
-            outFile.write(String.format("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(),acumulador.totalFalseNegative()));
+            outFile.write(String.format("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.totalFalseNegative()));
             for (String key : acumulador.getFalsePositive().keySet()) {
-                outFile.write(String.format("FalsePositivo achou que %s era %.0f %f vezes \n", key, label, acumulador.getFalsePositive().get(key)));
+                outFile.write(String.format("FalsePositivo achou que %s era %s %f vezes \n", key, label, acumulador.getFalsePositive().get(key)));
             }
             for (String key : acumulador.getFalseNegative().keySet()) {
-                outFile.write(String.format("FalseNegative achou que %s era %.0f %f vezes \n", key, label, acumulador.getFalseNegative().get(key)));
+                outFile.write(String.format("FalseNegative não achou que %s era %s %f vezes \n", key, label, acumulador.getFalseNegative().get(key)));
             }
             outFile.write(String.format("Acuracia [%.12f]\n", accuracia));
         } else {
-            System.out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f] \n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(),acumulador.totalFalseNegative());
+            System.out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f] \n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.totalFalseNegative());
             for (String key : acumulador.getFalsePositive().keySet()) {
                 System.out.printf("FalsePositivo achou que %s era %s %f vezes \n", key, label, acumulador.getFalsePositive().get(key));
             }
