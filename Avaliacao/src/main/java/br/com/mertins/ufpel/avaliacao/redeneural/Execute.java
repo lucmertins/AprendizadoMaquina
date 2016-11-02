@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * @author mertins
  */
 public class Execute {
-
+    
     public static void treinamento(SamplesParameters parameters, boolean blocbkIfBadErr) {
         try {
 //            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
@@ -37,12 +37,26 @@ public class Execute {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
     }
+    
+    public static void avaliacao(SamplesParameters parameters) {
+        try {
+            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+//            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 
+            ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
+            aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_999");
+//            aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161030_233705");
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
+        }
+    }
+    
     public static void main(String[] args) {
         SamplesParameters parameters = new SamplesParameters();
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Execute.treinamento(parameters, false);
+//        Execute.treinamento(parameters, false);
+        Execute.avaliacao(parameters);
     }
 }
