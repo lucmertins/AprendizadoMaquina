@@ -23,7 +23,7 @@ public class Execute {
             ExecTreinamento exeTreino = new ExecTreinamento();
             exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
 //            exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0", "3", "5", "8"});
-            exeTreino.run(blocbkIfBadErr, 0.0000001, 0.7, 100, 6, treinamento, Perceptron.AlgorithmSimoid.HARD_0);
+            exeTreino.run(blocbkIfBadErr, 0.01, 0.7, 1000, 10, treinamento, Perceptron.AlgorithmSimoid.HARD_0);
         } catch (IOException ex) {
             Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
