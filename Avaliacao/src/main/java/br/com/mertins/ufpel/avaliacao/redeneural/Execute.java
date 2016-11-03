@@ -16,10 +16,10 @@ public class Execute {
 
     public static void treinamento(SamplesParameters parameters, boolean blocbkIfBadErr) {
         try {
-//            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
-//            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            File fileTreinamento = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
-            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
+            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+//            File fileTreinamento = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
+//            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento exeTreino = new ExecTreinamento();
             int numParametros = exeTreino.open(parameters, fileTreinamento, fileTest);
             MLP rede = new MLP();
@@ -44,12 +44,17 @@ public class Execute {
 //            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 
             ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
-            Accumulator[] acumuladores = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_999");
+            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_500");
+            Accumulator[] acumuladores2 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_1000");
 //            aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161030_233705");
 
             ConfusionMatrix confusao = new ConfusionMatrix();
-            confusao.resumo(acumuladores, System.out);
-            confusao.matrix(acumuladores, System.out);
+            confusao.resumo(acumuladores1, System.out);
+            System.out.println();
+            confusao.matrix(acumuladores1, System.out);
+//            confusao.resumo(acumuladores2, System.out);
+//            System.out.println();
+//            confusao.matrix(acumuladores2, System.out);
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }

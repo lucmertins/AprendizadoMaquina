@@ -1,6 +1,7 @@
 package br.com.mertins.ufpel.avaliacao.redeneural;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 /**
  *
@@ -11,17 +12,20 @@ public class ConfusionMatrix {
     public void matrix(Accumulator[] accumulators, PrintStream out) {
         // Linha dos labels reconhecidos
         for (int i = 0; i < 10; i++) {
-            out.printf("\t%d\t", i);
+            out.printf("\t%d", i);
         }
+        out.println();
         out.println();
         // Coluna dos labels corretos
         for (int y = 0; y < 10; y++) {
             out.printf("%d\t", y);
             for (int x = 0; x < 10; x++) {
                 if (x == y) {
-                    out.printf("%.0f\t\t", accumulators[x].getTruePositive());
+                    out.printf("%.0f\t", accumulators[x].getTruePositive());
                 } else {
-                    out.printf("\t\t");
+                    Map<Integer, Double> falseNegatives = accumulators[x].getFalseNegative();
+                    Double value = falseNegatives.get(y);
+                    out.printf("%.0f\t", value == null ? 0 : value);
                 }
             }
             out.println();
