@@ -43,7 +43,7 @@ public class Execute {
 
             ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
 //            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161105_165527/MLP_6");
-            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161106_174409/MLP_1000");
+            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161109_081656/MLP_1000");
 //            Accumulator[] acumuladores2 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_1000");
 //            aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161030_233705");
 
@@ -64,8 +64,8 @@ public class Execute {
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Execute.treinamento(parameters, false);
-//        Execute.avaliacao(parameters);
+//        Execute.treinamento(parameters, false);
+        Execute.avaliacao(parameters);
     }
 }
 //
