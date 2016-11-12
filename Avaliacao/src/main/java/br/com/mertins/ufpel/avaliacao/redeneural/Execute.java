@@ -24,8 +24,8 @@ public class Execute {
             int numParametros = exeTreino.open(parameters, fileTreinamento, fileTest);
             MLP rede = new MLP();
             rede.createIn(numParametros);
-            rede.addHiddenLayer(60, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.addHiddenLayer(24, Perceptron.AlgorithmSimoid.LOGISTIC);
+            rede.addHiddenLayer(80, Perceptron.AlgorithmSimoid.LOGISTIC);
+//            rede.addHiddenLayer(60, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.connect();
 //            MLP rede = MLP.deserialize("/Users/mertins/IARedeNeural/20161029_212238/MLP_100");
@@ -43,8 +43,9 @@ public class Execute {
 
             ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
 //            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161105_165527/MLP_6");
-//            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161106_174409/MLP_1000");
-            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_1000");
+            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161109_081656/MLP_1000");
+//            Accumulator[] acumuladores2 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_1000");
+//            aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161030_233705");
 
             ConfusionMatrix confusao = new ConfusionMatrix();
             confusao.resumo(acumuladores1, System.out);
