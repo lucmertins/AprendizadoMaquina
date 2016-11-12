@@ -16,10 +16,10 @@ public class Execute {
 
     public static void treinamento(SamplesParameters parameters, boolean blocbkIfBadErr) {
         try {
-//            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
-//            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            File fileTreinamento = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
-            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
+            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+//            File fileTreinamento = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
+//            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
             ExecTreinamento exeTreino = new ExecTreinamento();
             int numParametros = exeTreino.open(parameters, fileTreinamento, fileTest);
             MLP rede = new MLP();
@@ -38,19 +38,20 @@ public class Execute {
 
     public static void avaliacao(SamplesParameters parameters) {
         try {
-//            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
+//            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
 
             ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
 //            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161105_165527/MLP_6");
-            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161106_174409/MLP_1000");
-//            Accumulator[] acumuladores2 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_1000");
-//            aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161030_233705");
+//            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/Users/mertins/IARedeNeural/20161106_174409/MLP_1000");
+            Accumulator[] acumuladores1 = aval.run(fileTest, parameters, "/home/mertins/IARedeNeural/20161030_233705/MLP_1000");
 
             ConfusionMatrix confusao = new ConfusionMatrix();
             confusao.resumo(acumuladores1, System.out);
             System.out.println();
             confusao.matrix(acumuladores1, System.out);
+            System.out.printf("\nGerais    Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
+                    confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1));
 //            confusao.resumo(acumuladores2, System.out);
 //            System.out.println();
 //            confusao.matrix(acumuladores2, System.out);

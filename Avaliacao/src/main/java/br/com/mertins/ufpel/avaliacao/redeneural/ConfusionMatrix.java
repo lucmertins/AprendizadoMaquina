@@ -33,7 +33,7 @@ public class ConfusionMatrix {
 
     }
 
-    public void resumo(Accumulator[] accumulators, PrintStream out) {
+    public void detalhamento(Accumulator[] accumulators, PrintStream out) {
         for (int i = 0; i < 10; i++) {
             out.printf("***** Label  %d\n", i);
             Accumulator accumulator = accumulators[i];
@@ -46,5 +46,53 @@ public class ConfusionMatrix {
             }
             out.printf("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
         }
+    }
+
+    public void resumo(Accumulator[] accumulators, PrintStream out) {
+        for (int i = 0; i < 10; i++) {
+            out.printf("***** Label  %d\n", i);
+            Accumulator accumulator = accumulators[i];
+            out.printf("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
+        }
+    }
+
+    public double accuracy(Accumulator[] accumulators) {
+        Totais tot = new Totais();
+        tot.sum(accumulators);
+        return (tot.truePositive + tot.trueNegative) / (tot.truePositive + tot.trueNegative + tot.falsePositive + tot.falseNegative);
+    }
+
+    public double precision(Accumulator[] accumulators) {
+        Totais tot = new Totais();
+        tot.sum(accumulators);
+        return tot.truePositive / (tot.truePositive + tot.falsePositive);
+    }
+
+    public double recall(Accumulator[] accumulators) {
+        Totais tot = new Totais();
+        tot.sum(accumulators);
+        return tot.truePositive / (tot.truePositive + tot.falseNegative);
+    }
+
+    public double f1(Accumulator[] accumulators) {
+        double prec = this.precision(accumulators);
+        double rec = this.recall(accumulators);
+        return 2 * (prec * rec / (prec + rec));
+    }
+
+    private class Totais {
+
+        private double truePositive = 0, trueNegative = 0, falsePositive = 0, falseNegative = 0;
+
+        public void sum(Accumulator[] accumulators) {
+            for (Accumulator acum : accumulators) {
+                truePositive += acum.getTruePositive();
+                trueNegative += acum.getTrueNegative();
+                falsePositive += acum.totalFalsePositive();
+                falseNegative += acum.totalFalseNegative();
+            }
+//            System.out.printf("\nTP %.12f       TN %.12f     FP %.12f     FN %.12f\n",truePositive,trueNegative,falsePositive,falseNegative);
+        }
+
     }
 }
