@@ -41,6 +41,7 @@
     </build>
     <modules>
         <module>ID3</module>
+        <module>BayesianoIngenuo</module>
         <module>Perceptron</module>
         <module>RedeNeural</module>
         <module>Avaliacao</module>
