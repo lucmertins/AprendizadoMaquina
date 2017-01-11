@@ -53,9 +53,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ID3</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.apache.opennlp</groupId>
+            <artifactId>opennlp-tools</artifactId>
+            <version>1.5.3</version>
         </dependency>
     </dependencies>
 </project>
