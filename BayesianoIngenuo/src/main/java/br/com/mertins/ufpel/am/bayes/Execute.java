@@ -82,76 +82,81 @@ public class Execute {
         }
     }
 
-    public static void POSTag() throws IOException {
-        POSModel model = new POSModelLoader()
-                .load(new File("src/main/resource/en-pos-maxent.bin"));
-        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
-        POSTaggerME tagger = new POSTaggerME(model);
+//    public static void POSTag() throws IOException {
+//        POSModel model = new POSModelLoader()
+//                .load(new File("src/main/resource/en-pos-maxent.bin"));
+//        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
+//        POSTaggerME tagger = new POSTaggerME(model);
+//
+//        String input = "Hi. How are you? This is Mike.";
+//        ObjectStream<String> lineStream = new PlainTextByLineStream(
+//                new StringReader(input));
+//
+//        perfMon.start();
+//        String line;
+//        while ((line = lineStream.read()) != null) {
+//
+//            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE
+//                    .tokenize(line);
+//            String[] tags = tagger.tag(whitespaceTokenizerLine);
+//
+//            POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
+//            System.out.println(sample.toString());
+//
+//            perfMon.incrementCounter();
+//        }
+//        perfMon.stopAndPrintFinalResult();
+//    }
 
-        String input = "Hi. How are you? This is Mike.";
-        ObjectStream<String> lineStream = new PlainTextByLineStream(
-                new StringReader(input));
-
-        perfMon.start();
-        String line;
-        while ((line = lineStream.read()) != null) {
-
-            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE
-                    .tokenize(line);
-            String[] tags = tagger.tag(whitespaceTokenizerLine);
-
-            POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
-            System.out.println(sample.toString());
-
-            perfMon.incrementCounter();
-        }
-        perfMon.stopAndPrintFinalResult();
-    }
-
-    public static void chunk() throws IOException {
-        POSModel model = new POSModelLoader()
-                .load(new File("src/main/resource/en-pos-maxent.bin"));
-        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
-        POSTaggerME tagger = new POSTaggerME(model);
-
-        String input = "Hi. How are you? This is Mike.";
-        ObjectStream<String> lineStream = new PlainTextByLineStream(
-                new StringReader(input));
-
-        perfMon.start();
-        String line;
-        String whitespaceTokenizerLine[] = null;
-
-        String[] tags = null;
-        while ((line = lineStream.read()) != null) {
-            whitespaceTokenizerLine = WhitespaceTokenizer.INSTANCE
-                    .tokenize(line);
-            tags = tagger.tag(whitespaceTokenizerLine);
-
-            POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
-            System.out.println(sample.toString());
-            perfMon.incrementCounter();
-        }
-        perfMon.stopAndPrintFinalResult();
-        // chunker
-        InputStream is = new FileInputStream("src/main/resource/en-chunker.bin");
-        ChunkerModel cModel = new ChunkerModel(is);
-        ChunkerME chunkerME = new ChunkerME(cModel);
-        String result[] = chunkerME.chunk(whitespaceTokenizerLine, tags);
-        for (String s : result) {
-            System.out.println(s);
-        }
-        Span[] span = chunkerME.chunkAsSpans(whitespaceTokenizerLine, tags);
-        for (Span s : span) {
-            System.out.println(s.toString());
-        }
-    }
+//    public static void chunk() throws IOException {
+//        POSModel model = new POSModelLoader()
+//                .load(new File("src/main/resource/en-pos-maxent.bin"));
+//        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
+//        POSTaggerME tagger = new POSTaggerME(model);
+//
+//        String input = "Hi. How are you? This is Mike.";
+//        ObjectStream<String> lineStream = new PlainTextByLineStream(
+//                new StringReader(input));
+//
+//        perfMon.start();
+//        String line;
+//        String whitespaceTokenizerLine[] = null;
+//
+//        String[] tags = null;
+//        while ((line = lineStream.read()) != null) {
+//            whitespaceTokenizerLine = WhitespaceTokenizer.INSTANCE
+//                    .tokenize(line);
+//            tags = tagger.tag(whitespaceTokenizerLine);
+//
+//            POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
+//            System.out.println(sample.toString());
+//            perfMon.incrementCounter();
+//        }
+//        perfMon.stopAndPrintFinalResult();
+//        // chunker
+//        InputStream is = new FileInputStream("src/main/resource/en-chunker.bin");
+//        ChunkerModel cModel = new ChunkerModel(is);
+//        ChunkerME chunkerME = new ChunkerME(cModel);
+//        String result[] = chunkerME.chunk(whitespaceTokenizerLine, tags);
+//        for (String s : result) {
+//            System.out.println(s);
+//        }
+//        Span[] span = chunkerME.chunkAsSpans(whitespaceTokenizerLine, tags);
+//        for (Span s : span) {
+//            System.out.println(s.toString());
+//        }
+//    }
 
     public static void main(String[] args) throws IOException {
+        System.out.println("*****");
         Execute.SentenceDetect();
+        System.out.println("*****");
         Execute.Tokenize();
+        System.out.println("*****");
         Execute.findName();
-        Execute.POSTag();
-        Execute.chunk();
+//        System.out.println("*****");
+//        Execute.POSTag();
+//        System.out.println("*****");
+//        Execute.chunk();
     }
 }
