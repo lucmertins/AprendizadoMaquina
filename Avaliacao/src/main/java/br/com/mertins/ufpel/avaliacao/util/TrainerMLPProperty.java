@@ -106,4 +106,8 @@ public class TrainerMLPProperty extends TrainerProperty {
         return lista;
     }
 
+    public Layer parseOutputLayer() {
+        String[] varia = outputLayer.replace(" ", "").trim().split(",");
+        return new Layer(Integer.parseInt(varia[0]), varia[1]);
+    }
 }

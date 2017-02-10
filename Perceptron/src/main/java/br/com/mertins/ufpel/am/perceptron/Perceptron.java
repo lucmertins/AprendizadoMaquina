@@ -316,6 +316,10 @@ public class Perceptron implements Serializable {
         }
     }
 
+    public static AlgorithmSimoid algorithm(String value) {
+        return AlgorithmSimoid.valueOf(value.toUpperCase().trim());
+    }
+
     private double funcHard0() {
         return 0.0 < sum() ? 1 : 0;
     }

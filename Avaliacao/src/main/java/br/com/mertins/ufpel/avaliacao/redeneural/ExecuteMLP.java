@@ -3,6 +3,7 @@ package br.com.mertins.ufpel.avaliacao.redeneural;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.redeneural.MLP;
+import br.com.mertins.ufpel.avaliacao.util.Layer;
 import br.com.mertins.ufpel.avaliacao.util.TrainerMLPProperty;
 import java.io.File;
 import java.io.IOException;
@@ -25,42 +26,42 @@ public class ExecuteMLP {
             propMPL.setFileTrainer((String) properties.get("filetrainer"));
             propMPL.setFileTest((String) properties.get("filetest"));
             propMPL.setHiddenLayer((String) properties.get("hiddenlayer"));
-
+            propMPL.setOutputLayer((String) properties.get("outputlayer"));
+            propMPL.setRateTraining((String) properties.get("ratetraining"));
+            propMPL.setMoment((String) properties.get("moment"));
+            propMPL.setEpoch((String) properties.get("epoch"));
             SamplesParameters parameters = new SamplesParameters();
             parameters.setNormalize(propMPL.parseNormalize());
             parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
             parameters.setColumnLabel(propMPL.parseColumnLabel());
-
             File fileTreinamento = new File(propMPL.getFileTrainer());
             File fileTest = new File(propMPL.getFileTest());
-
             ExecTreinamento execTreino = new ExecTreinamento();
             int numParametros = execTreino.open(parameters, fileTreinamento, fileTest);
-
             MLP rede = new MLP();
             rede.createIn(numParametros);
-
-            rede.addHiddenLayer(80, Perceptron.AlgorithmSimoid.LOGISTIC);
-            rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
-
-//            rede.connect();
+            for (Layer layer : propMPL.parseHiddenLayer()) {
+                rede.addHiddenLayer(layer.getSize(), Perceptron.algorithm(layer.getAlgoritm()));
+            }
+            Layer outputLayer = propMPL.parseOutputLayer();
+            rede.addOut(outputLayer.getSize(), Perceptron.algorithm(outputLayer.getAlgoritm()));
+            rede.connect();
             propMPL.parseHiddenLayer();
-//            exeTreino.run(Boolean.parseBoolean(propMPL.getBlockIfBadErr()), Double.parseDouble(propMPL.getRateTraining()),
-//                    Double.parseDouble(propMPL.getMoment()), Integer.parseInt(propMPL.getEpoch()), rede);
-
+            execTreino.run(propMPL.parseBlockIfBadErr(), propMPL.parseRateTraining(), propMPL.parseMoment(), propMPL.parseEpoch(), rede);
         } catch (Exception ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
     }
 
+    @Deprecated
     public static void treinamento(SamplesParameters parameters, boolean blocbkIfBadErr) {
         try {
             File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AM/Trabalhos/mnist/mnist_train.csv");
             File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AM/Trabalhos/mnist/mnist_test.csv");
 //            File fileTreinamento = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
 //            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            ExecTreinamento exeTreino = new ExecTreinamento();
-            int numParametros = exeTreino.open(parameters, fileTreinamento, fileTest);
+            ExecTreinamento execTreino = new ExecTreinamento();
+            int numParametros = execTreino.open(parameters, fileTreinamento, fileTest);
             MLP rede = new MLP();
             rede.createIn(numParametros);
             rede.addHiddenLayer(80, Perceptron.AlgorithmSimoid.LOGISTIC);
@@ -68,7 +69,7 @@ public class ExecuteMLP {
             rede.addOut(10, Perceptron.AlgorithmSimoid.LOGISTIC);
             rede.connect();
 //            MLP rede = MLP.deserialize("/Users/mertins/IARedeNeural/20161029_212238/MLP_100");
-            exeTreino.run(blocbkIfBadErr, 0.01, 0.6, 1000, rede);
+            execTreino.run(blocbkIfBadErr, 0.01, 0.6, 1000, rede);
 //        } catch (ClassNotFoundException | IOException ex) {
         } catch (IOException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
