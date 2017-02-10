@@ -15,7 +15,9 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,11 +78,12 @@ public class ExecTreinamento {
         samples.open(fileTraining);
         Training treino = new Training(blocbkIfBadErr);
         treino.addListenerObservatorTraining(new Observator(out));
-        treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out,new PersistMLP());
-        Duration duration = Duration.between(inicioTreinamento, Instant.now());
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-        String format = fmt.format(duration.addTo(LocalDateTime.of(0, 1, 1, 0, 0)));
-        out.write(String.format("Tempo de treinamento [%s]\n", format));
+        treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out, new PersistMLP());
+        Instant now = Instant.now();
+        Duration duration = Duration.between(inicioTreinamento, now);
+        long days = ChronoUnit.DAYS.between(inicioTreinamento, now);
+        String tempo = LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        out.write(String.format("Tempo de treinamento [%d dias, %s]\n", days, tempo));
         out.flush();
         out.close();
     }
@@ -135,7 +138,7 @@ public class ExecTreinamento {
 
         @Override
         public void save(MLP net, String value) throws IOException {
-            String name = String.format("%s%sMLP_%s", ExecTreinamento.this.folder.getAbsolutePath(), File.separator,value);
+            String name = String.format("%s%sMLP_%s", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, value);
             MLP.serialize(net, name);
         }
 
