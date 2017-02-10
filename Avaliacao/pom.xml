@@ -34,7 +34,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>br.com.mertins.ufpel.avaliacao.redeneural.Execute</mainClass>
+                            <mainClass>br.com.mertins.ufpel.avaliacao.Execute</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

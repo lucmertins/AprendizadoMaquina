@@ -1,28 +1,16 @@
 package br.com.mertins.ufpel.am.bayes;
 
 import com.sun.media.sound.InvalidFormatException;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import opennlp.tools.chunker.ChunkerME;
-import opennlp.tools.chunker.ChunkerModel;
-import opennlp.tools.cmdline.PerformanceMonitor;
-import opennlp.tools.cmdline.postag.POSModelLoader;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
-import opennlp.tools.postag.POSModel;
-import opennlp.tools.postag.POSSample;
-import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
-import opennlp.tools.tokenize.WhitespaceTokenizer;
-import opennlp.tools.util.ObjectStream;
-import opennlp.tools.util.PlainTextByLineStream;
 import opennlp.tools.util.Span;
 
 /**
@@ -82,7 +70,7 @@ public class Execute {
         }
     }
 
-//    public static void POSTag() throws IOException {
+    public static void POSTag() throws IOException {
 //        POSModel model = new POSModelLoader()
 //                .load(new File("src/main/resource/en-pos-maxent.bin"));
 //        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
@@ -106,9 +94,9 @@ public class Execute {
 //            perfMon.incrementCounter();
 //        }
 //        perfMon.stopAndPrintFinalResult();
-//    }
+    }
 
-//    public static void chunk() throws IOException {
+    public static void chunk() throws IOException {
 //        POSModel model = new POSModelLoader()
 //                .load(new File("src/main/resource/en-pos-maxent.bin"));
 //        PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
@@ -145,18 +133,18 @@ public class Execute {
 //        for (Span s : span) {
 //            System.out.println(s.toString());
 //        }
-//    }
+    }
 
     public static void main(String[] args) throws IOException {
         System.out.println("*****");
         Execute.SentenceDetect();
-        System.out.println("*****");
+        System.out.println("---");
         Execute.Tokenize();
-        System.out.println("*****");
+        System.out.println("---");
         Execute.findName();
-//        System.out.println("*****");
+        System.out.println("---");
 //        Execute.POSTag();
-//        System.out.println("*****");
+//        System.out.println("---");
 //        Execute.chunk();
     }
 }
