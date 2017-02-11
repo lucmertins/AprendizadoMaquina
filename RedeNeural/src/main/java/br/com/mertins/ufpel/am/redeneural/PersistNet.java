@@ -1,6 +1,5 @@
 package br.com.mertins.ufpel.am.redeneural;
 
-import br.com.mertins.ufpel.am.redeneural.MLP;
 import java.io.IOException;
 
 /**

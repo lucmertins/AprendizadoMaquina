@@ -7,7 +7,6 @@ import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.redeneural.MLP;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -16,10 +15,7 @@ import java.io.IOException;
  */
 public class ExecuteAvaliacao {
 
-    private final FileWriter outFile;
-
-    public ExecuteAvaliacao(FileWriter outFile) {
-        this.outFile = outFile;
+    public ExecuteAvaliacao() {
     }
 
     public Accumulator[] run(File fileTest, SamplesParameters samplesParameters, String fileMLP) throws IOException, ClassNotFoundException {

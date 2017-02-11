@@ -1,5 +1,7 @@
 package br.com.mertins.ufpel.avaliacao.redeneural;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
 
@@ -9,26 +11,25 @@ import java.util.Map;
  */
 public class ConfusionMatrix {
 
-    public void matrix(Accumulator[] accumulators, PrintStream out) {
+    public void matrix(Accumulator[] accumulators, FileWriter outLog) throws IOException {
         // Linha dos labels reconhecidos
         for (int i = 0; i < 10; i++) {
-            out.printf("\t%d", i);
+            outLog.write(String.format("\t%d", i));
         }
-        out.println();
-        out.println();
+        outLog.write(String.format("\n\n"));
         // Coluna dos labels corretos
         for (int y = 0; y < 10; y++) {
-            out.printf("%d\t", y);
+            outLog.write(String.format("%d\t", y));
             for (int x = 0; x < 10; x++) {
                 if (x == y) {
-                    out.printf("%.0f\t", accumulators[x].getTruePositive());
+                    outLog.write(String.format("%.0f\t", accumulators[x].getTruePositive()));
                 } else {
                     Map<Integer, Double> falseNegatives = accumulators[x].getFalseNegative();
                     Double value = falseNegatives.get(y);
-                    out.printf("%.0f\t", value == null ? 0 : value);
+                    outLog.write(String.format("%.0f\t", value == null ? 0 : value));
                 }
             }
-            out.println();
+            outLog.write(String.format("\n"));
         }
 
     }
@@ -48,11 +49,11 @@ public class ConfusionMatrix {
         }
     }
 
-    public void resumo(Accumulator[] accumulators, PrintStream out) {
+    public void resumo(Accumulator[] accumulators, FileWriter outLog) throws IOException {
         for (int i = 0; i < 10; i++) {
-            out.printf("***** Label  %d *** ", i);
+            outLog.write(String.format("***** Label  %d *** ", i));
             Accumulator accumulator = accumulators[i];
-            out.printf("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
+            outLog.write(String.format("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1()));
         }
     }
 
