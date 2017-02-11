@@ -45,7 +45,7 @@ public class ConfusionMatrix {
             for (Integer key : accumulator.getFalseNegative().keySet()) {
                 out.printf("FalseNegative era %d acusou %d [%.0f vezes] \n", key, i, accumulator.getFalseNegative().get(key));
             }
-            out.printf("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
+            out.printf("Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
         }
     }
 
@@ -53,7 +53,7 @@ public class ConfusionMatrix {
         for (int i = 0; i < 10; i++) {
             outLog.write(String.format("***** Label  %d *** ", i));
             Accumulator accumulator = accumulators[i];
-            outLog.write(String.format("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1()));
+            outLog.write(String.format("Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1()));
         }
     }
 

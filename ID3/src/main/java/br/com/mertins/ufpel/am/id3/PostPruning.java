@@ -40,13 +40,13 @@ public class PostPruning {
             logPrunning.append(String.format("Arvore podada \n%s\n***\n", nodeAval.print()));
             if (indicativos.accuracy().compareTo(indicativosAval.accuracy()) > 0) {
                 tree = tree.origin();
-                logPrunning.append(String.format("Poda piorou a acuracia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), 
+                logPrunning.append(String.format("Poda piorou a acurácia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), 
                         indicativosAval.accuracy().doubleValue()));
                 logPrunning.append(String.format("Voltar para arvore anterior\n %s", tree.getNodeRoot().print()));
             } else {
                 bestRoot = nodeAval;
                 tree = new Tree(bestRoot);
-                logPrunning.append(String.format("Poda melhorou ou deixou igual a acuracia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), 
+                logPrunning.append(String.format("Poda melhorou ou deixou igual a acurácia     Sem Poda [%f]    Com Poda [%f]\n ", indicativos.accuracy().doubleValue(), 
                         indicativosAval.accuracy().doubleValue()));
             }
         }

@@ -75,7 +75,7 @@ public class ExecuteAvaliacao {
             for (String key : acumulador.getFalseNegative().keySet()) {
                 outFile.write(String.format("FalseNegative não achou que %s era %s %f vezes \n", key, label, acumulador.getFalseNegative().get(key)));
             }
-            outFile.write(String.format("Acuracia [%.12f]\n", accuracia));
+            outFile.write(String.format("Acurácia [%.12f]\n", accuracia));
         } else {
             System.out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f] \n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.totalFalseNegative());
             for (String key : acumulador.getFalsePositive().keySet()) {
@@ -84,7 +84,7 @@ public class ExecuteAvaliacao {
             for (String key : acumulador.getFalseNegative().keySet()) {
                 System.out.printf("FalseNegative não achou que %s era %s %f vezes \n", key, label, acumulador.getFalseNegative().get(key));
             }
-            System.out.printf("Acuracia [%f]\n", accuracia);
+            System.out.printf("Acurácia [%f]\n", accuracia);
         }
     }
 

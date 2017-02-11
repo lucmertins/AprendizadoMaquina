@@ -108,7 +108,7 @@ public class ExecuteMLP {
         confusao.resumo(acumuladores1, outLog);
         outLog.write(String.format("\n"));
         confusao.matrix(acumuladores1, outLog);
-        outLog.write(String.format("\nGerais    Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
+        outLog.write(String.format("\nGerais    Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
                 confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1)));
     }
 }
