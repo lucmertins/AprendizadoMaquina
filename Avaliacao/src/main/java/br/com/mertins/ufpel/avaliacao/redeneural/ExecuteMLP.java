@@ -85,7 +85,7 @@ public class ExecuteMLP {
             List<File> mlps = Arrays.asList(folderMLPs.listFiles(filter));
             Collections.sort(mlps,new StringAsNumberComparator());
             for (File file : mlps) {
-                System.out.printf("\n\n%s\n",file.getName());
+                System.out.printf("\n\n%s\n",file.getAbsoluteFile());
                 File fileTest = new File(propMPL.getFileTest());
                 ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
                 Accumulator[] acumuladores1 = aval.run(fileTest, parameters, file.getAbsolutePath());

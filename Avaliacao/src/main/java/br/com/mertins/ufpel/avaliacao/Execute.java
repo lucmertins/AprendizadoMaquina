@@ -20,7 +20,7 @@ public class Execute {
         if (args.length < 3) {
             resource = "mlp";
             action = "eval";
-            filename = "linuxTrainer.config";
+            filename = "fileTrainer.config";
         } else {
             resource = args[0].toLowerCase().trim();
             action = args[1].toLowerCase().trim();
