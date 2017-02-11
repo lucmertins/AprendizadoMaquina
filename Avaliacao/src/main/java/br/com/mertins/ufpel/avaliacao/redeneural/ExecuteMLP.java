@@ -4,9 +4,15 @@ import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.redeneural.MLP;
 import br.com.mertins.ufpel.avaliacao.util.Layer;
+import br.com.mertins.ufpel.avaliacao.util.StringAsNumberComparator;
 import br.com.mertins.ufpel.avaliacao.util.TrainerMLPProperty;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,9 +46,9 @@ public class ExecuteMLP {
             int numParametros = execTreino.open(parameters, fileTreinamento, fileTest);
             MLP rede = new MLP();
             rede.createIn(numParametros);
-            for (Layer layer : propMPL.parseHiddenLayer()) {
+            propMPL.parseHiddenLayer().forEach((layer) -> {
                 rede.addHiddenLayer(layer.getSize(), Perceptron.algorithm(layer.getAlgoritm()));
-            }
+            });
             Layer outputLayer = propMPL.parseOutputLayer();
             rede.addOut(outputLayer.getSize(), Perceptron.algorithm(outputLayer.getAlgoritm()));
             rede.connect();
@@ -50,6 +56,49 @@ public class ExecuteMLP {
             execTreino.run(propMPL.parseBlockIfBadErr(), propMPL.parseRateTraining(), propMPL.parseMoment(), propMPL.parseEpoch(), rede);
         } catch (Exception ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
+        }
+    }
+
+    public void evaluation(Properties properties) {
+        try {
+            TrainerMLPProperty propMPL = new TrainerMLPProperty();
+            propMPL.setNormalize((String) properties.get("normalize"));
+            propMPL.setFirstLineAttribute((String) properties.get("firstlineattribute"));
+            propMPL.setColumnLabel((String) properties.get("columnlabel"));
+            propMPL.setFileTrainer((String) properties.get("filetrainer"));
+            propMPL.setFileTest((String) properties.get("filetest"));
+            propMPL.setHiddenLayer((String) properties.get("hiddenlayer"));
+            propMPL.setOutputLayer((String) properties.get("outputlayer"));
+            propMPL.setFolderMLPs((String) properties.get("folderMLPs"));
+            SamplesParameters parameters = new SamplesParameters();
+            parameters.setNormalize(propMPL.parseNormalize());
+            parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
+            parameters.setColumnLabel(propMPL.parseColumnLabel());
+            File folderMLPs = new File(propMPL.getFolderMLPs());
+            FilenameFilter filter = new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.startsWith("MLP");
+                }
+            };
+            
+            List<File> mlps = Arrays.asList(folderMLPs.listFiles(filter));
+            Collections.sort(mlps,new StringAsNumberComparator());
+            for (File file : mlps) {
+                System.out.printf("\n\n%s\n",file.getName());
+                File fileTest = new File(propMPL.getFileTest());
+                ExecuteAvaliacao aval = new ExecuteAvaliacao(null);
+                Accumulator[] acumuladores1 = aval.run(fileTest, parameters, file.getAbsolutePath());
+                ConfusionMatrix confusao = new ConfusionMatrix();
+                confusao.resumo(acumuladores1, System.out);
+                System.out.println();
+                confusao.matrix(acumuladores1, System.out);
+                System.out.printf("\nGerais    Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
+                        confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1));
+            }
+
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }
     }
 
@@ -76,6 +125,7 @@ public class ExecuteMLP {
         }
     }
 
+    @Deprecated
     public static void avaliacao(SamplesParameters parameters) {
         try {
             File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AM/Trabalhos/mnist/mnist_test.csv");
@@ -104,7 +154,7 @@ public class ExecuteMLP {
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
 //        ExecuteMLP.treinamento(parameters, false);
-        ExecuteMLP.avaliacao(parameters);
+//        ExecuteMLP.avaliacao(parameters);
     }
 }
 //

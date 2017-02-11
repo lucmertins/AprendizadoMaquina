@@ -19,11 +19,11 @@ public class Execute {
         String filename;
         if (args.length < 3) {
             resource = "mlp";
-            action = "trainer";
+            action = "eval";
             filename = "linuxTrainer.config";
         } else {
-            resource = args[0];
-            action = args[1];
+            resource = args[0].toLowerCase().trim();
+            action = args[1].toLowerCase().trim();
             filename = args[2];
         }
         File file = new File(filename);
@@ -34,16 +34,23 @@ public class Execute {
             switch (resource) {
                 case "mlp":
                     ExecuteMLP exec = new ExecuteMLP();
-                    exec.training(properties);
+                    switch (action) {
+                        case "trainer":
+                            exec.training(properties);
+                            break;
+                        case "eval":
+                            exec.evaluation(properties);
+                            break;
+                    }
                     break;
             }
         } else {
-            System.out.printf("Estratégia [%s]. Ação [%s] não foi realizada. Arquivo [%s] não encontrado\n", resource, action, file.getAbsoluteFile());
+            System.out.printf("Estratégia [%s]. Ação [%s] não foi realizada. Estratégia ou Ação ou Arquivo [%s] não encontrado\n", resource, action, file.getAbsoluteFile());
         }
     }
 
     private static boolean avalAction(String action) {
-        return "trainer".equalsIgnoreCase(action.trim());
+        return "trainer".equalsIgnoreCase(action.trim())||"eval".equalsIgnoreCase(action.trim());
     }
 
     private static boolean avalResource(String action) {

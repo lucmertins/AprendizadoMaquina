@@ -35,7 +35,7 @@ public class ConfusionMatrix {
 
     public void detalhamento(Accumulator[] accumulators, PrintStream out) {
         for (int i = 0; i < 10; i++) {
-            out.printf("***** Label  %d\n", i);
+            out.printf("***** Label  %d   *** ", i);
             Accumulator accumulator = accumulators[i];
             out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f] \n", accumulator.getTruePositive(), accumulator.getTrueNegative(), accumulator.totalFalsePositive(), accumulator.totalFalseNegative());
             for (Integer key : accumulator.getFalsePositive().keySet()) {
@@ -50,7 +50,7 @@ public class ConfusionMatrix {
 
     public void resumo(Accumulator[] accumulators, PrintStream out) {
         for (int i = 0; i < 10; i++) {
-            out.printf("***** Label  %d\n", i);
+            out.printf("***** Label  %d *** ", i);
             Accumulator accumulator = accumulators[i];
             out.printf("Acuracia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
         }

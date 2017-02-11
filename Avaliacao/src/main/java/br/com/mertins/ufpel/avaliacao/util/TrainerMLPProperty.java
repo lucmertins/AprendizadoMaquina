@@ -18,6 +18,7 @@ public class TrainerMLPProperty extends TrainerProperty {
     private String rateTraining;
     private String moment;
     private String epoch;
+    private String folderMLPs;
 
     public String getBlockIfBadErr() {
         return blockIfBadErr;
@@ -73,6 +74,14 @@ public class TrainerMLPProperty extends TrainerProperty {
 
     public void setEpoch(String epoch) {
         this.epoch = epoch;
+    }
+
+    public String getFolderMLPs() {
+        return folderMLPs;
+    }
+
+    public void setFolderMLPs(String folderMLPs) {
+        this.folderMLPs = folderMLPs;
     }
 
     public boolean parseBlockIfBadErr() {

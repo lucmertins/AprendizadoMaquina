@@ -18,6 +18,8 @@ import java.util.Random;
  */
 public class Perceptron implements Serializable {
 
+    private static final long serialVersionUID = -6357184196326015141L;
+
     public enum AlgorithmSimoid {
         HARD_0, HARD_1, LOGISTIC, TANGEN
     }
