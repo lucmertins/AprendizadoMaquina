@@ -65,12 +65,12 @@ public class ExecTreinamento {
         });
         samples.avaliaFirstLine(fileTraining);
         samples.notRemoveAttributes();
-        System.out.printf("Pasta de trabalho: %s\n",ExecTreinamento.this.folder.getAbsolutePath());
+        System.out.printf("Pasta de trabalho: %s\n", ExecTreinamento.this.folder.getAbsolutePath());
         out.write(String.format("Camada entrada: %d\n", rede.amountIn()));
         for (int i = 1; i <= rede.amountHiddenLayer(); i++) {
-            out.write(String.format("Camada %d oculta: %d perceptrons\n", i, rede.amountPerceptronsHiddenLayer(i)));
+            out.write(String.format("Camada %d oculta: %d perceptrons - %s\n", i, rede.amountPerceptronsHiddenLayer(i), rede.algorithmLayerSimoid(i).toString()));
         }
-        out.write(String.format("Camada saida: %d\n", rede.amountOut()));
+        out.write(String.format("Camada saida: %d perceptrons - %s\n", rede.amountOut(), rede.algorithmOutSimoid()));
         out.write(String.format("Epocas: %d\n", epocas));
         out.write(String.format("Taxa de treinamento inicial: %.60f\n", rateTraining));
         out.write(String.format("Taxa de Moment: %.30f\n", moment));

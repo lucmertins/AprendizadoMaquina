@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
  */
 public class MLP implements Serializable {
 
+    private static final long serialVersionUID = -5280151182891100680L;
     private final List<Double> ins = new ArrayList<>();
     private final List<LayerImplements> layers = new ArrayList<>();
     private final List<Perceptron> outs = new ArrayList<>();
@@ -90,12 +91,23 @@ public class MLP implements Serializable {
         }
     }
 
+    public Perceptron.AlgorithmSimoid algorithmOutSimoid() {
+        return this.outs.get(0).getAlgorithm();
+    }
+
     public int amountOut() {
         return this.outs.size();
     }
 
     public int amountHiddenLayer() {
         return this.layers.size();
+    }
+
+    public Perceptron.AlgorithmSimoid algorithmLayerSimoid(int pos) {
+        if (pos > 0 && pos <= this.layers.size()) {
+            return this.layers.get(pos - 1).perceptrons.get(0).getAlgorithm();
+        }
+        return null;
     }
 
     public int amountPerceptronsHiddenLayer(int pos) {

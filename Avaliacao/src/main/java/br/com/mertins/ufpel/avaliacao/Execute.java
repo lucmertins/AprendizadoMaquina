@@ -19,7 +19,7 @@ public class Execute {
         String filename;
         if (args.length < 3) {
             resource = "mlp";
-            action = "eval";
+            action = "trainer";
             filename = "fileTrainer.config";
         } else {
             resource = args[0].toLowerCase().trim();
