@@ -53,7 +53,7 @@ public class ExecTreinamento {
     }
 
     public void run(boolean blocbkIfBadErr, final double rateTraining, final double moment, int epocas, MLP rede) throws IOException {
-        FileWriter out = ExecTreinamento.this.outLog;
+        FileWriter out = this.outLog;
         Instant inicioTreinamento = Instant.now();
         Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
             @Override
@@ -65,7 +65,7 @@ public class ExecTreinamento {
         });
         samples.avaliaFirstLine(fileTraining);
         samples.notRemoveAttributes();
-        System.out.printf("Pasta de trabalho: %s\n", ExecTreinamento.this.folder.getAbsolutePath());
+        System.out.printf("Pasta de trabalho: %s\n", this.folder.getAbsolutePath());
         out.write(String.format("Camada entrada: %d\n", rede.amountIn()));
         for (int i = 1; i <= rede.amountHiddenLayer(); i++) {
             out.write(String.format("Camada %d oculta: %d perceptrons - %s\n", i, rede.amountPerceptronsHiddenLayer(i), rede.algorithmLayerSimoid(i).toString()));
@@ -87,6 +87,10 @@ public class ExecTreinamento {
         out.write(String.format("Tempo de treinamento [%d dias, %s]\n", days, tempo));
         out.flush();
         out.close();
+    }
+
+    public File getFolder() {
+        return folder;
     }
 
     private void preparaArmazenamento() throws IOException {
