@@ -1,6 +1,5 @@
 package br.com.mertins.ufpel.avaliacao.redeneural;
 
-import br.com.mertins.ufpel.am.perceptron.FunctionSampleOut;
 import br.com.mertins.ufpel.am.perceptron.ObservatorTraining;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
@@ -38,12 +37,9 @@ public class ExecTreinamento {
         this.samplesParameters = samplesParameters;
         this.fileTraining = fileTraining;
         this.fileTest = fileTest;
-        Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
-            @Override
-            public void prepare(String value, Sample sample) {
-                for (int i = 0; i < 10; i++) {
-                    sample.addOut(Integer.valueOf(value) == i ? 1 : 0);
-                }
+        Samples samples = new Samples(samplesParameters, (String value, Sample sample) -> {
+            for (int i = 0; i < 10; i++) {
+                sample.addOut(Integer.valueOf(value) == i ? 1 : 0);
             }
         });
         samples.avaliaFirstLine(fileTraining);
@@ -53,40 +49,37 @@ public class ExecTreinamento {
     }
 
     public void run(boolean blocbkIfBadErr, final double rateTraining, final double moment, int epocas, MLP rede) throws IOException {
-        FileWriter out = this.outLog;
-        Instant inicioTreinamento = Instant.now();
-        Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
-            @Override
-            public void prepare(String value, Sample sample) {
+        try (FileWriter out = this.outLog) {
+            Instant inicioTreinamento = Instant.now();
+            Samples samples = new Samples(samplesParameters, (String value, Sample sample) -> {
                 for (int i = 0; i < 10; i++) {
                     sample.addOut(Integer.valueOf(value) == i ? 1 : 0);
                 }
+            });
+            samples.avaliaFirstLine(fileTraining);
+            samples.notRemoveAttributes();
+            System.out.printf("Pasta de trabalho: %s\n", ExecTreinamento.this.folder.getAbsolutePath());
+            out.write(String.format("Camada entrada: %d\n", rede.amountIn()));
+            for (int i = 1; i <= rede.amountHiddenLayer(); i++) {
+                out.write(String.format("Camada %d oculta: %d perceptrons - %s\n", i, rede.amountPerceptronsHiddenLayer(i), rede.algorithmLayerSimoid(i).toString()));
             }
-        });
-        samples.avaliaFirstLine(fileTraining);
-        samples.notRemoveAttributes();
-        System.out.printf("Pasta de trabalho: %s\n", this.folder.getAbsolutePath());
-        out.write(String.format("Camada entrada: %d\n", rede.amountIn()));
-        for (int i = 1; i <= rede.amountHiddenLayer(); i++) {
-            out.write(String.format("Camada %d oculta: %d perceptrons - %s\n", i, rede.amountPerceptronsHiddenLayer(i), rede.algorithmLayerSimoid(i).toString()));
+            out.write(String.format("Camada saida: %d perceptrons - %s\n", rede.amountOut(), rede.algorithmOutSimoid()));
+            out.write(String.format("Epocas: %d\n", epocas));
+            out.write(String.format("Taxa de treinamento inicial: %.60f\n", rateTraining));
+            out.write(String.format("Taxa de Moment: %.30f\n", moment));
+            out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", blocbkIfBadErr));
+            out.flush();
+            samples.open(fileTraining);
+            Training treino = new Training(blocbkIfBadErr);
+            treino.addListenerObservatorTraining(new Observator(out));
+            treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out, new PersistMLP());
+            Instant now = Instant.now();
+            Duration duration = Duration.between(inicioTreinamento, now);
+            long days = ChronoUnit.DAYS.between(inicioTreinamento, now);
+            String tempo = LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+            out.write(String.format("Tempo de treinamento [%d dias, %s]\n", days, tempo));
+            out.flush();
         }
-        out.write(String.format("Camada saida: %d perceptrons - %s\n", rede.amountOut(), rede.algorithmOutSimoid()));
-        out.write(String.format("Epocas: %d\n", epocas));
-        out.write(String.format("Taxa de treinamento inicial: %.60f\n", rateTraining));
-        out.write(String.format("Taxa de Moment: %.30f\n", moment));
-        out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", blocbkIfBadErr));
-        out.flush();
-        samples.open(fileTraining);
-        Training treino = new Training(blocbkIfBadErr);
-        treino.addListenerObservatorTraining(new Observator(out));
-        treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out, new PersistMLP());
-        Instant now = Instant.now();
-        Duration duration = Duration.between(inicioTreinamento, now);
-        long days = ChronoUnit.DAYS.between(inicioTreinamento, now);
-        String tempo = LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        out.write(String.format("Tempo de treinamento [%d dias, %s]\n", days, tempo));
-        out.flush();
-        out.close();
     }
 
     public File getFolder() {
@@ -102,7 +95,7 @@ public class ExecTreinamento {
             folder.mkdirs();
         }
         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String nome = String.format("%s%streinamento.txt", folder.getAbsolutePath(), File.separator);
+        String nome = String.format("%s%sIA_treinamento.txt", folder.getAbsolutePath(), File.separator);
         this.outLog = new FileWriter(nome);
         this.outLog.write(String.format("%s\n", sdf.format(data)));
         this.outLog.write(String.format("Normalizado: %b\n", samplesParameters.isNormalize()));
