@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author mertins
  */
-public class ExecuteMLP implements Runnable {
+public class ExecuteMLP {
 
     private BlockingQueue<MessageQueue> queue;
 
@@ -64,14 +64,13 @@ public class ExecuteMLP implements Runnable {
             propMPL.parseHiddenLayer();
 
             queue = new ArrayBlockingQueue<>(propMPL.parseEpoch());
-            Thread thread = new Thread(new MonitorCreateMLP(execTreino.getFolder().toPath(), propMPL));
-            thread.setDaemon(true);
-            thread.start();
-            thread = new Thread(this);
+
+            // thread para consumir arquivos novos no diretório, um de cada vez
+            Thread thread = new Thread(new AvaliaMLP(execTreino.getFolder(), propMPL));
             thread.setDaemon(false);
             thread.start();
             execTreino.run(propMPL.parseBlockIfBadErr(), propMPL.parseRateTraining(), propMPL.parseMoment(), propMPL.parseEpoch(), rede);
-
+            Thread.sleep(1000);  //aguarda um interva-lo, para o filesystem detectar que tem o último arquivo para avaliar
             queue.add(new MessageQueue("", true));
         } catch (Exception ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
@@ -98,9 +97,7 @@ public class ExecuteMLP implements Runnable {
                 Collections.sort(mlps, new StringAsNumberComparator());
                 for (File file : mlps) {
                     this.evalOne(file, propMPL, outLog);
-                    outLog.flush();
                 }
-                outLog.flush();
             }
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
@@ -123,42 +120,15 @@ public class ExecuteMLP implements Runnable {
         confusao.matrix(acumuladores1, outLog);
         outLog.write(String.format("\nGerais    Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
                 confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1)));
-    }
-
-    @Override
-    public void run() {
-        
-//         String nome = String.format("%s%sIA_avaliacao.txt", propMPL.getFolderMLPs(), File.separator);
-//                try (FileWriter outLog = new FileWriter(nome)) {
-//                    File file = new File(String.format("%s%s%s", propMPL.getFolderMLPs(), File.separator));
-//                    ExecuteMLP.this.evalOne(file, propMPL, outLog);
-//                    outLog.flush();
-//
-//                } catch (ClassNotFoundException ex) {
-//                    Logger.getLogger(ExecuteMLP.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-
-        
-        try {
-            MessageQueue msg;
-            //consuming messages until exit message is received
-            while (!(msg = queue.take()).isFinished()) {
-                Thread.sleep(10);
-                System.out.println("Consumed " + msg.getMsg());
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        outLog.flush();
     }
 
     private class MonitorCreateMLP implements Runnable {
 
         private final Path dir;
-        private final TrainerMLPProperty propMPL;
 
-        public MonitorCreateMLP(Path dir, TrainerMLPProperty propMPL) throws IOException {
+        public MonitorCreateMLP(Path dir) throws IOException {
             this.dir = dir;
-            this.propMPL = propMPL;
         }
 
         @Override
@@ -182,5 +152,40 @@ public class ExecuteMLP implements Runnable {
                 Logger.getLogger(ExecuteMLP.class.getName()).log(Level.SEVERE, "Não foi possível esperar 1s para monitorar a criação da rede", ex);
             }
         }
+    }
+
+    private class AvaliaMLP implements Runnable {
+
+        private final FileWriter outLog;
+        private final TrainerMLPProperty propMPL;
+        private final File folder;
+
+        public AvaliaMLP(File folder, TrainerMLPProperty propMPL) throws IOException {
+            this.propMPL = propMPL;
+            this.folder = folder;
+            String nome = String.format("%s%sIA_avaliacao.txt", folder.getAbsolutePath(), File.separator);
+            outLog = new FileWriter(nome);
+        }
+
+        @Override
+        public void run() {
+            try {
+                // thread para monitorar arquivos novos no diretório
+                Thread thread = new Thread(new MonitorCreateMLP(this.folder.toPath()));
+                thread.setDaemon(true);
+                thread.start();
+
+                MessageQueue msg;
+                while (!(msg = queue.take()).isFinished()) {
+                    Thread.sleep(500);
+                    File file = new File(String.format("%s%s%s", this.folder.getAbsolutePath(), File.separator, msg.getMsg()));
+                    ExecuteMLP.this.evalOne(file, propMPL, outLog);
+                }
+                this.outLog.close();
+            } catch (InterruptedException | IOException | ClassNotFoundException ex) {
+                Logger.getLogger(ExecuteMLP.class.getName()).log(Level.SEVERE, "Falha ao avaliar em paralelo as MLPs", ex);
+            }
+        }
+
     }
 }
