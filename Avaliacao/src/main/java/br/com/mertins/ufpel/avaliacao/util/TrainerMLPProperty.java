@@ -11,22 +11,9 @@ import java.util.regex.Pattern;
  */
 public class TrainerMLPProperty extends TrainerProperty {
 
-    private String blockIfBadErr;
     private String hiddenLayer;
     private String outputLayer;
-    private String normalize;
-    private String rateTraining;
-    private String moment;
-    private String epoch;
     private String folderMLPs;
-
-    public String getBlockIfBadErr() {
-        return blockIfBadErr;
-    }
-
-    public void setBlockIfBadErr(String blockIfBadErr) {
-        this.blockIfBadErr = blockIfBadErr;
-    }
 
     public String getHiddenLayer() {
         return hiddenLayer;
@@ -44,64 +31,12 @@ public class TrainerMLPProperty extends TrainerProperty {
         this.outputLayer = outputLayer;
     }
 
-    public String getNormalize() {
-        return normalize;
-    }
-
-    public void setNormalize(String normalize) {
-        this.normalize = normalize;
-    }
-
-    public String getRateTraining() {
-        return rateTraining;
-    }
-
-    public void setRateTraining(String rateTraining) {
-        this.rateTraining = rateTraining;
-    }
-
-    public String getMoment() {
-        return moment;
-    }
-
-    public void setMoment(String moment) {
-        this.moment = moment;
-    }
-
-    public String getEpoch() {
-        return epoch;
-    }
-
-    public void setEpoch(String epoch) {
-        this.epoch = epoch;
-    }
-
     public String getFolderMLPs() {
         return folderMLPs;
     }
 
     public void setFolderMLPs(String folderMLPs) {
         this.folderMLPs = folderMLPs;
-    }
-
-    public boolean parseBlockIfBadErr() {
-        return Boolean.parseBoolean(this.blockIfBadErr);
-    }
-
-    public boolean parseNormalize() {
-        return Boolean.parseBoolean(this.normalize);
-    }
-
-    public double parseRateTraining() {
-        return Double.parseDouble(this.rateTraining);
-    }
-
-    public double parseMoment() {
-        return Double.parseDouble(this.moment);
-    }
-
-    public int parseEpoch() {
-        return Integer.parseInt(this.epoch);
     }
 
     public List<Layer> parseHiddenLayer() {

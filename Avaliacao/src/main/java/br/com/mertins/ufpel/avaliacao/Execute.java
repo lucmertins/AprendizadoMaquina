@@ -1,5 +1,6 @@
 package br.com.mertins.ufpel.avaliacao;
 
+import br.com.mertins.ufpel.avaliacao.perceptron.ExecutePerceptron;
 import br.com.mertins.ufpel.avaliacao.redeneural.ExecuteMLP;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,9 +19,9 @@ public class Execute {
         String action;
         String filename;
         if (args.length < 3) {
-            resource = "mlp";
+            resource = "perceptron";
             action = "trainer";
-            filename = "fileTrainer.config";
+            filename = "fileTrainerPerceptron.config";
         } else {
             resource = args[0].toLowerCase().trim();
             action = args[1].toLowerCase().trim();
@@ -33,28 +34,41 @@ public class Execute {
             properties.load(new FileInputStream(filename));
             switch (resource) {
                 case "mlp":
-                    ExecuteMLP exec = new ExecuteMLP();
+                    ExecuteMLP execMLP = new ExecuteMLP();
                     switch (action) {
                         case "trainer":
-                            exec.training(properties);
+                            execMLP.training(properties);
                             break;
                         case "eval":
-                            exec.evaluation(properties);
+                            execMLP.evaluation(properties);
+                            break;
+                    }
+                    break;
+                case "perceptron":
+                    ExecutePerceptron execP = new ExecutePerceptron();
+                    switch (action) {
+                        case "trainer":
+                            execP.training(properties);
+                            break;
+                        case "eval":
+//                            execP.evaluation(properties);
                             break;
                     }
                     break;
             }
         } else {
             System.out.printf("Estratégia [%s]. Ação [%s] não foi realizada. Estratégia ou Ação ou Arquivo [%s] não encontrado\n", resource, action, file.getAbsoluteFile());
+            System.out.println("Estratégias possíveis: PERCEPTRON MLP");
+            System.out.println("Ações possíveis: TRAINER EVAL");
         }
     }
 
     private static boolean avalAction(String action) {
-        return "trainer".equalsIgnoreCase(action.trim())||"eval".equalsIgnoreCase(action.trim());
+        return "trainer".equalsIgnoreCase(action.trim()) || "eval".equalsIgnoreCase(action.trim());
     }
 
     private static boolean avalResource(String action) {
-        return "mlp".equalsIgnoreCase(action.trim());
+        return "mlp".equalsIgnoreCase(action.trim()) || "perceptron".equalsIgnoreCase(action.trim());
     }
 
 }

@@ -3,8 +3,10 @@ package br.com.mertins.ufpel.avaliacao.perceptron;
 import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.Treinamento;
+import br.com.mertins.ufpel.avaliacao.util.TrainerPerceptronProperty;
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,8 +14,39 @@ import java.util.logging.Logger;
  *
  * @author mertins
  */
-public class Execute {
+public class ExecutePerceptron {
 
+    public void training(Properties properties) {
+        try {
+            TrainerPerceptronProperty propPerceptrons = new TrainerPerceptronProperty();
+            propPerceptrons.setNormalize((String) properties.get("normalize"));
+            propPerceptrons.setFirstLineAttribute((String) properties.get("firstlineattribute"));
+            propPerceptrons.setColumnLabel((String) properties.get("columnlabel"));
+            propPerceptrons.setFileTrainer((String) properties.get("filetrainer"));
+            propPerceptrons.setFileTest((String) properties.get("filetest"));
+            propPerceptrons.setRateTraining((String) properties.get("ratetraining"));
+            propPerceptrons.setMoment((String) properties.get("moment"));
+            propPerceptrons.setEpoch((String) properties.get("epoch"));
+            propPerceptrons.setAlgorithm((String) properties.get("algorithm"));
+            propPerceptrons.setTrainerType((String) properties.get("trainerType"));
+            propPerceptrons.setLabels((String) properties.get("labels"));
+            propPerceptrons.setAttempt((String) properties.get("attempt"));
+            SamplesParameters parameters = new SamplesParameters();
+            parameters.setNormalize(propPerceptrons.parseNormalize());
+            parameters.setFirstLineAttribute(propPerceptrons.parseFirstLineAttribute());
+            parameters.setColumnLabel(propPerceptrons.parseColumnLabel());
+            File fileTreinamento = new File(propPerceptrons.getFileTrainer());
+            File fileTest = new File(propPerceptrons.getFileTest());
+            ExecTreinamento exeTreino = new ExecTreinamento();
+            exeTreino.open(parameters, fileTreinamento, fileTest, propPerceptrons.parseLabels());
+            exeTreino.run(propPerceptrons.parseBlockIfBadErr(), propPerceptrons.parseRateTraining(), propPerceptrons.parseMoment(),
+                    propPerceptrons.parseEpoch(), propPerceptrons.parseAttempt(), propPerceptrons.parseTrainerType(), propPerceptrons.parseAlgorithm());
+        } catch (Exception ex) {
+            Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
+        }
+    }
+
+    @Deprecated
     public static void treinamento(SamplesParameters parameters, boolean blocbkIfBadErr, Treinamento treinamento) {
         try {
 //            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
@@ -46,7 +79,7 @@ public class Execute {
         parameters.setNormalize(true);   // transforme atributos em 0 ou 1
         parameters.setFirstLineAttribute(false);
         parameters.setColumnLabel(0);
-        Execute.treinamento(parameters, true, Treinamento.ESTOCASTICO);
+//        ExecutePerceptron.treinamento(parameters, true, Treinamento.ESTOCASTICO);
 //        Execute.avaliacao(parameters);
     }
 
