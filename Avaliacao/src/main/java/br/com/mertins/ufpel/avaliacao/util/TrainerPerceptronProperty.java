@@ -13,6 +13,7 @@ public class TrainerPerceptronProperty extends TrainerProperty {
     private String trainerType;
     private String labels;
     private String attempt;
+    private String folderPerceptrons;
 
     public String getAlgorithm() {
         return algorithm;
@@ -44,6 +45,14 @@ public class TrainerPerceptronProperty extends TrainerProperty {
 
     public void setAttempt(String attempt) {
         this.attempt = attempt;
+    }
+
+    public String getFolderPerceptrons() {
+        return folderPerceptrons;
+    }
+
+    public void setFolderPerceptrons(String folderPerceptrons) {
+        this.folderPerceptrons = folderPerceptrons;
     }
 
     public Perceptron.AlgorithmSimoid parseAlgorithm() {

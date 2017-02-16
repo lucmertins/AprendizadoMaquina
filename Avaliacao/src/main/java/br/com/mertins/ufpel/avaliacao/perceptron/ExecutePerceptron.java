@@ -1,11 +1,14 @@
 package br.com.mertins.ufpel.avaliacao.perceptron;
 
-import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
-import br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.Treinamento;
+import br.com.mertins.ufpel.avaliacao.util.StringAsNumberComparator;
 import br.com.mertins.ufpel.avaliacao.util.TrainerPerceptronProperty;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,41 +49,58 @@ public class ExecutePerceptron {
         }
     }
 
-    @Deprecated
-    public static void treinamento(SamplesParameters parameters, boolean blocbkIfBadErr, Treinamento treinamento) {
+    public void evaluation(Properties properties) {
         try {
-//            File fileTreinamento = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
-//            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            File fileTreinamento = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv");
-            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            ExecTreinamento exeTreino = new ExecTreinamento();
-            exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
-//            exeTreino.open(parameters, fileTreinamento, fileTest, new String[]{"0", "3", "5", "8"});
-            exeTreino.run(blocbkIfBadErr, 0.01, 0.7, 1000, 10, treinamento, Perceptron.AlgorithmSimoid.HARD_0);
-        } catch (IOException ex) {
-            Logger.getLogger(ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
-        }
-    }
+            TrainerPerceptronProperty propPerceptrons = new TrainerPerceptronProperty();
+            propPerceptrons.setNormalize((String) properties.get("normalize"));
+            propPerceptrons.setFirstLineAttribute((String) properties.get("firstlineattribute"));
+            propPerceptrons.setColumnLabel((String) properties.get("columnlabel"));
+            propPerceptrons.setFileTrainer((String) properties.get("filetrainer"));
+            propPerceptrons.setFileTest((String) properties.get("filetest"));
+            propPerceptrons.setRateTraining((String) properties.get("ratetraining"));
+            propPerceptrons.setMoment((String) properties.get("moment"));
+            propPerceptrons.setEpoch((String) properties.get("epoch"));
+            propPerceptrons.setAlgorithm((String) properties.get("algorithm"));
+            propPerceptrons.setTrainerType((String) properties.get("trainerType"));
+            propPerceptrons.setLabels((String) properties.get("labels"));
+            propPerceptrons.setAttempt((String) properties.get("attempt"));
+            propPerceptrons.setFolderPerceptrons((String) properties.get("folderPerceptrons"));
 
-    public static void avaliacao(SamplesParameters parameters) {
-        try {
-            File fileTest = new File("/home/mertins/Documentos/UFPel/Dr/AM/Trabalhos/mnist/mnist_test.csv");
-//            File fileTest = new File("/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv");
-            ExecuteAvaliacao aval = new ExecuteAvaliacao(null, "0");
-            aval.run(fileTest, parameters, "/home/mertins/IAPerceptron/20170215_103828/perceptron_0_2", Perceptron.AlgorithmSimoid.HARD_0);
-//            aval.run(fileTest, parameters, "/Users/mertins/IAPerceptron/20161027_204650/perceptron_3_5", Perceptron.AlgorithmSimoid.HARD_0);
+            for (String label : propPerceptrons.parseLabels()) {
+                String nome = String.format("%s%sIA_avaliacao_%s.txt", propPerceptrons.getFolderPerceptrons(), File.separator, label);
+                try (FileWriter outLog = new FileWriter(nome)) {
+                    File folderMLPs = new File(propPerceptrons.getFolderPerceptrons());
+                    String namefileBegin = String.format("perceptron_%s_", label);
+                    List<File> perceptrons = Arrays.asList(folderMLPs.listFiles((File dir, String name) -> name.startsWith(namefileBegin)));
+                    Collections.sort(perceptrons, new StringAsNumberComparator(namefileBegin));
+                    for (File file : perceptrons) {
+                        this.evalOne(label, file, propPerceptrons, outLog);
+                        System.out.printf("Perceptrons a serem avaliados %s \n", file.getName());
+                    }
+                }
+            }
         } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
+            Logger.getLogger(ExecutePerceptron.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }
     }
 
-    public static void main(String[] args) {
+    private void evalOne(String label, File filePerceptron, TrainerPerceptronProperty propMPL, FileWriter outLog) throws IOException, ClassNotFoundException {
+        outLog.write(String.format("\n\n%s\n", filePerceptron.getAbsoluteFile()));
         SamplesParameters parameters = new SamplesParameters();
-        parameters.setNormalize(true);   // transforme atributos em 0 ou 1
-        parameters.setFirstLineAttribute(false);
-        parameters.setColumnLabel(0);
-//        ExecutePerceptron.treinamento(parameters, true, Treinamento.ESTOCASTICO);
-        ExecutePerceptron.avaliacao(parameters);
-    }
+        parameters.setNormalize(propMPL.parseNormalize());
+        parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
+        parameters.setColumnLabel(propMPL.parseColumnLabel());
 
+        ExecuteAvaliacao aval = new ExecuteAvaliacao(outLog, label);
+        aval.run(new File(propMPL.getFileTest()), parameters, filePerceptron.getAbsolutePath(), propMPL.parseAlgorithm());
+
+//        
+//        ConfusionMatrix confusao = new ConfusionMatrix();
+//        confusao.resumo(acumuladores1, outLog);
+//        outLog.write(String.format("\n"));
+//        confusao.matrix(acumuladores1, outLog);
+//        outLog.write(String.format("\nGerais    Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
+//                confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1)));
+        outLog.flush();
+    }
 }

@@ -73,7 +73,7 @@ public class ExecuteMLP {
             Thread.sleep(1000);  //aguardar um interva-lo, para o filesystem detectar que tem o último arquivo para avaliar
             queue.add(new MessageQueue("", true));
         } catch (Exception ex) {
-            Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecTreinamento.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
+            Logger.getLogger(ExecuteMLP.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
         }
     }
 
@@ -92,15 +92,14 @@ public class ExecuteMLP {
             String nome = String.format("%s%sIA_avaliacao.txt", propMPL.getFolderMLPs(), File.separator);
             try (FileWriter outLog = new FileWriter(nome)) {
                 File folderMLPs = new File(propMPL.getFolderMLPs());
-                FilenameFilter filter = (File dir, String name) -> name.startsWith("MLP");
-                List<File> mlps = Arrays.asList(folderMLPs.listFiles(filter));
-                Collections.sort(mlps, new StringAsNumberComparator());
+                List<File> mlps = Arrays.asList(folderMLPs.listFiles((File dir, String name) -> name.startsWith("MLP")));
+                Collections.sort(mlps, new StringAsNumberComparator("MLP_"));
                 for (File file : mlps) {
                     this.evalOne(file, propMPL, outLog);
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(br.com.mertins.ufpel.avaliacao.perceptron.ExecuteAvaliacao.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
+            Logger.getLogger(ExecuteMLP.class.getName()).log(Level.SEVERE, String.format("Falha ao avaliar testes [%s]", ex.getMessage()), ex);
         }
     }
 

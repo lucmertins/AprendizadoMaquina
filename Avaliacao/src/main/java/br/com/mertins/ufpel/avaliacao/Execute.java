@@ -20,7 +20,7 @@ public class Execute {
         String filename;
         if (args.length < 3) {
             resource = "perceptron";
-            action = "trainer";
+            action = "eval";
             filename = "fileTrainerPerceptron.config";
         } else {
             resource = args[0].toLowerCase().trim();
@@ -51,7 +51,7 @@ public class Execute {
                             execP.training(properties);
                             break;
                         case "eval":
-//                            execP.evaluation(properties);
+                            execP.evaluation(properties);
                             break;
                     }
                     break;
