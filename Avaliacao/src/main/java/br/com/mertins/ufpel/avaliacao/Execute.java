@@ -20,7 +20,7 @@ public class Execute {
         String filename;
         if (args.length < 3) {
             resource = "perceptron";
-            action = "eval";
+            action = "evalall";
             filename = "fileTrainerPerceptron.config";
         } else {
             resource = args[0].toLowerCase().trim();
@@ -39,6 +39,7 @@ public class Execute {
                         case "trainer":
                             execMLP.training(properties);
                             break;
+                        case "evalall":
                         case "eval":
                             execMLP.evaluation(properties);
                             break;
@@ -53,6 +54,9 @@ public class Execute {
                         case "eval":
                             execP.evaluation(properties);
                             break;
+                        case "evalall":
+                            execP.evaluationAllPercetrons(properties);
+                            break;
                     }
                     break;
             }
@@ -64,7 +68,7 @@ public class Execute {
     }
 
     private static boolean avalAction(String action) {
-        return "trainer".equalsIgnoreCase(action.trim()) || "eval".equalsIgnoreCase(action.trim());
+        return "trainer".equalsIgnoreCase(action.trim()) || "eval".equalsIgnoreCase(action.trim()) || "evalall".equalsIgnoreCase(action.trim());
     }
 
     private static boolean avalResource(String action) {

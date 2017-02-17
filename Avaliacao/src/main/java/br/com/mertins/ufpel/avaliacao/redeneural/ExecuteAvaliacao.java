@@ -19,6 +19,7 @@ public class ExecuteAvaliacao {
     }
 
     public Accumulator[] run(File fileTest, SamplesParameters samplesParameters, String fileMLP) throws IOException, ClassNotFoundException {
+    // descobrir os exemplos esta fixo. Baseado no mnist. Precisa reavaliar o arquivo, como no treinamento para deixar dinamico
         Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
             @Override
             public void prepare(String value, Sample sample) {
@@ -36,7 +37,6 @@ public class ExecuteAvaliacao {
         for (int i = 0; i < 10; i++) {
             acumuladores[i] = new Accumulator(i);
         }
-        int pos = 0;
         while ((sample = samples.next()) != null) {
             rede.updateIn(sample);
             OutPerceptron[] outs = rede.process();

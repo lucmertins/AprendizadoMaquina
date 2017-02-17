@@ -93,7 +93,7 @@ public class ExecuteMLP {
             try (FileWriter outLog = new FileWriter(nome)) {
                 File folderMLPs = new File(propMPL.getFolderMLPs());
                 List<File> mlps = Arrays.asList(folderMLPs.listFiles((File dir, String name) -> name.startsWith("MLP")));
-                Collections.sort(mlps, new StringAsNumberComparator("MLP_"));
+                Collections.sort(mlps, new StringAsNumberComparator("MLP_", false));
                 for (File file : mlps) {
                     this.evalOne(file, propMPL, outLog);
                 }

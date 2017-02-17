@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,11 +18,11 @@ import java.util.Map;
  */
 public class ExecuteAvaliacao {
 
-    private final FileWriter outFile;
+    private final FileWriter outLog;
     private final String label;
 
-    public ExecuteAvaliacao(FileWriter outFile, String label) {
-        this.outFile = outFile;
+    public ExecuteAvaliacao(FileWriter outLog, String label) {
+        this.outLog = outLog;
         this.label = label;
     }
 
@@ -67,15 +68,15 @@ public class ExecuteAvaliacao {
         }
         samples.close();
         double accuracia = (acumulador.getTruePositive() + acumulador.getTrueNegative()) / acumulador.totalAcumulado();
-        if (outFile != null) {
-            outFile.write(String.format("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.totalFalseNegative()));
+        if (outLog != null) {
+            outLog.write(String.format("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f]\n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.totalFalseNegative()));
             for (String key : acumulador.getFalsePositive().keySet()) {
-                outFile.write(String.format("FalsePositivo achou que %s era %s %f vezes \n", key, label, acumulador.getFalsePositive().get(key)));
+                outLog.write(String.format("FalsePositivo achou que %s era %s %f vezes \n", key, label, acumulador.getFalsePositive().get(key)));
             }
             for (String key : acumulador.getFalseNegative().keySet()) {
-                outFile.write(String.format("FalseNegative não achou que %s era %s %f vezes \n", key, label, acumulador.getFalseNegative().get(key)));
+                outLog.write(String.format("FalseNegative não achou que %s era %s %f vezes \n", key, label, acumulador.getFalseNegative().get(key)));
             }
-            outFile.write(String.format("Acurácia [%.12f]\n", accuracia));
+            outLog.write(String.format("Acurácia [%.12f]\n", accuracia));
         } else {
             System.out.printf("truePositive [%f] trueNegative [%f] falsePositive [%f] falseNegative [%f] \n", acumulador.getTruePositive(), acumulador.getTrueNegative(), acumulador.totalFalsePositive(), acumulador.totalFalseNegative());
             for (String key : acumulador.getFalsePositive().keySet()) {
@@ -86,6 +87,54 @@ public class ExecuteAvaliacao {
             }
             System.out.printf("Acurácia [%f]\n", accuracia);
         }
+    }
+
+    public void runAll(File fileTest, SamplesParameters samplesParameters, List<File> perceptrons, Perceptron.AlgorithmSimoid algorithm) throws IOException, ClassNotFoundException {
+        outLog.write("\n\nPerceptrons a serem avaliados juntos \n");
+        for (File file : perceptrons) {
+            outLog.write(String.format("%s ", file.getName()));
+        }
+        outLog.write("\n");
+
+        Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
+            @Override
+            public void prepare(String value, Sample sample) {
+                for (int i = 0; i < 10; i++) {
+                    sample.addOut(Integer.valueOf(value) == i ? 1 : 0);
+                }
+                sample.addOutOriginal(value);
+            }
+        });
+        samples.avaliaFirstLine(fileTest);
+        samples.open(fileTest);
+        Sample sample;
+        int num = 1;
+        while ((sample = samples.next()) != null) {
+            double max = -1;
+            File perceptronWin = null;
+            for (File file : perceptrons) {
+                Perceptron perceptron = Perceptron.deserialize(file.getAbsolutePath());
+                perceptron.fill(sample);
+                if (algorithm != null) {
+                    perceptron.setAlgorithm(algorithm);
+                }
+                double out = perceptron.out();
+                if (out > max) {
+                    max = out;
+                    perceptronWin = file;
+                } else if (out == max) {
+                    outLog.write(String.format("\t\t\t *** empate entre [%s] e [%s] com o valor %f tag correta [%s]\n", extLabel(perceptronWin), extLabel(file), max, sample.getOutOriginal(1)));
+                }
+            }
+            outLog.write(String.format("Para o exemplo %d ganhou o %s com o valor %f   tag correta [%s]\n", num++, extLabel(perceptronWin), max, sample.getOutOriginal(1)));
+            outLog.flush();
+        }
+
+    }
+
+    private String extLabel(File file) {
+        String so1 = file.getName().toUpperCase().replace("PERCEPTRON_", "");
+        return so1.substring(0, so1.indexOf('_'));
     }
 
     private class Acumulador {
