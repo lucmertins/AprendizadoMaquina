@@ -70,7 +70,7 @@ public class ExecuteMLP {
             thread.setDaemon(false);
             thread.start();
             execTreino.run(propMPL.parseBlockIfBadErr(), propMPL.parseRateTraining(), propMPL.parseMoment(), propMPL.parseEpoch(), rede);
-            Thread.sleep(1000);  //aguardar um interva-lo, para o filesystem detectar que tem o último arquivo para avaliar
+            Thread.sleep(5000);  //aguarda um interva-lo, para o filesystem detectar que tem o último arquivo para avaliar
             queue.add(new MessageQueue("", true));
         } catch (Exception ex) {
             Logger.getLogger(ExecuteMLP.class.getName()).log(Level.SEVERE, String.format("Falha ao treinar [%s]", ex.getMessage()), ex);
