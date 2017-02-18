@@ -53,7 +53,7 @@ public class ExecuteAvaliacao {
             }
             double out = perceptron.out();
             if (label.equals(sample.getOutOriginal(1))) {
-                if (out > 0.9) {
+                if (out > 0.5) {
 //                    System.out.printf("True Positive Sample [%f]   out [%f]\n", sample.getValue(), out);
                     acumulador.addTruePositive();
                 } else {
