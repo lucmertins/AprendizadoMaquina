@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 public class Sinaps implements Serializable {
 
+    private static final long serialVersionUID = 176732176609505155L;
     private double in;
     private double weight;
     private double delta;

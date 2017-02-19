@@ -1,6 +1,8 @@
 package br.com.mertins.ufpel.avaliacao.perceptron;
 
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
+import br.com.mertins.ufpel.avaliacao.redeneural.Accumulator;
+import br.com.mertins.ufpel.avaliacao.redeneural.ConfusionMatrix;
 import br.com.mertins.ufpel.avaliacao.util.StringAsNumberComparator;
 import br.com.mertins.ufpel.avaliacao.util.TrainerPerceptronProperty;
 import java.io.File;
@@ -71,7 +73,7 @@ public class ExecutePerceptron {
                 try (FileWriter outLog = new FileWriter(nome)) {
                     String namefileBegin = String.format("perceptron_%s_", label);
                     List<File> perceptrons = Arrays.asList(folderPerceptrons.listFiles((File dir, String name) -> name.startsWith(namefileBegin)));
-                    Collections.sort(perceptrons, new StringAsNumberComparator(namefileBegin,false));
+                    Collections.sort(perceptrons, new StringAsNumberComparator(namefileBegin, false));
                     for (File file : perceptrons) {
                         this.evalOne(label, file, propPerceptrons, outLog);
                     }
@@ -102,10 +104,10 @@ public class ExecutePerceptron {
             String nome = String.format("%s%sIA_avaliacaoAll.txt", propPerceptrons.getFolderPerceptrons(), File.separator);
             File folderPerceptrons = new File(propPerceptrons.getFolderPerceptrons());
             try (FileWriter outLog = new FileWriter(nome)) {
-                for (int i = 1; i <= propPerceptrons.parseEpoch(); i++) {
+                for (int i = 1; i <= propPerceptrons.parseAttempt(); i++) {
                     String namefileEnds = String.format("%d", i);
                     List<File> perceptrons = Arrays.asList(folderPerceptrons.listFiles((File dir, String name) -> name.endsWith(namefileEnds)));
-                    Collections.sort(perceptrons, new StringAsNumberComparator("perceptron_",true));
+                    Collections.sort(perceptrons, new StringAsNumberComparator("perceptron_", true));
                     this.evalOneAll(perceptrons, propPerceptrons, outLog);
                 }
             }
@@ -131,19 +133,14 @@ public class ExecutePerceptron {
         parameters.setFirstLineAttribute(propPerceptrons.parseFirstLineAttribute());
         parameters.setColumnLabel(propPerceptrons.parseColumnLabel());
         ExecuteAvaliacao aval = new ExecuteAvaliacao(outLog, null);
-        aval.runAll(new File(propPerceptrons.getFileTest()), parameters, perceptrons, propPerceptrons.parseAlgorithm());
+        Accumulator[] acumuladores1 = aval.runAll(new File(propPerceptrons.getFileTest()), parameters, perceptrons, propPerceptrons.parseAlgorithm());
 
-//        outLog.write(String.format("\n\n%s\n", filePerceptron.getAbsoluteFile()));
-//
-//        ExecuteAvaliacao aval = new ExecuteAvaliacao(outLog, label);
-//        aval.run(new File(propPerceptrons.getFileTest()), parameters, filePerceptron.getAbsolutePath(), propPerceptrons.parseAlgorithm());
-//        
-//        ConfusionMatrix confusao = new ConfusionMatrix();
-//        confusao.resumo(acumuladores1, outLog);
-//        outLog.write(String.format("\n"));
-//        confusao.matrix(acumuladores1, outLog);
-//        outLog.write(String.format("\nGerais    Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
-//                confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1)));
+        ConfusionMatrix confusao = new ConfusionMatrix();
+        confusao.resumo(acumuladores1, outLog);
+        outLog.write(String.format("\n"));
+        confusao.matrix(acumuladores1, outLog);
+        outLog.write(String.format("\nGerais    Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
+                confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1)));
         outLog.flush();
     }
 }

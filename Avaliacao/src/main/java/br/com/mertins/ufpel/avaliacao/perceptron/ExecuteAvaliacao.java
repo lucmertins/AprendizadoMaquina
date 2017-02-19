@@ -5,9 +5,11 @@ import br.com.mertins.ufpel.am.perceptron.Perceptron;
 import br.com.mertins.ufpel.am.perceptron.Sample;
 import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
+import br.com.mertins.ufpel.avaliacao.redeneural.Accumulator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,9 +91,9 @@ public class ExecuteAvaliacao {
         }
     }
 
-    public void runAll(File fileTest, SamplesParameters samplesParameters, List<File> perceptrons, Perceptron.AlgorithmSimoid algorithm) throws IOException, ClassNotFoundException {
+    public Accumulator[] runAll(File fileTest, SamplesParameters samplesParameters, List<File> filePerceptrons, Perceptron.AlgorithmSimoid algorithm) throws IOException, ClassNotFoundException {
         outLog.write("\n\nPerceptrons a serem avaliados juntos \n");
-        for (File file : perceptrons) {
+        for (File file : filePerceptrons) {
             outLog.write(String.format("%s ", file.getName()));
         }
         outLog.write("\n");
@@ -107,29 +109,72 @@ public class ExecuteAvaliacao {
         });
         samples.avaliaFirstLine(fileTest);
         samples.open(fileTest);
-        Sample sample;
+        List<Perceptron> perceptrons = new ArrayList<>();
+        for (File file : filePerceptrons) {
+            Perceptron perceptron = Perceptron.deserialize(file.getAbsolutePath());
+            if (algorithm != null) {
+                perceptron.setAlgorithm(algorithm);
+            }
+            perceptrons.add(perceptron);
+        }
+        Accumulator[] acumuladores = new Accumulator[10];
+        for (int i = 0; i < 10; i++) {
+            acumuladores[i] = new Accumulator(i);
+        }
+
         int num = 1;
+        Sample sample;
         while ((sample = samples.next()) != null) {
             double max = -1;
-            File perceptronWin = null;
-            for (File file : perceptrons) {
-                Perceptron perceptron = Perceptron.deserialize(file.getAbsolutePath());
+            int lb = 0;
+            int saidaEscolhida = -1;
+            for (Perceptron perceptron : perceptrons) {
                 perceptron.fill(sample);
-                if (algorithm != null) {
-                    perceptron.setAlgorithm(algorithm);
-                }
                 double out = perceptron.out();
                 if (out > max) {
                     max = out;
-                    perceptronWin = file;
-                } else if (out == max) {
-                    outLog.write(String.format("\t\t\t *** empate entre [%s] e [%s] com o valor %f tag correta [%s]\n", extLabel(perceptronWin), extLabel(file), max, sample.getOutOriginal(1)));
+                    saidaEscolhida = lb;
+//                } else if (out == max) {
+//                    outLog.write(String.format("\t\t\t *** empate entre [%d] e [%d] com o valor %f tag correta [%s]\n",
+//                            lbwin, lb, max, sample.getOutOriginal(1)));
                 }
+                lb++;
             }
-            outLog.write(String.format("Para o exemplo %d ganhou o %s com o valor %f   tag correta [%s]\n", num++, extLabel(perceptronWin), max, sample.getOutOriginal(1)));
-            outLog.flush();
-        }
+//            outLog.write(String.format("Para o exemplo %d ganhou o %d com o valor %f   tag correta [%s]\n",
+//                    num++, lbwin, max, sample.getOutOriginal(1)));
+//            outLog.flush();
 
+            int saidaCorreta = Integer.parseInt(sample.getOutOriginal(1));
+            if (saidaEscolhida == saidaCorreta) {
+                // verdadeiro positivo para saidaescolhida
+//                System.out.printf("True Positive Sample [%d]   out [%d]\n", saidaCorreta, saidaEscolhida);
+                acumuladores[saidaEscolhida].addTruePositive();
+                // verdadeiro negativo para todos os outros labels
+                for (int i = 0; i < 10; i++) {
+                    if (i != saidaEscolhida) {
+                        acumuladores[i].addTrueNegative();
+                    }
+                }
+            } else {
+//                System.out.printf("False Positive Sample [%d]   out [%d]\n", saidaCorreta, saidaEscolhida);
+                // falso positivo para o saidaEscolhida
+                acumuladores[saidaEscolhida].addFalsePositive(saidaCorreta);
+
+                // falso negativo para o valor original
+                acumuladores[saidaCorreta].addFalseNegative(saidaEscolhida);
+
+                // verdadeiro negativo para todos os outros labels 
+                for (int i = 0; i < 10; i++) {
+                    if (i != saidaEscolhida && i != saidaCorreta) {
+                        acumuladores[i].addTrueNegative();
+                    }
+                }
+
+            }
+
+        }
+        samples.close();
+        return acumuladores;
     }
 
     private String extLabel(File file) {
