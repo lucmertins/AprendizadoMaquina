@@ -63,7 +63,7 @@ public class Execute {
         } else {
             System.out.printf("Estratégia [%s]. Ação [%s] não foi realizada. Estratégia ou Ação ou Arquivo [%s] não encontrado\n", resource, action, file.getAbsoluteFile());
             System.out.println("Estratégias possíveis: PERCEPTRON MLP");
-            System.out.println("Ações possíveis: TRAINER EVAL");
+            System.out.println("Ações possíveis: TRAINER EVAL EVALALL");
         }
     }
 

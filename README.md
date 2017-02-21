@@ -50,3 +50,43 @@ epoch=5
 
 # configurações da avaliação da MLP
 folderMLPs=/home/mertins/IARedeNeural/20170210_155447
+
+
+
+
+Arquivo de configuração dO PERCEPTRON
+
+# configuração para treinamento de Perceptron
+
+# detalhes dos arquivos
+#filetrainer=/home/mertins/Documentos/UFPel/Dr/AM/Trabalhos/mnist/mnist_train.csv
+#filetest=/home/mertins/Documentos/UFPel/Dr/AM/Trabalhos/mnist/mnist_test.csv
+
+filetrainer=/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_train.csv
+filetest=/Users/mertins/Documents/UFPel/Dr/AprendizadoMaquina/mnist/mnist_test.csv
+
+columnlabel=0
+firstlineattribute=false
+
+# HARD_0, HARD_1, LOGISTIC, TANGEN
+algorithm=HARD_0              
+
+# DELTA, ESTOCASTICO  
+trainerType=ESTOCASTICO       
+
+# separar textos por espaço
+labels = 0 1 2 3 4 5 6 7 8 9
+
+# configurações do treinamento 
+# encerrar backtraining se erro piorar a época
+blockifbaderr=false             
+# normalizar dados em 0 e 1 ?
+normalize=true                  
+ratetraining=0.0000001
+moment=0.7
+epoch=1000
+attempt=6
+
+# configurações da avaliação dos Perceptrons
+folderPerceptrons=/home/mertins/IAPerceptron/20170218_100013
+

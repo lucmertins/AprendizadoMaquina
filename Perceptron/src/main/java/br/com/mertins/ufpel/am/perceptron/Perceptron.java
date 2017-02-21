@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class Perceptron implements Serializable {
 
-    private static final long serialVersionUID = -3220759180017206415L; //-6357184196326015141L;
+    private static final long serialVersionUID = -1L;     //-3220759180017206415L; //-6357184196326015141L;  // -1395320175153639625L
 
     public enum AlgorithmSimoid {
         HARD_0, HARD_1, LOGISTIC, TANGEN
@@ -81,11 +81,14 @@ public class Perceptron implements Serializable {
         return deltaBiasWeight;
     }
 
+    public void setDeltaBiasWeight(double deltaBiasWeight) {
+        this.deltaBiasWeight = deltaBiasWeight;
+    }
+
     /**
      * Atualiza o peso do bias adicionando o delta
      *
-     * @param pos
-     * @param in
+     * @param delta
      */
     public void updateBiasWeightDelta(double delta) {
         this.deltaBiasWeight = delta;
@@ -346,5 +349,9 @@ public class Perceptron implements Serializable {
         double scaled = RANDOM.nextDouble() * range;
         double shifted = scaled - min;
         return shifted;
+    }
+
+    public List<Sinaps> paraArrumarBagunca() {
+        return sinapsList;
     }
 }

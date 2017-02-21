@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class Sinaps implements Serializable {
 
-    private static final long serialVersionUID = 176732176609505155L;
+    private static final long serialVersionUID = -1L; // 176732176609505155L; //4465982893713253648L;
     private double in;
     private double weight;
     private double delta;
@@ -33,6 +33,10 @@ public class Sinaps implements Serializable {
 
     public double getDelta() {
         return delta;
+    }
+
+    public void setDelta(double delta) {
+        this.delta = delta;
     }
 
     public void setWeight(double weight) {
