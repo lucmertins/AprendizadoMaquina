@@ -68,7 +68,7 @@ public class TrainerPerceptronProperty extends TrainerProperty {
     }
 
     public int parseAttempt() {
-        return Integer.parseInt(this.attempt);
+        return Integer.parseInt(this.attempt.trim());
     }
 
 }

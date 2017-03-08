@@ -89,30 +89,30 @@ public abstract class TrainerProperty {
     }
 
     public int parseColumnLabel() {
-        return Integer.parseInt(this.columnLabel);
+        return Integer.parseInt(this.columnLabel.trim());
     }
 
     public boolean parseFirstLineAttribute() {
-        return Boolean.parseBoolean(this.firstLineAttribute);
+        return Boolean.parseBoolean(this.firstLineAttribute.trim());
     }
 
     public boolean parseNormalize() {
-        return Boolean.parseBoolean(this.normalize);
+        return Boolean.parseBoolean(this.normalize.trim());
     }
 
     public double parseRateTraining() {
-        return Double.parseDouble(this.rateTraining);
+        return Double.parseDouble(this.rateTraining.trim());
     }
 
     public double parseMoment() {
-        return Double.parseDouble(this.moment);
+        return Double.parseDouble(this.moment.trim());
     }
 
     public int parseEpoch() {
-        return Integer.parseInt(this.epoch);
+        return Integer.parseInt(this.epoch.trim());
     }
 
     public boolean parseBlockIfBadErr() {
-        return Boolean.parseBoolean(this.blockIfBadErr);
+        return Boolean.parseBoolean(this.blockIfBadErr.trim());
     }
 }
