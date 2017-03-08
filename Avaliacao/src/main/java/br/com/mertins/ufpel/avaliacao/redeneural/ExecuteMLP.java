@@ -45,6 +45,7 @@ public class ExecuteMLP {
             propMPL.setRateTraining((String) properties.get("ratetraining"));
             propMPL.setMoment((String) properties.get("moment"));
             propMPL.setEpoch((String) properties.get("epoch"));
+            propMPL.setBlockIfBadErr((String) properties.get("blockifbaderr"));
             SamplesParameters parameters = new SamplesParameters();
             parameters.setNormalize(propMPL.parseNormalize());
             parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
