@@ -23,7 +23,7 @@ public class ExecuteAvaliacao {
         Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
             @Override
             public void prepare(String value, Sample sample) {
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 5; i++) {
                     sample.addOut(Integer.valueOf(value) == i ? 1 : 0);
                 }
                 sample.addOutOriginal(value);
@@ -33,8 +33,8 @@ public class ExecuteAvaliacao {
         samples.open(fileTest);
         Sample sample;
         MLP rede = MLP.deserialize(fileMLP);
-        Accumulator[] acumuladores = new Accumulator[10];
-        for (int i = 0; i < 10; i++) {
+        Accumulator[] acumuladores = new Accumulator[5];
+        for (int i = 0; i < 5; i++) {
             acumuladores[i] = new Accumulator(i);
         }
         while ((sample = samples.next()) != null) {
@@ -54,7 +54,7 @@ public class ExecuteAvaliacao {
 //                System.out.printf("True Positive Sample [%d]   out [%d]\n", saidaCorreta, saidaEscolhida);
                 acumuladores[saidaEscolhida].addTruePositive();
                 // verdadeiro negativo para todos os outros labels
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 5; i++) {
                     if (i != saidaEscolhida) {
                         acumuladores[i].addTrueNegative();
                     }
@@ -68,7 +68,7 @@ public class ExecuteAvaliacao {
                 acumuladores[saidaCorreta].addFalseNegative(saidaEscolhida);
 
                 // verdadeiro negativo para todos os outros labels 
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 5; i++) {
                     if (i != saidaEscolhida && i != saidaCorreta) {
                         acumuladores[i].addTrueNegative();
                     }

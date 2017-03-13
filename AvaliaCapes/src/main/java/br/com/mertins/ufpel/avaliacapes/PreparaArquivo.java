@@ -44,10 +44,14 @@ public class PreparaArquivo {
             parameters.setRemoveColumns(propMPL.parseRemoveColumn());
 
             String property = System.getProperty("user.home");
-            
-            File fileTemp = new File(String.format("%s%sCapsTemp.cvs", property, File.separator));
-
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s%sCapsTemp.cvs", property, File.separator)), "utf-8"))) {
+            File folderTemp = new File(String.format("%s%stemp", property, File.separator));
+            if (!folderTemp.exists()) {
+                folderTemp.mkdir();
+            } else if (!folderTemp.isDirectory()) {
+                System.out.println("Pasta temp não foi criada");
+                System.exit(1);
+            }
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s%stemp%sCapsTemp.cvs", property, File.separator, File.separator)), "utf-8"))) {
 
                 try (CSVReader reader = new CSVReader(new FileReader(propMPL.getFileTrainer()), ',')) {
                     String[] colunas;
@@ -71,6 +75,9 @@ public class PreparaArquivo {
                                         break;
                                     case 4:
                                         linha.append(String.format("%s,", convertInicioMs(colunas[pos])));
+                                        break;
+                                    case 26:
+                                        linha.append(String.format("%s,", convertRotulo(colunas[pos])));
                                         break;
                                     default:
                                         linha.append(String.format("%s,", coluna));
@@ -132,6 +139,23 @@ public class PreparaArquivo {
             return 1900;
         } else {
             return Integer.valueOf(coluna.substring(0, coluna.indexOf('.')));
+        }
+    }
+
+    private int convertRotulo(String coluna) {
+        switch (coluna.trim().toLowerCase()) {
+            case "tres":
+                return 0;
+            case "quatro":
+                return 1;
+            case "cinco":
+                return 2;
+            case "seis":
+                return 3;
+            case "sete":
+                return 4;
+            default:
+                return -1;
         }
     }
 }

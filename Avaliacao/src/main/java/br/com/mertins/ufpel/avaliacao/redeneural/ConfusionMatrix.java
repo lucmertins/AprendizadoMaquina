@@ -13,14 +13,14 @@ public class ConfusionMatrix {
 
     public void matrix(Accumulator[] accumulators, FileWriter outLog) throws IOException {
         // Linha dos labels reconhecidos
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             outLog.write(String.format("\t%d", i));
         }
         outLog.write(String.format("\n\n"));
         // Coluna dos labels corretos
-        for (int y = 0; y < 10; y++) {
+        for (int y = 0; y < 5; y++) {
             outLog.write(String.format("%d\t", y));
-            for (int x = 0; x < 10; x++) {
+            for (int x = 0; x < 5; x++) {
                 if (x == y) {
                     outLog.write(String.format("%.0f\t", accumulators[x].getTruePositive()));
                 } else {
@@ -50,7 +50,7 @@ public class ConfusionMatrix {
     }
 
     public void resumo(Accumulator[] accumulators, FileWriter outLog) throws IOException {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             outLog.write(String.format("***** Label  %d *** ", i));
             Accumulator accumulator = accumulators[i];
             outLog.write(String.format("Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1()));

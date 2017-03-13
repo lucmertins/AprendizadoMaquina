@@ -91,7 +91,8 @@ public class ExecuteMLP {
             propMPL.setHiddenLayer((String) properties.get("hiddenlayer"));
             propMPL.setOutputLayer((String) properties.get("outputlayer"));
             propMPL.setFolderMLPs((String) properties.get("folderMLPs"));
-
+            propMPL.setRemoveColumns((String) properties.get("removecolumns"));
+            
             String nome = String.format("%s%sIA_avaliacao.txt", propMPL.getFolderMLPs(), File.separator);
             try (FileWriter outLog = new FileWriter(nome)) {
                 File folderMLPs = new File(propMPL.getFolderMLPs());
@@ -112,6 +113,7 @@ public class ExecuteMLP {
         parameters.setNormalize(propMPL.parseNormalize());
         parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
         parameters.setColumnLabel(propMPL.parseColumnLabel());
+        parameters.setRemoveColumns(propMPL.parseRemoveColumn());
 
         File fileTest = new File(propMPL.getFileTest());
         ExecuteAvaliacao aval = new ExecuteAvaliacao();
