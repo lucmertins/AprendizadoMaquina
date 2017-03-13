@@ -15,6 +15,7 @@ public abstract class TrainerProperty {
     private String moment;
     private String epoch;
     private String blockIfBadErr;
+    private String removeColumns = "0";
 
     public String getFileTrainer() {
         return fileTrainer;
@@ -88,6 +89,14 @@ public abstract class TrainerProperty {
         this.blockIfBadErr = blockIfBadErr;
     }
 
+    public String getRemoveColumns() {
+        return removeColumns;
+    }
+
+    public void setRemoveColumns(String removeColumns) {
+        this.removeColumns = removeColumns;
+    }
+
     public int parseColumnLabel() {
         return Integer.parseInt(this.columnLabel.trim());
     }
@@ -114,5 +123,15 @@ public abstract class TrainerProperty {
 
     public boolean parseBlockIfBadErr() {
         return Boolean.parseBoolean(this.blockIfBadErr.trim());
+    }
+
+    public int[] parseRemoveColumn() {
+        String[] split = this.removeColumns.split("\\W+");
+        int[] retorno = new int[split.length];
+        int pos = 0;
+        for (String elem : split) {
+            retorno[pos++] = Integer.parseInt(elem.trim());
+        }
+        return retorno;
     }
 }

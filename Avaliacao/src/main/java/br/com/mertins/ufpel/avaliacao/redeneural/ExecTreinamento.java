@@ -52,7 +52,7 @@ public class ExecTreinamento {
         try (FileWriter out = this.outLog) {
             Instant inicioTreinamento = Instant.now();
             Samples samples = new Samples(samplesParameters, (String value, Sample sample) -> {
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < rede.amountOut(); i++) {
                     sample.addOut(Integer.valueOf(value) == i ? 1 : 0);
                 }
             });

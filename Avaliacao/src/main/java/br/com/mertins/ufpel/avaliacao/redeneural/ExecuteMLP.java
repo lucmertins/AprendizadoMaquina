@@ -46,10 +46,12 @@ public class ExecuteMLP {
             propMPL.setMoment((String) properties.get("moment"));
             propMPL.setEpoch((String) properties.get("epoch"));
             propMPL.setBlockIfBadErr((String) properties.get("blockifbaderr"));
+            propMPL.setRemoveColumns((String) properties.get("removecolumns"));
             SamplesParameters parameters = new SamplesParameters();
             parameters.setNormalize(propMPL.parseNormalize());
             parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
             parameters.setColumnLabel(propMPL.parseColumnLabel());
+            parameters.setRemoveColumns(propMPL.parseRemoveColumn());
             File fileTreinamento = new File(propMPL.getFileTrainer());
             File fileTest = new File(propMPL.getFileTest());
             ExecTreinamento execTreino = new ExecTreinamento();

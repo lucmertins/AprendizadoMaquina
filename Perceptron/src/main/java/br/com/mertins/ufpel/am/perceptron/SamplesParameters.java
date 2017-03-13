@@ -12,6 +12,7 @@ public class SamplesParameters {
     private boolean normalize = false;
     private boolean firstLineAttribute = true;
     private int columnLabel;
+    private int[] removeColumns;
 
     public boolean isNormalize() {
         return normalize;
@@ -36,4 +37,13 @@ public class SamplesParameters {
     public void setColumnLabel(int columnLabel) {
         this.columnLabel = columnLabel;
     }
+
+    public int[] getRemoveColumns() {
+        return removeColumns;
+    }
+
+    public void setRemoveColumns(int[] removeColumns) {
+        this.removeColumns = removeColumns;
+    }
+    
 }

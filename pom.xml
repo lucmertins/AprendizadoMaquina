@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.debug>false</maven.compiler.debug>
+        <maven.compiler.debug>true</maven.compiler.debug>
     </properties>
     <dependencies>
         <dependency>
@@ -45,6 +45,7 @@
         <module>Perceptron</module>
         <module>RedeNeural</module>
         <module>Avaliacao</module>
+        <module>AvaliaCapes</module>
         <module>Viewer</module>
     </modules>
 </project>

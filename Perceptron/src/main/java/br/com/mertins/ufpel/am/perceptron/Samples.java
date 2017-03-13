@@ -33,9 +33,9 @@ public class Samples implements Serializable {
 
     private SamplesParameters parameters;
 
-    public Samples(SamplesParameters parameters,FunctionSampleOut function) {
+    public Samples(SamplesParameters parameters, FunctionSampleOut function) {
         this.parameters = parameters;
-        this.functionDefineOut=function;
+        this.functionDefineOut = function;
     }
 
     public void setFunction(FunctionSampleOut function) {
@@ -133,8 +133,15 @@ public class Samples implements Serializable {
                 if (pos == this.columnLabel) {
                     this.functionDefineOut.prepare(value, sample);
                 } else {
-                    // no futuro colocar aqui código para remover as colunas desnecessárias similar ao que ocorre no id3. Atualmente não esta levando em conta as informações do discardedColumns
-                    sample.addIn(Integer.valueOf(value));
+                    boolean liberado = true;
+                    for (int val : this.parameters.getRemoveColumns()) {
+                        if (val==pos){
+                            liberado=false;
+                        }
+                    }
+                    if (liberado) {
+                        sample.addIn(Integer.valueOf(value));
+                    }
                 }
                 pos++;
             }
@@ -157,8 +164,8 @@ public class Samples implements Serializable {
         }
         this.open(fileName);
     }
-    
-    public int amountAttibutes(){
-        return this.attributes.size()-1;
+
+    public int amountAttibutes() {
+        return this.attributes.size() - 1;
     }
 }
