@@ -14,6 +14,7 @@ public class TrainerMLPProperty extends TrainerProperty {
     private String hiddenLayer;
     private String outputLayer;
     private String folderMLPs;
+    private String saveFrequence="1";
 
     public String getHiddenLayer() {
         return hiddenLayer;
@@ -39,6 +40,14 @@ public class TrainerMLPProperty extends TrainerProperty {
         this.folderMLPs = folderMLPs;
     }
 
+    public String getSaveFrequence() {
+        return saveFrequence;
+    }
+
+    public void setSaveFrequence(String saveFrequence) {
+        this.saveFrequence = saveFrequence;
+    }
+
     public List<Layer> parseHiddenLayer() {
         List<Layer> lista = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\s*(\\s*\\w+\\s*,\\s*\\w+\\s*)\\s*");
@@ -53,5 +62,9 @@ public class TrainerMLPProperty extends TrainerProperty {
     public Layer parseOutputLayer() {
         String[] varia = outputLayer.replace(" ", "").trim().split(",");
         return new Layer(Integer.parseInt(varia[0]), varia[1]);
+    }
+
+    public int parseSaveFrequence() {
+        return Integer.parseInt(this.saveFrequence.trim());
     }
 }

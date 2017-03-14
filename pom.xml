@@ -44,6 +44,7 @@
         <module>BayesianoIngenuo</module>
         <module>Perceptron</module>
         <module>RedeNeural</module>
+        <module>Knn</module>
         <module>Avaliacao</module>
         <module>AvaliaCapes</module>
         <module>Viewer</module>
