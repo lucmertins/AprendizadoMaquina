@@ -73,7 +73,6 @@ public class ExecuteAvaliacao {
                         acumuladores[i].addTrueNegative();
                     }
                 }
-
             }
         }
         samples.close();

@@ -54,9 +54,10 @@ public class Knn {
         }
     }
 
-    public static Knn instance(Sample sample) {
+    public static Knn instanceLabel(Sample sample) {
         Knn knn = new Knn(sample.getIns().size());
         knn.load(sample);
+        knn.label=sample.getOutOriginal(1);
         return knn;
     }
 

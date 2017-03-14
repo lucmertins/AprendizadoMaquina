@@ -11,6 +11,28 @@ import java.util.Map;
  */
 public class ConfusionMatrix {
 
+    public void matrix(Accumulator[] accumulators, PrintStream outLog) throws IOException {
+        // Linha dos labels reconhecidos
+        for (int i = 0; i < 5; i++) {
+            outLog.printf("\t%d", i);
+        }
+        outLog.printf("\n\n");
+        // Coluna dos labels corretos
+        for (int y = 0; y < 5; y++) {
+            outLog.printf("%d\t", y);
+            for (int x = 0; x < 5; x++) {
+                if (x == y) {
+                    outLog.printf("%.0f\t", accumulators[x].getTruePositive());
+                } else {
+                    Map<Integer, Double> falseNegatives = accumulators[x].getFalseNegative();
+                    Double value = falseNegatives.get(y);
+                    outLog.printf("%.0f\t", value == null ? 0 : value);
+                }
+            }
+            outLog.printf("\n");
+        }
+    }
+
     public void matrix(Accumulator[] accumulators, FileWriter outLog) throws IOException {
         // Linha dos labels reconhecidos
         for (int i = 0; i < 5; i++) {
@@ -46,6 +68,14 @@ public class ConfusionMatrix {
                 out.printf("FalseNegative era %d acusou %d [%.0f vezes] \n", key, i, accumulator.getFalseNegative().get(key));
             }
             out.printf("Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
+        }
+    }
+
+    public void resumo(Accumulator[] accumulators, PrintStream outLog) throws IOException {
+        for (int i = 0; i < 5; i++) {
+            outLog.printf(String.format("***** Label  %d *** ", i));
+            Accumulator accumulator = accumulators[i];
+            outLog.printf("Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n", accumulator.accuracy(), accumulator.precision(), accumulator.recall(), accumulator.f1());
         }
     }
 

@@ -118,13 +118,13 @@ public class ExecuteMLP {
 
         File fileTest = new File(propMPL.getFileTest());
         ExecuteAvaliacao aval = new ExecuteAvaliacao();
-        Accumulator[] acumuladores1 = aval.run(fileTest, parameters, fileMPL.getAbsolutePath());
+        Accumulator[] acumuladores = aval.run(fileTest, parameters, fileMPL.getAbsolutePath());
         ConfusionMatrix confusao = new ConfusionMatrix();
-        confusao.resumo(acumuladores1, outLog);
+        confusao.resumo(acumuladores, outLog);
         outLog.write(String.format("\n"));
-        confusao.matrix(acumuladores1, outLog);
+        confusao.matrix(acumuladores, outLog);
         outLog.write(String.format("\nGerais    Acurácia [%.12f]    Precisão [%.12f]    Recall [%.12f]    F1 [%.12f]\n",
-                confusao.accuracy(acumuladores1), confusao.precision(acumuladores1), confusao.recall(acumuladores1), confusao.f1(acumuladores1)));
+                confusao.accuracy(acumuladores), confusao.precision(acumuladores), confusao.recall(acumuladores), confusao.f1(acumuladores)));
         outLog.flush();
     }
 

@@ -15,11 +15,11 @@ import java.util.Properties;
 public class Execute {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        String action = "trainer";
-        String filename = "/home/mertins/Desenvolvimento/Java/UFPel/FIA/AprendizadoMaquina/AvaliaCapes/fileTrainerMLPCapes2.config";
-        if (args.length == 2) {
-            action = args[0].toLowerCase().trim();
-            filename = args[1];
+        String action = "knn";
+        String filename = "/home/mertins/Desenvolvimento/Java/UFPel/FIA/AprendizadoMaquina/AvaliaCapes/fileTrainerKnnCapes1.config";
+//        if (args.length == 2) {
+//            action = args[0].toLowerCase().trim();
+//            filename = args[1];
             File file = new File(filename);
             if (file.exists() && file.isFile() && avalAction(action)) {
                 System.out.printf("Ação [%s]. Processando arquivo [%s]\n", action, file.getAbsoluteFile());
@@ -46,9 +46,9 @@ public class Execute {
             } else {
                 msgOut(action, file);
             }
-        } else {
-            msgOut(action, null);
-        }
+//        } else {
+//            msgOut(action, null);
+//        }
     }
 
     private static boolean avalAction(String action) {
