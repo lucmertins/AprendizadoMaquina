@@ -1,4 +1,4 @@
-package br.com.mertins.ufpel.avaliacapes;
+package br.com.mertins.ufpel.avaliacao.capes;
 
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.avaliacao.redeneural.ExecuteMLP;
@@ -52,7 +52,7 @@ public class PreparaArquivo {
                 System.exit(1);
             }
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s%stemp%sCapsTemp.cvs", property, File.separator, File.separator)), "utf-8"))) {
-
+                System.out.printf("Arquivo reajustado: %s\n", String.format("%s%stemp%sCapsTemp.cvs", property, File.separator, File.separator));
                 try (CSVReader reader = new CSVReader(new FileReader(propMPL.getFileTrainer()), ',')) {
                     String[] colunas;
                     boolean firstLine = true;

@@ -90,3 +90,11 @@ attempt=6
 # configurações da avaliação dos Perceptrons
 folderPerceptrons=/home/mertins/IAPerceptron/20170218_100013
 
+RODAR KNN
+
+java -jar target/Avaliacao-1.0.jar knn eval fileTrainerKnnCapes1.config
+
+Preparar arquivo CAPES
+Transforma labels em numeros.
+
+java -jar target/Avaliacao-1.0.jar prepar eval fileTrainerMLPCapes1.config 
