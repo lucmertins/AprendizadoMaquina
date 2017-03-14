@@ -1,5 +1,7 @@
 package br.com.mertins.ufpel.avaliacao;
 
+import br.com.mertins.ufpel.avaliacao.capes.PreparaArquivo;
+import br.com.mertins.ufpel.avaliacao.knn.ExecuteKNN;
 import br.com.mertins.ufpel.avaliacao.perceptron.ExecutePerceptron;
 import br.com.mertins.ufpel.avaliacao.redeneural.ExecuteMLP;
 import java.io.File;
@@ -28,6 +30,10 @@ public class Execute {
                 Properties properties = new Properties();
                 properties.load(new FileInputStream(filename));
                 switch (resource) {
+                    case "prepar":
+                        PreparaArquivo preparaArquivo = new PreparaArquivo();
+                        preparaArquivo.exec(properties);
+                        break;
                     case "mlp":
                         ExecuteMLP execMLP = new ExecuteMLP();
                         switch (action) {
@@ -54,6 +60,10 @@ public class Execute {
                                 break;
                         }
                         break;
+                    case "knn":
+                        ExecuteKNN execKnn = new ExecuteKNN();
+                        execKnn.evaluation(properties);
+                        break;
                 }
 
             } else {
@@ -63,11 +73,16 @@ public class Execute {
     }
 
     private static boolean avalAction(String action) {
-        return "trainer".equalsIgnoreCase(action.trim()) || "eval".equalsIgnoreCase(action.trim()) || "evalall".equalsIgnoreCase(action.trim());
+        return "trainer".equalsIgnoreCase(action.trim())
+                || "eval".equalsIgnoreCase(action.trim())
+                || "evalall".equalsIgnoreCase(action.trim());
     }
 
     private static boolean avalResource(String action) {
-        return "mlp".equalsIgnoreCase(action.trim()) || "perceptron".equalsIgnoreCase(action.trim());
+        return "mlp".equalsIgnoreCase(action.trim())
+                || "perceptron".equalsIgnoreCase(action.trim())
+                || "prepar".equalsIgnoreCase(action.trim())
+                || "knn".equalsIgnoreCase(action.trim());
     }
 
     private static void msgOut(String resource, String action, File file) {
