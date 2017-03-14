@@ -8,11 +8,12 @@ public class SamplesParameters {
 
     public SamplesParameters() {
     }
-    
+
     private boolean normalize = false;
     private boolean firstLineAttribute = true;
     private int columnLabel;
     private int[] removeColumns;
+    private int saveMLPFrequence;
 
     public boolean isNormalize() {
         return normalize;
@@ -45,5 +46,13 @@ public class SamplesParameters {
     public void setRemoveColumns(int[] removeColumns) {
         this.removeColumns = removeColumns;
     }
-    
+
+    public int getSaveMLPFrequence() {
+        return saveMLPFrequence;
+    }
+
+    public void setSaveMLPFrequence(int saveMLPFrequence) {
+        this.saveMLPFrequence = saveMLPFrequence;
+    }
+
 }

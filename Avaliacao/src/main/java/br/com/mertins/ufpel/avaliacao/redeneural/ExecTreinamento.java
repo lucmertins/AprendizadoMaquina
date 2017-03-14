@@ -68,11 +68,12 @@ public class ExecTreinamento {
             out.write(String.format("Taxa de treinamento inicial: %.60f\n", rateTraining));
             out.write(String.format("Taxa de Moment: %.30f\n", moment));
             out.write(String.format("Encerra treinamento se módulo do erro aumentar: %b\n\n", blocbkIfBadErr));
+            out.write(String.format("Frequencia salvar MLP: %d\n\n",this.samplesParameters.getSaveMLPFrequence()));
             out.flush();
             samples.open(fileTraining);
             Training treino = new Training(blocbkIfBadErr);
             treino.addListenerObservatorTraining(new Observator(out));
-            treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out, new PersistMLP());
+            treino.withBackPropagation(rede, samples, rateTraining, moment, epocas, out, new PersistMLP(this.samplesParameters.getSaveMLPFrequence()));
             Instant now = Instant.now();
             Duration duration = Duration.between(inicioTreinamento, now);
             long days = ChronoUnit.DAYS.between(inicioTreinamento, now);
@@ -134,11 +135,21 @@ public class ExecTreinamento {
 
     private class PersistMLP implements PersistNet {
 
-        @Override
-        public void save(MLP net, String value) throws IOException {
-            String name = String.format("%s%sMLP_%s", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, value);
-            MLP.serialize(net, name);
+        private final int frequence;
+        private long count;
+
+        public PersistMLP(int frequence) {
+            this.frequence=frequence;
+            this.count=0;
         }
 
+        @Override
+        public void save(MLP net, String value) throws IOException {
+            count++;
+            if (count % frequence == 0) {
+                String name = String.format("%s%sMLP_%s", ExecTreinamento.this.folder.getAbsolutePath(), File.separator, value);
+                MLP.serialize(net, name);
+            }
+        }
     }
 }

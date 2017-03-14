@@ -9,7 +9,6 @@ import br.com.mertins.ufpel.avaliacao.util.StringAsNumberComparator;
 import br.com.mertins.ufpel.avaliacao.util.TrainerMLPProperty;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -47,11 +46,13 @@ public class ExecuteMLP {
             propMPL.setEpoch((String) properties.get("epoch"));
             propMPL.setBlockIfBadErr((String) properties.get("blockifbaderr"));
             propMPL.setRemoveColumns((String) properties.get("removecolumns"));
+            propMPL.setSaveFrequence((String) properties.get("savefrequence"));
             SamplesParameters parameters = new SamplesParameters();
             parameters.setNormalize(propMPL.parseNormalize());
             parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
             parameters.setColumnLabel(propMPL.parseColumnLabel());
             parameters.setRemoveColumns(propMPL.parseRemoveColumn());
+            parameters.setSaveMLPFrequence(propMPL.parseSaveFrequence());
             File fileTreinamento = new File(propMPL.getFileTrainer());
             File fileTest = new File(propMPL.getFileTest());
             ExecTreinamento execTreino = new ExecTreinamento();
@@ -92,7 +93,7 @@ public class ExecuteMLP {
             propMPL.setOutputLayer((String) properties.get("outputlayer"));
             propMPL.setFolderMLPs((String) properties.get("folderMLPs"));
             propMPL.setRemoveColumns((String) properties.get("removecolumns"));
-            
+
             String nome = String.format("%s%sIA_avaliacao.txt", propMPL.getFolderMLPs(), File.separator);
             try (FileWriter outLog = new FileWriter(nome)) {
                 File folderMLPs = new File(propMPL.getFolderMLPs());
