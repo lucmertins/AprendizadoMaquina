@@ -19,7 +19,7 @@ public class ExecuteAvaliacao {
     }
 
     public Accumulator[] run(File fileTest, SamplesParameters samplesParameters, String fileMLP) throws IOException, ClassNotFoundException {
-    // descobrir os exemplos esta fixo. Baseado no mnist. Precisa reavaliar o arquivo, como no treinamento para deixar dinamico
+        // descobrir os exemplos esta fixo. Baseado no mnist. Precisa reavaliar o arquivo, como no treinamento para deixar dinamico
         Samples samples = new Samples(samplesParameters, new FunctionSampleOut() {
             @Override
             public void prepare(String value, Sample sample) {

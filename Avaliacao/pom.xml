@@ -69,5 +69,10 @@
             <artifactId>RedeNeural</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>br.com.mertins.ufpel</groupId>
+            <artifactId>Knn</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
