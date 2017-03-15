@@ -1,6 +1,9 @@
 package br.com.mertins.ufpel.knn;
 
 import br.com.mertins.ufpel.am.perceptron.Sample;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -57,8 +60,29 @@ public class Knn {
     public static Knn instanceLabel(Sample sample) {
         Knn knn = new Knn(sample.getIns().size());
         knn.load(sample);
-        knn.label=sample.getOutOriginal(1);
+        knn.label = sample.getOutOriginal(1);
         return knn;
     }
 
+    public static int dominante(int k, List<KnnInformation> lista) {
+        Map<String, Integer> contador = new HashMap();
+        String labelDominante = null;
+        for (KnnInformation inf : lista) {
+            if (contador.containsKey(inf.getLabel())) {
+                int get = contador.get(inf.getLabel()) + 1;
+                contador.put(inf.getLabel(), get);
+                if (k == get) {
+                    labelDominante = inf.getLabel();
+                    break;
+                }
+            } else {
+                contador.put(inf.getLabel(), 1);
+                if (k == 1) {
+                    labelDominante = inf.getLabel();
+                    break;
+                }
+            }
+        } // avaliar o que fazer se não existir um label dominante
+        return Integer.valueOf(labelDominante);
+    }
 }

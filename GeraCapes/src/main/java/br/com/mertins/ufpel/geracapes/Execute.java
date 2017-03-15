@@ -29,8 +29,10 @@ public class Execute {
                         preparaArquivo.exec(properties);
                         break;
                     case "mlp":
+                        
                         break;
                     case "knn":
+                        
                         break;
                 }
 
