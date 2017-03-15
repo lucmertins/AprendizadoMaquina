@@ -1,4 +1,4 @@
-package br.com.mertins.ufpel.avaliacao.capes;
+package br.com.mertins.ufpel.geracapes;
 
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.avaliacao.redeneural.ExecuteMLP;

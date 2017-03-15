@@ -46,6 +46,7 @@
         <module>RedeNeural</module>
         <module>Knn</module>
         <module>Avaliacao</module>
+        <module>GeraCapes</module>
         <module>Viewer</module>
     </modules>
 </project>

@@ -1,6 +1,5 @@
 package br.com.mertins.ufpel.avaliacao;
 
-import br.com.mertins.ufpel.avaliacao.capes.PreparaArquivo;
 import br.com.mertins.ufpel.avaliacao.knn.ExecuteKNN;
 import br.com.mertins.ufpel.avaliacao.perceptron.ExecutePerceptron;
 import br.com.mertins.ufpel.avaliacao.redeneural.ExecuteMLP;
@@ -30,10 +29,6 @@ public class Execute {
                 Properties properties = new Properties();
                 properties.load(new FileInputStream(filename));
                 switch (resource) {
-                    case "prepar":
-                        PreparaArquivo preparaArquivo = new PreparaArquivo();
-                        preparaArquivo.exec(properties);
-                        break;
                     case "mlp":
                         ExecuteMLP execMLP = new ExecuteMLP();
                         switch (action) {
@@ -69,6 +64,8 @@ public class Execute {
             } else {
                 msgOut(resource, action, file);
             }
+        } else {
+            msgOut(resource, action, null);
         }
     }
 
@@ -81,13 +78,12 @@ public class Execute {
     private static boolean avalResource(String action) {
         return "mlp".equalsIgnoreCase(action.trim())
                 || "perceptron".equalsIgnoreCase(action.trim())
-                || "prepar".equalsIgnoreCase(action.trim())
                 || "knn".equalsIgnoreCase(action.trim());
     }
 
     private static void msgOut(String resource, String action, File file) {
         System.out.printf("Estratégia [%s]. Ação [%s] não foi realizada. Estratégia ou Ação ou Arquivo [%s] não encontrado\n", resource, action, file == null ? "" : file.getAbsoluteFile());
-        System.out.println("Estratégias possíveis: PERCEPTRON MLP");
+        System.out.println("Estratégias possíveis: PERCEPTRON MLP KNN");
         System.out.println("Ações possíveis: TRAINER EVAL EVALALL");
 
     }
