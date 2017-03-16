@@ -166,4 +166,16 @@ public class PreparaArquivo {
         String[] desc = {"Tres", "Quatro", "Cinco", "Seis", "Sete"};
         return desc[value];
     }
+
+    public static String reverteRotulo(double[] values) {
+        int pos = -1;
+        double max = -1;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] > max) {
+                pos = i;
+                max = values[i];
+            }
+        }
+        return reverteRotulo(pos);
+    }
 }

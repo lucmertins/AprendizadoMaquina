@@ -16,6 +16,9 @@ public class TrainerMLPProperty extends TrainerProperty {
     private String folderMLPs;
     private String fileMLP;
     private String saveFrequence="1";
+    private String fileAval;
+    private String fileResult;
+    private String fileOrigAval;
 
     public String getHiddenLayer() {
         return hiddenLayer;
@@ -55,6 +58,30 @@ public class TrainerMLPProperty extends TrainerProperty {
 
     public void setFileMLP(String fileMLP) {
         this.fileMLP = fileMLP;
+    }
+
+    public String getFileAval() {
+        return fileAval;
+    }
+
+    public void setFileAval(String fileAval) {
+        this.fileAval = fileAval;
+    }
+
+    public String getFileResult() {
+        return fileResult;
+    }
+
+    public void setFileResult(String fileResult) {
+        this.fileResult = fileResult;
+    }
+
+    public String getFileOrigAval() {
+        return fileOrigAval;
+    }
+
+    public void setFileOrigAval(String fileOrigAval) {
+        this.fileOrigAval = fileOrigAval;
     }
 
     public List<Layer> parseHiddenLayer() {

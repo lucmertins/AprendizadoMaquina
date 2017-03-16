@@ -7,9 +7,14 @@ import br.com.mertins.ufpel.am.perceptron.Samples;
 import br.com.mertins.ufpel.am.perceptron.SamplesParameters;
 import br.com.mertins.ufpel.am.redeneural.MLP;
 import br.com.mertins.ufpel.avaliacao.util.TrainerMLPProperty;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -20,6 +25,10 @@ public class GeraMLP {
 
     public void run(Properties properties) throws IOException, ClassNotFoundException {
         TrainerMLPProperty propMLP = new TrainerMLPProperty();
+
+        propMLP.setFileAval((String) properties.get("fileaval"));
+        propMLP.setFileResult((String) properties.get("fileresult"));
+        propMLP.setFileOrigAval((String) properties.get("fileorigaval"));
         propMLP.setNormalize((String) properties.get("normalize"));
         propMLP.setFirstLineAttribute((String) properties.get("firstlineattribute"));
         propMLP.setColumnLabel((String) properties.get("columnlabel"));
@@ -39,25 +48,68 @@ public class GeraMLP {
                 sample.addOutOriginal(value);
             }
         });
-        File fileSamples = new File(propMLP.getFileTrainer());
-        samples.avaliaFirstLine(fileSamples);
-        samples.open(fileSamples);
-        Sample cargaSample;
-        ArrayList<Sample> exemplos = new ArrayList();
-        while ((cargaSample = samples.next()) != null) {
-            exemplos.add(cargaSample);
+        File fileAval = new File(propMLP.getFileAval());
+        samples.avaliaFirstLine(fileAval);
+        samples.open(fileAval);
+        Sample avalSample;
+        ArrayList<Sample> avalList = new ArrayList();
+        while ((avalSample = samples.next()) != null) {
+            avalList.add(avalSample);
         }
         samples.close();
         MLP mlp = MLP.deserialize(propMLP.getFileMLP());
 
-        exemplos.forEach(sample -> {
+        List<Integer> listaValores = new ArrayList<>();
+        avalList.forEach(sample -> {
             mlp.updateIn(sample);
             OutPerceptron[] ret = mlp.process();
             StringBuilder sb = new StringBuilder(" ");
-            for (OutPerceptron value : ret) {
-                sb.append(String.format("%.30f ", value.getOut()));
+            double[] results = new double[ret.length];
+            for (int i = 0; i < ret.length; i++) {
+                results[i] = ret[i].getOut();
+                sb.append(String.format("%.30f ", results[i]));
             }
-            System.out.printf("Exemplo in[%s] out esperado [%s] out real [%s]\n", sample.toStringIn(), sample.toStringOut(), sb.toString().trim());
+            int valorDomin = valorDominante(results);
+            listaValores.add(valorDomin);
+//            System.out.printf("Exemplo in[%s] out real [%s] [%d][%s]\n", sample.toStringIn(),
+//                    sb.toString().trim(), valorDomin, PreparaArquivo.reverteRotulo(results));
         });
+
+        Integer[] valores = listaValores.toArray(new Integer[0]);
+        int pos = 0;
+        boolean first = true;
+        List<String> resultados = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(propMLP.getFileOrigAval()))) {
+            String linha;
+            while ((linha = bufferedReader.readLine()) != null) {
+                StringBuilder resultado = new StringBuilder(linha);
+                if (first) {
+                    first = false;
+                } else {
+                    resultado.append(",");
+                    resultado.append(PreparaArquivo.reverteRotulo(valores[pos++]));
+                }
+                resultados.add(resultado.toString());
+            }
+        }
+
+        try (BufferedWriter bufferWrite = new BufferedWriter(new FileWriter(propMLP.getFileResult()))) {
+            for (String linha : resultados) {
+                bufferWrite.write(linha);
+                bufferWrite.write("\n");
+            }
+        }
+    }
+
+    public int valorDominante(double[] values) {
+        int pos = -1;
+        double max = -1;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] > max) {
+                pos = i;
+                max = values[i];
+            }
+        }
+        return pos;
     }
 }
