@@ -37,6 +37,7 @@ public class PreparaArquivo {
             propMPL.setEpoch((String) properties.get("epoch"));
             propMPL.setBlockIfBadErr((String) properties.get("blockifbaderr"));
             propMPL.setRemoveColumns((String) properties.get("removecolumns"));
+            propMPL.setFileResultColunaExtra((String) properties.get("fileresultcolunaextra"));
             SamplesParameters parameters = new SamplesParameters();
             parameters.setNormalize(propMPL.parseNormalize());
             parameters.setFirstLineAttribute(propMPL.parseFirstLineAttribute());
@@ -52,7 +53,7 @@ public class PreparaArquivo {
                 System.exit(1);
             }
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s%stemp%sCapsTemp.cvs", property, File.separator, File.separator)), "utf-8"))) {
-                System.out.printf("Arquivo reajustado: %s\n", String.format("%s%stemp%sCapsTemp.cvs", property, File.separator, File.separator));
+                System.out.printf("Arquivo reajustado: %s\n", String.format("%s%stemp%sCapesTemp.cvs", property, File.separator, File.separator));
                 try (CSVReader reader = new CSVReader(new FileReader(propMPL.getFileTrainer()), ',')) {
                     String[] colunas;
                     boolean firstLine = true;
@@ -60,24 +61,26 @@ public class PreparaArquivo {
                         if (firstLine) {
                             firstLine = false;
                         } else if (colunas != null) {
-                            int pos = 0;
+                            int pos = propMPL.parseFileResultColunaExtra()? -1 : 0;
                             StringBuilder linha = new StringBuilder();
                             for (String coluna : colunas) {
                                 switch (pos) {
+                                    case -1:
+                                        break;
                                     case 0:
-                                        linha.append(String.format("%s,", convertAreas(colunas[pos])));
+                                        linha.append(String.format("%s,", convertAreas(coluna)));
                                         break;
                                     case 2:
-                                        linha.append(String.format("%s,", convertModalidade(colunas[pos])));
+                                        linha.append(String.format("%s,", convertModalidade(coluna)));
                                         break;
                                     case 3:
-                                        linha.append(String.format("%s,", convertInicioDr(colunas[pos])));
+                                        linha.append(String.format("%s,", convertInicioDr(coluna)));
                                         break;
                                     case 4:
-                                        linha.append(String.format("%s,", convertInicioMs(colunas[pos])));
+                                        linha.append(String.format("%s,", convertInicioMs(coluna)));
                                         break;
                                     case 26:
-                                        linha.append(String.format("%s,", convertRotulo(colunas[pos])));
+                                        linha.append(String.format("%s,", convertRotulo(coluna)));
                                         break;
                                     default:
                                         linha.append(String.format("%s,", coluna));
@@ -158,4 +161,5 @@ public class PreparaArquivo {
                 return -1;
         }
     }
+
 }

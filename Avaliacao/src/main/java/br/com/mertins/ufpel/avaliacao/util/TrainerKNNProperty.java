@@ -9,6 +9,7 @@ public class TrainerKNNProperty extends TrainerProperty {
     private String valueK;
     private String fileAval;
     private String fileResult;
+    private String fileOrigAval;
 
     public String getValueK() {
         return valueK;
@@ -33,6 +34,15 @@ public class TrainerKNNProperty extends TrainerProperty {
     public void setFileAval(String fileAval) {
         this.fileAval = fileAval;
     }
+
+    public String getFileOrigAval() {
+        return fileOrigAval;
+    }
+
+    public void setFileOrigAval(String fileOrigAval) {
+        this.fileOrigAval = fileOrigAval;
+    }
+
 
     public int parseValueK() {
         return Integer.parseInt(this.valueK.trim());

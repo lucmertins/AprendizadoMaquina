@@ -13,11 +13,11 @@ import java.util.Properties;
 public class Execute {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        String resource = "";
-        String filename = null;
-        if (args.length == 2) {
-            resource = args[0].toLowerCase().trim();
-            filename = args[1];
+        String resource = "knn";
+        String filename = "/home/mertins/Desenvolvimento/Java/UFPel/FIA/AprendizadoMaquina/GeraCapes/fileGeraCapesKnn.config";
+//        if (args.length == 2) {
+//            resource = args[0].toLowerCase().trim();
+//            filename = args[1];
             File file = new File(filename);
             if (file.exists() && file.isFile() && avalResource(resource)) {
                 System.out.printf("Estratégia [%s]. Processando arquivo [%s]\n", resource, file.getAbsoluteFile());
@@ -32,16 +32,17 @@ public class Execute {
                         
                         break;
                     case "knn":
-                        
+                        GeraKnn geraKnn=new GeraKnn();
+                        geraKnn.run(properties);
                         break;
                 }
 
             } else {
                 msgOut(resource, file);
             }
-        } else {
-            msgOut(resource, null);
-        }
+//        } else {
+//            msgOut(resource, null);
+//        }
     }
 
     private static boolean avalResource(String resource) {

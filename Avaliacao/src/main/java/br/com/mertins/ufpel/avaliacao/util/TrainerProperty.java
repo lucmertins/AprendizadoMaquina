@@ -16,6 +16,7 @@ public abstract class TrainerProperty {
     private String epoch;
     private String blockIfBadErr;
     private String removeColumns = "0";
+    private String fileResultColunaExtra = "false";
 
     public String getFileTrainer() {
         return fileTrainer;
@@ -97,6 +98,14 @@ public abstract class TrainerProperty {
         this.removeColumns = removeColumns;
     }
 
+    public String getFileResultColunaExtra() {
+        return fileResultColunaExtra;
+    }
+
+    public void setFileResultColunaExtra(String fileResultColunaExtra) {
+        this.fileResultColunaExtra = fileResultColunaExtra;
+    }
+
     public int parseColumnLabel() {
         return Integer.parseInt(this.columnLabel.trim());
     }
@@ -133,5 +142,9 @@ public abstract class TrainerProperty {
             retorno[pos++] = Integer.parseInt(elem.trim());
         }
         return retorno;
+    }
+
+    public boolean parseFileResultColunaExtra() {
+        return Boolean.parseBoolean(this.fileResultColunaExtra.trim());
     }
 }

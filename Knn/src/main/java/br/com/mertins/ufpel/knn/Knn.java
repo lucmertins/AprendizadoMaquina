@@ -50,6 +50,15 @@ public class Knn {
         return Math.sqrt(sum);
     }
 
+    public void setAttributes(List<Double> attributes) {
+        Double[] temp=attributes.toArray(new Double[0]);
+        int pos=0;
+        this.attributes=new double[temp.length];
+        for (Double value:temp){
+            this.attributes[pos++]=value;
+        }
+    }
+
     public void load(Sample sample) {
         int pos = 0;
         for (Double value : sample.getIns()) {
@@ -85,4 +94,5 @@ public class Knn {
         } // avaliar o que fazer se não existir um label dominante
         return Integer.valueOf(labelDominante);
     }
+
 }
