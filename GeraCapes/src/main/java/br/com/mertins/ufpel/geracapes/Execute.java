@@ -29,11 +29,11 @@ public class Execute {
                         preparaArquivo.exec(properties);
                         break;
                     case "mlp":
-                        GeraMLP geraMlp=new GeraMLP();
+                        GeraMLP geraMlp = new GeraMLP();
                         geraMlp.run(properties);
                         break;
                     case "knn":
-                        GeraKnn geraKnn=new GeraKnn();
+                        GeraKnn geraKnn = new GeraKnn();
                         geraKnn.run(properties);
                         break;
                 }

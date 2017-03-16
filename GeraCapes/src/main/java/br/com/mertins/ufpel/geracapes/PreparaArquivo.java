@@ -52,8 +52,8 @@ public class PreparaArquivo {
                 System.out.println("Pasta temp não foi criada");
                 System.exit(1);
             }
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s%stemp%sCapsTemp.cvs", property, File.separator, File.separator)), "utf-8"))) {
-                System.out.printf("Arquivo reajustado: %s\n", String.format("%s%stemp%sCapesTemp.cvs", property, File.separator, File.separator));
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s%stemp%sCapsTemp.csv", property, File.separator, File.separator)), "utf-8"))) {
+                System.out.printf("Arquivo reajustado: %s\n", String.format("%s%stemp%sCapesTemp.csv", property, File.separator, File.separator));
                 try (CSVReader reader = new CSVReader(new FileReader(propMPL.getFileTrainer()), ',')) {
                     String[] colunas;
                     boolean firstLine = true;

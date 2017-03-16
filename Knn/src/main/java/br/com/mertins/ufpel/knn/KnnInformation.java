@@ -6,9 +6,9 @@ package br.com.mertins.ufpel.knn;
  */
 public class KnnInformation implements Comparable<KnnInformation> {
 
-    private int posicao;
-    private double distancia;
-    private String label;
+    private final int posicao;
+    private final double distancia;
+    private final String label;
 
     public KnnInformation(int posicao, double distancia, String label) {
         this.posicao = posicao;
