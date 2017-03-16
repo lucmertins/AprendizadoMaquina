@@ -12,9 +12,9 @@ import java.util.Properties;
  */
 public class Execute {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        String resource = "knn";
-        String filename = "/home/mertins/Desenvolvimento/Java/UFPel/FIA/AprendizadoMaquina/GeraCapes/fileGeraCapesKnn.config";
+    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
+        String resource = "mlp";
+        String filename = "/home/mertins/Desenvolvimento/Java/UFPel/FIA/AprendizadoMaquina/GeraCapes/fileGeraCapesMLP.config";
 //        if (args.length == 2) {
 //            resource = args[0].toLowerCase().trim();
 //            filename = args[1];
@@ -29,7 +29,8 @@ public class Execute {
                         preparaArquivo.exec(properties);
                         break;
                     case "mlp":
-                        
+                        GeraMLP geraMlp=new GeraMLP();
+                        geraMlp.run(properties);
                         break;
                     case "knn":
                         GeraKnn geraKnn=new GeraKnn();

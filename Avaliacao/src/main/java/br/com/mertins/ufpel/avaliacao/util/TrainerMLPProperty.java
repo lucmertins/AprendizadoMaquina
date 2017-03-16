@@ -14,6 +14,7 @@ public class TrainerMLPProperty extends TrainerProperty {
     private String hiddenLayer;
     private String outputLayer;
     private String folderMLPs;
+    private String fileMLP;
     private String saveFrequence="1";
 
     public String getHiddenLayer() {
@@ -46,6 +47,14 @@ public class TrainerMLPProperty extends TrainerProperty {
 
     public void setSaveFrequence(String saveFrequence) {
         this.saveFrequence = saveFrequence;
+    }
+
+    public String getFileMLP() {
+        return fileMLP;
+    }
+
+    public void setFileMLP(String fileMLP) {
+        this.fileMLP = fileMLP;
     }
 
     public List<Layer> parseHiddenLayer() {

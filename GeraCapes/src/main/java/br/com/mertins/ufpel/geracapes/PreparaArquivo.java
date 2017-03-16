@@ -61,7 +61,7 @@ public class PreparaArquivo {
                         if (firstLine) {
                             firstLine = false;
                         } else if (colunas != null) {
-                            int pos = propMPL.parseFileResultColunaExtra()? -1 : 0;
+                            int pos = propMPL.parseFileResultColunaExtra() ? -1 : 0;
                             StringBuilder linha = new StringBuilder();
                             for (String coluna : colunas) {
                                 switch (pos) {
@@ -162,4 +162,8 @@ public class PreparaArquivo {
         }
     }
 
+    public static String reverteRotulo(int value) {
+        String[] desc = {"Tres", "Quatro", "Cinco", "Seis", "Sete"};
+        return desc[value];
+    }
 }

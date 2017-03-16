@@ -70,7 +70,7 @@ public class GeraKnn {
                 List<Double> attributes = new ArrayList<>();
 
                 for (String valor : colunas) {
-                    if (pos != 1 && pos != 8) {
+                    if (pos != 1 && pos != 8) {   // não avaliando colunas 1 e 8
                         attributes.add(Double.valueOf(valor));
                     }
                     pos++;
@@ -101,7 +101,7 @@ public class GeraKnn {
                     first = false;
                 } else {
                     resultado.append(",");
-                    resultado.append(convert(valores[pos++]));
+                    resultado.append(PreparaArquivo.reverteRotulo(valores[pos++]));
                 }
                 resultados.add(resultado.toString());
             }
@@ -112,11 +112,6 @@ public class GeraKnn {
                 bufferWrite.write("\n");
             }
         }
-    }
-
-    private String convert(int value) {
-        String[] desc = {"Tres", "Quatro", "Cinco", "Seis", "Sete"};
-        return desc[value];
     }
 
 }
