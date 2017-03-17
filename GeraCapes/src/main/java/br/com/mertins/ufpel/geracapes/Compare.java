@@ -53,7 +53,7 @@ public class Compare {
             }
         }
         String property = System.getProperty("user.home");
-        try (BufferedWriter bufferWrite = new BufferedWriter(new FileWriter(String.format("%s%stemp%sCapsMesclado.csv", property, File.separator, File.separator)))) {
+        try (BufferedWriter bufferWrite = new BufferedWriter(new FileWriter(String.format("%s%stemp%sCapsResultMesclado.csv", property, File.separator, File.separator)))) {
             for (String linha : linhasReagrupadas) {
                 bufferWrite.write(linha);
                 bufferWrite.write("\n");
