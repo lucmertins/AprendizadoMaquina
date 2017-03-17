@@ -15,9 +15,9 @@ public class Execute {
     public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
         String resource = "compare";
         String filename = "/home/mertins/Desenvolvimento/Java/UFPel/FIA/AprendizadoMaquina/GeraCapes/fileCompare.config";
-//        if (args.length == 2) {
-//            resource = args[0].toLowerCase().trim();
-//            filename = args[1];
+        if (args.length == 2) {
+            resource = args[0].toLowerCase().trim();
+            filename = args[1];
         File file = new File(filename);
         if (file.exists() && file.isFile() && avalResource(resource)) {
             System.out.printf("Estratégia [%s]. Processando arquivo [%s]\n", resource, file.getAbsoluteFile());
@@ -41,9 +41,9 @@ public class Execute {
         } else {
             msgOut(resource, file);
         }
-//        } else {
-//            msgOut(resource, null);
-//        }
+        } else {
+            msgOut(resource, null);
+        }
     }
 
     private static boolean avalResource(String resource) {
